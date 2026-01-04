@@ -1,0 +1,506 @@
+<main class="main-content">
+  <section class="hero">
+    <div class="bigcard">
+      <div class="bigcard-content">
+        <h2>Liste des Clients</h2>
+        <div class="lbarre">
+          <input type="text" [(ngModel)]="searchTerm" (input)="searchClients()" placeholder="Rechercher un client"
+            class="recherche">
+          <button (click)="toggleAddForm()" class="bouton2">Ajouter un Client</button>
+          <div class="side-panel" *ngIf="showAddForm">
+            <div class="side-panel-header">
+              <h3>Ajouter un Client</h3>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="progressValue"></div>
+            </div>
+            <p class="progress-text">{{ progressValue }}% du formulaire complété</p>
+            <div class="side-panel-content">
+              <h4>Informations administratives</h4>
+
+              <label>Nom & Prénom:</label>
+              <input [(ngModel)]="newClient.nom" type="text" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newClient.nom" class="messagerreur">Le nom est requis.</div>
+
+              <label>Numéro de compte:</label>
+              <input [(ngModel)]="newClient.numCompte" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newClient.numCompte" class="messagerreur">Le numéro de compte est requis.
+              </div>
+
+              <label>Numéro de sous-compte:</label>
+              <input [(ngModel)]="newClient.numsousCompte" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newClient.numsousCompte" class="messagerreur">Le numéro de sous-compte est
+                requis.</div>
+
+              <label>Matricule fiscal:</label>
+              <input [(ngModel)]="newClient.matFiscal" type="text" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newClient.matFiscal" class="messagerreur">Le matricule fiscal est requis.
+              </div>
+
+              <label>Chiffre d'affaires:</label>
+              <input [(ngModel)]="newClient.chiffreA" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newClient.chiffreA" class="messagerreur">Le chiffre d'affaires est requis.
+              </div>
+
+              <label>Effectif:</label>
+              <input [(ngModel)]="newClient.effectif" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newClient.effectif" class="messagerreur">L'effectif est requis.</div>
+
+              <label>Exonéré:</label>
+              <select [(ngModel)]="newClient.exonere" (input)="updateProgress()" required>
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
+
+              <label>Date limite Exonération:</label>
+              <input [(ngModel)]="newClient.dateLimiteExo" type="date" />
+
+              <label>client converti :</label>
+              <input class="form-control" [value]="newClient.isConverted ? 'Oui' : 'Non'" readonly />
+
+              <label>Condition de Paiement:</label>
+              <select [(ngModel)]="newClient.conditionPaiement" (input)="updateProgress()" required>
+                <option value="Au comptant">Au comptant</option>
+                <option value="Espèce">Espèce</option>
+                <option value="Virement">Virement</option>
+                <option value="Paiement électronique">Paiement électronique</option>
+                <option value="Chèque simple">Chèque simple</option>
+                <option value="Chèque certifié">Chèque certifié</option>
+                <option value="15 jours date de livraison">15 jours date de livraison</option>
+                <option value="30 jours date de livraison">30 jours date de livraison</option>
+              </select>
+
+              <label>Type de Prix d'achat:</label>
+              <select [(ngModel)]="newClient.typeprixAchat" (input)="updateProgress()" required>
+                <option value="Prix de gros">Prix de gros</option>
+                <option value="Prix de détail">Prix de détail</option>
+                <option value="Prix gérant">Prix gérant</option>
+              </select>
+
+              <label>Secteur d'Activité:</label>
+              <select [(ngModel)]="newClient.secteurActivite" (input)="updateProgress()" required>
+                <option *ngFor="let secteurdactivite of secteurActivite" [ngValue]="secteurdactivite">
+                  {{ secteurdactivite.nom }}
+                </option>
+              </select>
+
+              <h4>Coordonnées</h4>
+
+              <label>Gouvernorat:</label>
+              <select [(ngModel)]="newClient.gouvernorat" (input)="updateProgress()" required>
+                <option *ngFor="let gouvernorat of gouvernorats" [ngValue]="gouvernorat">
+                  {{ gouvernorat.nom }}
+                </option>
+              </select>
+
+              <label>Email:</label>
+              <input [(ngModel)]="newClient.email" type="email" (input)="updateProgress()" />
+
+              <label>Autre email:</label>
+              <input [(ngModel)]="newClient.autremail" type="email" (input)="updateProgress()" />
+
+              <label>Site Web:</label>
+              <input [(ngModel)]="newClient.siteWeb" type="text" (input)="updateProgress()" />
+
+              <label>Téléphone:</label>
+              <input [(ngModel)]="newClient.telephone" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && errorMessage.includes('téléphone')" class="messagerreur"> {{ errorMessage }}
+              </div>
+
+              <label>Autre téléphone:</label>
+              <input [(ngModel)]="newClient.autretelephone" type="text" (input)="updateProgress()" />
+
+              <label>Fax:</label>
+              <input [(ngModel)]="newClient.fax" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && errorMessage.includes('fax')" class="messagerreur"> {{ errorMessage }}
+              </div>
+
+              <label>Adresse:</label>
+              <input [(ngModel)]="newClient.adresse" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newClient.adresse" class="messagerreur">L'adresse est requise.</div>
+
+              <label>Code Postal:</label>
+              <input [(ngModel)]="newClient.codePostal" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newClient.codePostal" class="messagerreur">Le code postal est requis.</div>
+
+              <label>Ville:</label>
+              <input [(ngModel)]="newClient.ville" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newClient.ville" class="messagerreur">La ville est requise.</div>
+
+              <label>Pays:</label>
+              <input [(ngModel)]="newClient.pays" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newClient.pays" class="messagerreur">Le pays est requis.</div>
+
+              <div class="side-panel-footer">
+                <button class="btn btn-primary" (click)="addClient()">Enregistrer</button>
+                <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+              </div>
+
+              <div *ngIf="errorMessage" class="messagerreur">{{ errorMessage }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="side-panel" *ngIf="showEditForm && selectedClient">
+          <div class="side-panel-header">
+            <h3>Modifier un Client</h3>
+          </div>
+
+          <div class="side-panel-content">
+
+            <h4>Informations générales</h4>
+            <label>Nom & Prénom:</label>
+            <input [(ngModel)]="selectedClient.nom" type="text" required />
+
+            <label>Numéro de compte:</label>
+            <input [(ngModel)]="selectedClient.numCompte" type="number" required />
+
+            <label>Numéro de sous-compte:</label>
+            <input [(ngModel)]="selectedClient.numsousCompte" type="number" required />
+
+            <label>Matricule fiscal:</label>
+            <input [(ngModel)]="selectedClient.matFiscal" type="text" required />
+
+            <label>Prospect Converti:</label>
+            <input [value]="selectedClient.isConverted ? 'Oui' : 'Non'" readonly />
+
+            <h4>Activité</h4>
+            <label>Chiffre d'affaires:</label>
+            <input [(ngModel)]="selectedClient.chiffreA" type="number" required />
+
+            <label>Effectif:</label>
+            <input [(ngModel)]="selectedClient.effectif" type="number" required />
+
+            <label>Exonéré:</label>
+            <select [(ngModel)]="selectedClient.exonere" required>
+              <option value="true">Oui</option>
+              <option value="false">Non</option>
+            </select>
+
+            <label>Date limite Exonération:</label>
+            <input [(ngModel)]="selectedClient.dateLimiteExo" type="date" />
+
+            <label>Condition de Paiement:</label>
+            <select [(ngModel)]="selectedClient.conditionPaiement" required>
+              <option value="Au comptant">Au comptant</option>
+              <option value="Espèce">Espèce</option>
+              <option value="Virement">Virement</option>
+              <option value="Paiement électronique">Paiement électronique</option>
+              <option value="Chèque simple">Chèque simple</option>
+              <option value="Chèque certifié">Chèque certifié</option>
+              <option value="15 jours date de livraison">15 jours date de livraison</option>
+              <option value="30 jours date de livraison">30 jours date de livraison</option>
+            </select>
+
+            <label>Type de Prix d'achat:</label>
+            <select [(ngModel)]="selectedClient.typeprixAchat" required>
+              <option value="Prix de gros">Prix de gros</option>
+              <option value="Prix de détail">Prix de détail</option>
+              <option value="Prix gérant">Prix gérant</option>
+            </select>
+
+            <label>Secteur d'Activité:</label>
+            <select [(ngModel)]="selectedClient.secteurActivite" required>
+              <option *ngFor="let secteur of secteurActivite" [ngValue]="secteur">
+                {{ secteur.nom }}
+              </option>
+            </select>
+
+            <label>Gouvernorat:</label>
+            <select [(ngModel)]="selectedClient.gouvernorat" required>
+              <option *ngFor="let gouvernorat of gouvernorats" [ngValue]="gouvernorat">
+                {{ gouvernorat.nom }}
+              </option>
+            </select>
+
+            <h4>Coordonnées</h4>
+            <label>Email:</label>
+            <input [(ngModel)]="selectedClient.email" type="email" />
+
+            <label>Autre email:</label>
+            <input [(ngModel)]="selectedClient.autremail" type="email" />
+
+            <label>Site Web:</label>
+            <input [(ngModel)]="selectedClient.siteWeb" type="text" />
+
+            <label>Téléphone:</label>
+            <input [(ngModel)]="selectedClient.telephone" type="text" required />
+
+            <label>Autre téléphone:</label>
+            <input [(ngModel)]="selectedClient.autretelephone" type="text" />
+
+            <label>Fax:</label>
+            <input [(ngModel)]="selectedClient.fax" type="text" />
+
+            <h4>Adresse</h4>
+            <label>Adresse:</label>
+            <input [(ngModel)]="selectedClient.adresse" type="text" required />
+
+            <label>Code Postal:</label>
+            <input [(ngModel)]="selectedClient.codePostal" type="number" required />
+
+            <label>Ville:</label>
+            <input [(ngModel)]="selectedClient.ville" type="text" required />
+
+            <label>Pays:</label>
+            <input [(ngModel)]="selectedClient.pays" type="text" required />
+
+            <label>Date d'inscription:</label>
+            <input [(ngModel)]="selectedClient.dateInscription" type="date" readonly />
+
+            <label>Date de Modification:</label>
+            <input [(ngModel)]="selectedClient.dateModification" type="date" readonly />
+
+          </div>
+
+          <div class="side-panel-footer">
+            <button (click)="updateClient()" class="btn btn-primary">Mettre à jour</button>
+            <br><br>
+            <button (click)="toggleEditForm()" class="btn btn-secondary">Annuler</button>
+          </div>
+        </div>
+        <div *ngIf="successMessage" class="messagesucces"> {{ successMessage }} </div>
+        <div class="popup-overlay" *ngIf="showDetailPopup">
+          <div class="popup-card">
+            <div class="popup-header">
+              <h2>Détails du Client</h2>
+              <span class="close-btn" (click)="closePopup()">×</span>
+            </div>
+            <div class="popup-content">
+              <div class="popup-column">
+                <h3>Général</h3>
+                <p><strong>ID :</strong> {{ selectedClient!.id }}</p>
+                <p><strong>Nom :</strong> {{ selectedClient!.nom }}</p>
+                <p><strong>Numéro de compte :</strong> {{ selectedClient!.numCompte }}</p>
+                <p><strong>Sous-compte :</strong> {{ selectedClient!.numsousCompte }}</p>
+                <p><strong>Matricule fiscal :</strong> {{ selectedClient!.matFiscal }}</p>
+                <p><strong>Condition de Paiement :</strong> {{ selectedClient!.conditionPaiement }}</p>
+                <p><strong>Exonéré :</strong> {{ selectedClient!.exonere ? 'Oui' : 'Non' }}</p>
+                <p><strong>Type de prix d'achat :</strong> {{ selectedClient!.typeprixAchat }}</p>
+                <p><strong>Date limite d’exonération :</strong> {{ selectedClient!.dateLimiteExo }}</p>
+                <p><strong>Date inscription :</strong> {{ selectedClient!.dateInscription | date }}</p>
+                <p><strong>Date modification :</strong> {{ selectedClient!.dateModification | date }}</p>
+              </div>
+
+              <div class="popup-column">
+                <h3>Coordonnées</h3>
+                <p><strong>Email :</strong> {{ selectedClient!.email }}</p>
+                <p><strong>Autre email :</strong> {{ selectedClient!.autremail }}</p>
+                <p><strong>Téléphone :</strong> {{ selectedClient!.telephone }}</p>
+                <p><strong>Autre téléphone :</strong> {{ selectedClient!.autretelephone }}</p>
+                <p><strong>Fax :</strong> {{ selectedClient!.fax }}</p>
+                <p><strong>Site Web :</strong> {{ selectedClient!.siteWeb }}</p>
+              </div>
+
+              <div class="popup-column">
+                <h3>Localisation & Entreprise</h3>
+                <p><strong>Adresse :</strong> {{ selectedClient!.adresse }}</p>
+                <p><strong>Ville :</strong> {{ selectedClient!.ville }}</p>
+                <p><strong>Code postal :</strong> {{ selectedClient!.codePostal }}</p>
+                <p><strong>Pays :</strong> {{ selectedClient!.pays }}</p>
+                <p><strong>Gouvernorat :</strong> {{ selectedClient!.gouvernorat?.nom }}</p>
+                <p><strong>Secteur activité :</strong> {{ selectedClient!.secteurActivite?.nom }}</p>
+                <p><strong>Chiffre d'affaires :</strong> {{ selectedClient!.chiffreA }}</p>
+                <p><strong>Effectif :</strong> {{ selectedClient!.effectif }}</p>
+                <p><strong>Prospect Convertis :</strong> {{ selectedClient!.isConverted ? 'Oui' : 'Non' }}</p>
+              </div>
+
+              <div class="popup-column">
+                <h3>Contacts</h3>
+                <div *ngIf="selectedClient" class="contact-buttons">
+                  <button class="btn-consulter-contact"
+                    (click)="toggleContactSidePanel(selectedClient!)">Consulter</button>
+                  <button class="btn-ajouter-contact" (click)="toggleAddFormContact(selectedClient!)">Ajouter</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-panel" *ngIf="showContactSidePanel">
+          <div class="side-panel-header">
+            <h3>Contacts du Client : {{ selectedClientForContacts?.nom }}</h3>
+            <span class="close-btn" (click)="closeContactSidePanel()">×</span>
+          </div>
+
+          <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+          </div>
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+
+          <div class="side-panel-content">
+            <div *ngIf="contacts.length > 0; else noContact">
+              <div class="contact-card" *ngFor="let contact of contacts">
+                <p><strong>Nom :</strong> {{ contact.nom }}</p>
+                <p><strong>Prénom :</strong> {{ contact.prenom }}</p>
+                <p><strong>Fonction :</strong> {{ contact.fonction }}</p>
+                <p><strong>Mobile :</strong> {{ contact.mobile }}</p>
+                <p><strong>Téléphone :</strong> {{ contact.telephone }}</p>
+                <p><strong>Email :</strong> {{ contact.email }}</p>
+
+                <div class="contact-actions">
+                  <button class="btn btn-warning" (click)="toggleEditFormContact(contact)">
+                    <i class="fas fa-edit"></i> Modifier
+                  </button>
+                  <button class="btn btn-danger" (click)="deleteSelectedContact(contact)">
+                    <i class="fas fa-trash"></i> Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noContact>
+              <p>Aucun contact trouvé pour ce client.</p>
+            </ng-template>
+          </div>
+        </div>
+
+        <table class="listeclients">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Nom</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of filteredClients | filter: searchTerm">
+              <td><input type="checkbox" [checked]="client.checked" (change)="onClientSelect(client, $event)" /></td>
+              <td>{{ client.id }}</td>
+              <td>{{ client.nom }}</td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button class="actionsbouton" (click)="toggleDropdown(client)">Actions</button>
+                  <div class="champbouton" *ngIf="client.showDropdown">
+                    <button class="champbouton-item consulter" (click)="openPopup(client)">Consulter</button>
+                    <button class="champbouton-item modifier" (click)="editClient(client)">Modifier</button>
+                    <button class="champbouton-item supprimer" (click)="deleteClient(client.id)">Supprimer</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="showErrorPopup" class="error-popup-backdrop">
+          <div class="error-popup">
+            <h3>Erreur</h3>
+            <p>{{ errorMessage }}</p>
+            <button (click)="showErrorPopup = false">Fermer</button>
+          </div>
+        </div>
+        <div class="side-panel" *ngIf="showAddFormContact">
+          <div class="side-panel-header">
+            <h3>Ajouter un Contact</h3>
+          </div>
+
+          <div class="side-panel-content">
+            <label>Nom:</label>
+            <input [(ngModel)]="newContact.nom" type="text" required />
+            <div *ngIf="errorMessage && !newContact.nom" class="messagerreur">Le nom est requis.</div>
+
+            <label>Prénom:</label>
+            <input [(ngModel)]="newContact.prenom" type="text" required />
+            <div *ngIf="errorMessage && !newContact.prenom" class="messagerreur">Le prénom est requis.</div>
+
+            <label>Fonction:</label>
+            <input [(ngModel)]="newContact.fonction" type="text" required />
+            <div *ngIf="errorMessage && !newContact.fonction" class="messagerreur">La fonction est requise.</div>
+
+            <label>Mobile:</label>
+            <input [(ngModel)]="newContact.mobile" type="tel" required />
+            <div *ngIf="errorMessage && !newContact.mobile" class="messagerreur">Le mobile est requis.</div>
+
+            <label>Téléphone:</label>
+            <input [(ngModel)]="newContact.telephone" type="tel" required />
+            <div *ngIf="errorMessage && !newContact.telephone" class="messagerreur">Le téléphone est requis.</div>
+
+            <label>Fax:</label>
+            <input [(ngModel)]="newContact.fax" type="tel" />
+
+            <label>Email:</label>
+            <input [(ngModel)]="newContact.email" type="email" required />
+            <div *ngIf="errorMessage && !newContact.email" class="messagerreur">L'email est requis.</div>
+
+            <label>Email secondaire:</label>
+            <input [(ngModel)]="newContact.emailSecondaire" type="email" />
+
+            <label>Site Web:</label>
+            <input [(ngModel)]="newContact.siteWeb" type="url" />
+
+            <label>Adresse:</label>
+            <input [(ngModel)]="newContact.adresse" type="text" />
+
+            <label>Code Postal:</label>
+            <input [(ngModel)]="newContact.codePostal" type="number" />
+
+            <label>Ville:</label>
+            <input [(ngModel)]="newContact.ville" type="text" />
+
+            <label>Pays:</label>
+            <input [(ngModel)]="newContact.pays" type="text" />
+
+            <div class="side-panel-footer">
+              <button class="btn btn-primary" (click)="addContact()">Enregistrer</button>
+              <button class="btn btn-secondary" (click)="toggleAddFormContact()">Annuler</button>
+            </div>
+
+            <div *ngIf="errorMessage" class="messagerreur">{{ errorMessage }}</div>
+          </div>
+        </div>
+
+        <div class="side-panel" *ngIf="showEditFormContact && selectedContact">
+          <div class="side-panel-header">
+            <h3>Modifier un Contact</h3>
+          </div>
+
+          <div class="side-panel-content">
+            <label>Nom:</label>
+            <input [(ngModel)]="selectedContact.nom" type="text" name="nom" required />
+
+            <label>Prénom:</label>
+            <input [(ngModel)]="selectedContact.prenom" type="text" name="prenom" required />
+
+            <label>Fonction:</label>
+            <input [(ngModel)]="selectedContact.fonction" type="text" name="fonction" required />
+
+            <label>Mobile:</label>
+            <input [(ngModel)]="selectedContact.mobile" type="tel" name="mobile" required />
+
+            <label>Téléphone:</label>
+            <input [(ngModel)]="selectedContact.telephone" type="tel" name="telephone" required />
+
+            <label>Fax:</label>
+            <input [(ngModel)]="selectedContact.fax" type="tel" name="fax" />
+
+            <label>Email:</label>
+            <input [(ngModel)]="selectedContact.email" type="email" name="email" required />
+
+            <label>Email secondaire:</label>
+            <input [(ngModel)]="selectedContact.emailSecondaire" type="email" name="emailSecondaire" />
+
+            <label>Site Web:</label>
+            <input [(ngModel)]="selectedContact.siteWeb" type="url" name="siteWeb" />
+
+            <label>Adresse:</label>
+            <input [(ngModel)]="selectedContact.adresse" type="text" name="adresse" />
+
+            <label>Code Postal:</label>
+            <input [(ngModel)]="selectedContact.codePostal" type="number" name="codePostal" />
+
+            <label>Ville:</label>
+            <input [(ngModel)]="selectedContact.ville" type="text" name="ville" />
+
+            <label>Pays:</label>
+            <input [(ngModel)]="selectedContact.pays" type="text" name="pays" />
+
+            <div class="side-panel-footer">
+              <button class="btn btn-primary" (click)="updateContact()">Mettre à jour</button>
+              <button class="btn btn-secondary" (click)="toggleEditFormContact()">Annuler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

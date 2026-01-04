@@ -1,0 +1,59 @@
+<main>
+    <div class="parametrage-container">
+        <h2>Paramétrage Général</h2>
+
+        <div class="param-selector">
+            <select [(ngModel)]="selectedParam" (change)="loadCurrentParam()" class="form-select">
+                <option value="TVA">TVA</option>
+                <option value="SOURCE">Sources de Prospection</option>
+                <option value="SECTEUR">Secteurs d'Activité</option>
+            </select>
+        </div>
+
+        <div *ngIf="selectedParam === 'TVA'" class="param-card">
+            <h3>Modifier la TVA</h3>
+            <div class="param-content">
+                <input type="number" [(ngModel)]="newTvaValue" min="0" />
+                <button class="btn" (click)="updateTva()">Mettre à jour la TVA</button>
+                <br>
+                <br>
+                <p>Valeur actuelle : {{ newTvaValue }}%</p>
+            </div>
+        </div>
+
+
+        <div *ngIf="selectedParam === 'SOURCE'" class="param-card">
+            <h3>Sources de Prospection</h3>
+            <div class="param-content">
+                <input type="text" [(ngModel)]="newSourceName" placeholder="Nouvelle source" />
+                <button class="btn" (click)="addSource()">Ajouter une source</button>
+                <br>
+                <br>
+                <ul>
+                    <li *ngFor="let source of sources">
+                        {{ source.nom }}
+                        <button class="btn-delete" (click)="deleteSource(source.id!)">Supprimer</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div *ngIf="selectedParam === 'SECTEUR'" class="param-card">
+            <h3>Secteurs d'Activité</h3>
+            <div class="param-content">
+                <input type="text" [(ngModel)]="newSecteurName" placeholder="Nouveau secteur" />
+                <button class="btn" (click)="addSecteur()">Ajouter un secteur</button>
+                <br>
+                <br>
+                <ul>
+                    <li *ngFor="let secteur of secteurs">
+                        {{ secteur.nom }}
+                        <button class="btn-delete" (click)="deleteSecteur(secteur.id!)">Supprimer</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div *ngIf="errorMessage" class="messagerreur">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="messagesuccess">{{ successMessage }}</div>
+    </div>
+</main>

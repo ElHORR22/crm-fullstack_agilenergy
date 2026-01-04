@@ -1,0 +1,243 @@
+<main class="main-content">
+  <section class="hero">
+    <div class="bigcard">
+      <div class="bigcard-content">
+        <h2>Liste des Devis</h2>
+        <div class="lbarre">
+          <input type="text" [(ngModel)]="searchTerm" (input)="searchDevis()" placeholder="Rechercher un devis"
+            class="recherche">
+          <button (click)="toggleAddForm()" class="bouton2">Ajouter un Devis</button>
+          <div class="side-panel" *ngIf="showAddForm || (showEditForm && selectedDevis)">
+            <div class="side-panel-header">
+              <h3>{{ isEditMode ? 'Modifier' : 'Ajouter' }} un Devis</h3>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="progressValue"></div>
+            </div>
+            <p class="progress-text">{{ progressValue }}% du formulaire complété</p>
+
+            <div class="side-panel-content">
+              <form [formGroup]="devisForm" (ngSubmit)="saveDevis()">
+
+                <h4>Informations Générales</h4>
+                <label>Sujet du Devis</label>
+                <input class="formcontrole" formControlName="sujet" (input)="updateProgress()"
+                  placeholder="Sujet du devis" />
+                <div *ngIf="errorMessage && !devis?.sujetDevis" class="messagerreur">Le Sujet est requis.</div>
+
+                <label>Sélection du destinataire</label>
+                <div class="choix section">
+                  <button type="button" class="btn btn-primary" (click)="toggleClientProspect('client')"
+                    [class.active]="isClientSelected">Client</button>
+                  <button type="button" class="btn btn-secondary" (click)="toggleClientProspect('prospect')"
+                    [class.active]="!isClientSelected">Prospect</button>
+                </div>
+
+                <div class="etitre" *ngIf="isClientSelected">
+                  <label>Nom du Client</label>
+                  <select class="formselection" formControlName="client">
+                    <option *ngFor="let client of clients" [ngValue]="client">{{ client.nom }}</option>
+                  </select>
+                  <div *ngIf="errorMessage && !devis?.client" class="messagerreur">Le nom du client est requis.
+                  </div>
+                </div>
+
+                <div class="etitre" *ngIf="!isClientSelected">
+                  <label>Nom du Prospect</label>
+                  <select class="formselection" formControlName="prospect">
+                    <option *ngFor="let prospect of prospects" [ngValue]="prospect">{{ prospect.nom }}</option>
+                  </select>
+                  <div *ngIf="errorMessage && !devis?.prospect" class="messagerreur">Le nom du prospect est requis.
+                  </div>
+                </div>
+
+                <label>Échéance</label>
+                <input type="date" class="formcontrole" (input)="updateProgress()" formControlName="echeance" />
+                <div *ngIf="errorMessage && !devis?.echeance" class="messagerreur">L'écheance est requise.</div>
+
+                <label>Délai de Livraison</label>
+                <select class="formselection" (input)="updateProgress()" formControlName="delaiLivraison">
+                  <option value="Produit sur Commande 45 Jours">Produit sur Commande 45 Jours</option>
+                  <option value="Produit sur Commande 60 Jours">Produit sur Commande 60 Jours</option>
+                  <option value="Produit Disponible">Produit Disponible</option>
+                </select>
+                <div *ngIf="errorMessage && !devis?.delaiLivraison" class="messagerreur">Le Délai de Livraison est
+                  requis.</div>
+
+                <label>Mode de Livraison</label>
+                <select class="formselection" (input)="updateProgress()" formControlName="modeLivraison">
+                  <option value="SNDP Agil Energy">SNDP Agil Energy</option>
+                  <option value="Client">Client</option>
+                  <option value="Transport par Voie Maritime">Transport par Voie Maritime</option>
+                </select>
+                <div *ngIf="errorMessage && !devis?.modeLivraison" class="messagerreur">La Mode de Livraison est
+                  requise.</div>
+
+                <label>Mode de Paiement</label>
+                <select class="formselection" (input)="updateProgress()" formControlName="modePaiement">
+                  <option value="Conditions Habituelles de Paiement Convenues avec la SNDP">
+                    Conditions Habituelles de Paiement Convenues avec la SNDP
+                  </option>
+                  <option value="Au comptant">Au comptant</option>
+                  <option value="Mode de Paiement Client">Mode de Paiement Client</option>
+                </select>
+                <div *ngIf="errorMessage && !devis?.modePaiement" class="messagerreur">Le Mode de Paiement est requis.
+                </div>
+
+                <div formArrayName="lignes">
+                  <div *ngFor="let ligne of lignes.controls; let i = index" [formGroupName]="i" class="carta3 etitre">
+                    <div class="rangee">
+                      <div class="colonne1">
+                        <label>Produit</label>
+                        <select class="formselection" formControlName="codeProduit" (change)="onProduitChange(i)">
+                          <option *ngFor="let p of produits" [value]="p.codeProduit">{{ p.codeProduit }}</option>
+                        </select>
+                        <div *ngIf="errorMessage && !devis?.produit" class="messagerreur">Le Produit est requis.</div>
+
+                        <label>Libellé</label>
+                        <select class="formselection" formControlName="libelleProduit" (change)="onProduitChange(i)">
+                          <option *ngFor="let p of produits" [value]="p.libelleProduit">{{ p.libelleProduit }}
+                          </option>
+                        </select>
+                        <div *ngIf="errorMessage && !devis?.libelleProduit" class="messagerreur">Le Libellé est
+                          requis.</div>
+
+                        <label>Code Emballage</label>
+                        <select class="formselection" formControlName="codeEmballage" (change)="onProduitChange(i)">
+                          <option *ngFor="let e of emballages" [ngValue]="e">{{ e.codeEmballage }}</option>
+                        </select>
+                        <div *ngIf="errorMessage && !devis?.codeEmballage" class="messagerreur">Le Code d'Emballage
+                          est requis.</div>
+                      </div>
+
+                      <div class="colonne2">
+                        <label>Quantité</label>
+                        <input type="number" class="formcontrole" formControlName="quantite"
+                          (input)="onLigneChange(i)" />
+                        <div *ngIf="errorMessage && !devis?.quantite" class="messagerreur">La Quantité est requise.
+                        </div>
+                      </div>
+
+                      <div class="colonne2">
+                        <label>Prix HT</label>
+                        <input type="number" class="formcontrole" formControlName="prixUnitaireHT"
+                          (input)="onLigneChange(i)" readonly />
+                      </div>
+
+                      <div class="colonne2">
+                        <label>TVA (%)</label>
+                        <input type="number" class="formcontrole" [value]="devisForm.get('TVA')?.value" readonly />
+                      </div>
+
+                      <div class="colonne2">
+                        <label>Eco-zit</label>
+                        <input type="number" class="formcontrole" formControlName="ecoZit" readonly />
+                      </div>
+
+                      <div class="colonne2">
+                        <label>Prix TTC</label>
+                        <input type="number" class="formcontrole" formControlName="prixTTC" readonly />
+                      </div>
+
+                      <div class="colonne3 choix align-items-end">
+                        <button class="btn btn-danger" type="button" (click)="removeLigne(i)">🗑</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-success" (click)="addLigne()">+ Ajouter un
+                  produit</button>
+
+                <div class="colonne3">
+                  <label>Total TTC Devis</label>
+                  <input type="number" class="formcontrole" [value]="totalTTC" readonly />
+
+                  <label>Total Poids en KG</label>
+                  <input type="number" class="formcontrole" [value]="totalPoidsKg" readonly />
+                </div>
+                <hr />
+                <div class="messagerreur" *ngIf="errorMessage">
+                  {{ errorMessage }}
+                </div>
+                <div class="side-panel-footer">
+                  <button class="btn btn-primary" type="submit"> {{ isEditMode ? 'Mettre à jour' : 'Créer le devis'}}</button>
+                  <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="successMessage" class="messagesucces"> {{ successMessage }} </div>
+        <div *ngIf="showErrorPopup" class="error-popup-backdrop">
+          <div class="error-popup">
+            <h3>Erreur</h3>
+            <p>{{ errorMessage }}</p>
+            <button (click)="showErrorPopup = false">Fermer</button>
+          </div>
+        </div>
+        <div class="popup-overlay" *ngIf="showDetailPopup">
+          <div class="popup-card">
+            <div class="popup-header">
+              <h2>Détails de l'Emballage</h2>
+              <span class="close-btn" (click)="closePopup()">×</span>
+            </div>
+            <div class="popup-content">
+              <div class="popup-column">
+                <h3>Informations générales</h3>
+                <p><strong>ID :</strong> {{ selectedDevis!.id }}</p>
+                <p><strong>Sujet :</strong> {{ selectedDevis!.sujetDevis }}</p>
+                <p><strong>Nom du Client :</strong> {{ selectedDevis!.client?.nom }}</p>
+                <p><strong>Nom du Prospect :</strong> {{ selectedDevis!.prospect?.nom }}</p>
+              </div>
+              <div class="popup-column">
+                <h3>Détails du Devis</h3>
+                <p><strong>Délai de Livraison :</strong> {{ selectedDevis!.delaiLivraison }}</p>
+                <p><strong>Mode de Livraison :</strong> {{ selectedDevis!.modeLivraison }}</p>
+                <p><strong>Mode de Paiement :</strong> {{ selectedDevis!.modePaiement }}</p>
+                <p><strong>Total du Poids :</strong> {{ selectedDevis!.totalPoidsKg }}</p>
+                <p><strong>Total TTC :</strong> {{ selectedDevis!.totalTTC }}</p>
+              </div>
+              <div class="popup-column">
+                <h3>Historique</h3>
+                <p><strong>Echeance :</strong> {{ selectedDevis!.echeance | date }}</p>
+                <p><strong>Date de création :</strong> {{ selectedDevis!.dateCreation | date }}</p>
+                <p><strong>Date de modification :</strong> {{ selectedDevis!.dateModification | date }}</p>
+              </div>
+            </div>
+            <div class="popup-footer">
+              <button class="btn-close" (click)="closePopup()">Fermer</button>
+            </div>
+          </div>
+        </div>
+        <table class="listedevis">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Sujet</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let devis of filteredDevis | filter: searchTerm">
+              <td><input type="checkbox" [checked]="devis.checked" (change)="onDevisSelect(devis, $event)" /></td>
+              <td>{{ devis.id }}</td>
+              <td>{{ devis.sujetDevis }}</td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button class="actionsbouton" (click)="toggleDropdown(devis)">Actions</button>
+                  <div class="champbouton" *ngIf="devis.showDropdown">
+                    <button class="champbouton-item consulter" (click)="openPopup(devis)">Consulter</button>
+                    <button class="champbouton-item modifier" (click)="editDevis(devis)">Modifier</button>
+                    <button class="champbouton-item supprimer" (click)="deleteDevis(devis.id!)">Supprimer</button>
+                    <button class="champbouton-item visualiser" *ngIf="devis.checked" (click)="visualiser(devis.id!)">Visualiser</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>

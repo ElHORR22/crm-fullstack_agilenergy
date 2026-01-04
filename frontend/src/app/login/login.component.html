@@ -1,0 +1,22 @@
+<main>
+    <div class="logincontainer">
+        <video #backgroundVideo autoplay loop playsinline muted class="backgroundvideo">
+            <source src="assets/agilvideo.mp4" type="video/mp4">
+        </video>
+        <div class="logincarte">
+            <h2>Connexion</h2>
+            <form (ngSubmit)="onSubmit()">
+                <label>Email</label>
+                <input type="email" [(ngModel)]="utilisateur.email" name="email" required />
+                
+                <label>Mot de passe</label>
+                <input type="password" [(ngModel)]="utilisateur.mdp" name="mdp" required />
+                
+                <a href="#" class="passwordoublie">Mot de passe oublié ?</a>
+                <button type="submit">Se Connecter</button>
+            </form>
+            <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+        </div>
+    </div>
+</main>
+       

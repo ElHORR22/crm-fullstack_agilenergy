@@ -1,0 +1,92 @@
+<main>
+  <div class="dashboard-header">
+    <h2>Dashboard Analytique</h2>
+  </div>
+
+  <div class="dashboard-wrapper" role="main" aria-label="Tableau de bord analytique">
+
+    <section class="card revenue-card" aria-labelledby="ca-title" tabindex="0">
+      <header class="card-header">
+        <h3 id="ca-title">Chiffre d'affaires total</h3>
+        <span class="period" aria-live="polite">{{ periode }}</span>
+      </header>
+
+      <div class="card-body">
+        <div class="amount" aria-label="Montant du chiffre d'affaires">
+          {{ chiffreAffaires | number:'1.0-2' }} TND
+        </div>
+
+        <div class="evolution" [ngClass]="{'positive': caEvolution >= 0, 'negative': caEvolution < 0}"
+          aria-live="polite" aria-atomic="true" role="status">
+          <i class="fa" [ngClass]="caEvolution >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'" aria-hidden="true"></i>
+          {{ caEvolution | number:'1.0-2' }}% par rapport au mois précédent
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button (click)="voirDetails()" class="btn btn-primary" aria-haspopup="dialog" aria-controls="popup-analytics"
+          [attr.aria-expanded]="showPopup ? 'true' : 'false'"> Voir détails</button>
+      </div>
+    </section>
+
+    <div *ngIf="showPopup" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-title"
+      id="popup-analytics" tabindex="-1">
+      <div class="popup-content">
+        <h3 id="popup-title">Analyse du chiffre d'affaires</h3>
+
+        <canvas baseChart [data]="popupChartData" [type]="popupChartType"
+          aria-label="Graphique d'analyse du chiffre d'affaires" role="img">
+        </canvas>
+
+        <button (click)="showPopup = false" class="btn btn-danger btn-fermer">Fermer</button>
+      </div>
+    </div>
+
+    <section class="card chart-card" aria-labelledby="governorate-chart-title" tabindex="0">
+      <h4 id="governorate-chart-title" class="chart-title">Répartition des clients par gouvernorat</h4>
+
+      <canvas baseChart [data]="{
+          labels: gouvernoratChartLabels,
+          datasets: [{ data: gouvernoratChartData, backgroundColor: chartColors }]
+        }" [type]="'pie'" [options]="chartOptions" aria-label="Graphique en camembert des clients par gouvernorat"
+        role="img">
+      </canvas>
+    </section>
+
+    <section class="card chart-card" aria-labelledby="sector-chart-title" tabindex="0">
+      <h4 id="sector-chart-title" class="chart-title">Répartition des clients par secteur</h4>
+
+      <canvas baseChart [data]="{
+          labels: secteurChartLabels,
+          datasets: [{ data: secteurChartData, backgroundColor: chartColors }]
+        }" [type]="'doughnut'" [options]="chartOptions" aria-label="Graphique en anneau des clients par secteur"
+        role="img">
+      </canvas>
+    </section>
+
+    <section class="card chart-card" aria-labelledby="sector-chart-title" tabindex="0">
+      <h4 id="sector-chart-title" class="chart-title">Nombre de devis par mois (12 derniers mois)</h4>
+      <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+        [legend]="barChartLegend" [type]="barChartType">
+      </canvas>
+    </section>
+
+    <section class="card chart-card" aria-labelledby="sector-chart-title" tabindex="0">
+      <h4 id="sector-chart-title" class="chart-title">Top 5 des produits les plus demandés</h4>
+      <canvas baseChart [datasets]="[{ data: topProduitsData, label: 'Quantité demandée' }]"
+        [labels]="topProduitsLabels" [options]="{ responsive: true, indexAxis: 'y' }" [legend]="false" [type]="'bar'">
+      </canvas>
+    </section>
+
+    <section class="card chart-card" aria-labelledby="clients-prospects-chart-title" tabindex="0">
+      <h4 id="clients-prospects-chart-title" class="chart-title">Nombre de clients vs prospects</h4>
+
+      <canvas baseChart [data]="{
+          labels: clientsProspectsChartLabels,
+          datasets: clientsProspectsChartData
+        }" [type]="'doughnut'" [options]="clientsProspectsChartOptions"
+        aria-label="Graphique en anneau comparant le nombre de clients et prospects" role="img">
+      </canvas>
+    </section>
+  </div>
+</main>
