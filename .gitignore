@@ -1,0 +1,22 @@
+# Java / Maven
+target/
+*.class
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
+# IDE Specific (Eclipse, IntelliJ, VS Code)
+.settings/
+.project
+.classpath
+.metadata/
+.idea/
+*.iml
+*.vscode/
