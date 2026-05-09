@@ -1,0 +1,45 @@
+# ============ SECRETS — NE JAMAIS COMMITTER ============
+.env
+*.env.local
+application-local.properties
+application-prod.properties
+
+# ============ Java / Maven ============
+target/
+*.class
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+HELP.md
+
+# ============ Angular / Node ============
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-error.log*
+
+# ============ IDE ============
+.settings/
+.project
+.classpath
+.metadata/
+.idea/
+*.iml
+.vscode/
+*.iws
+*.ipr
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+build/
+
+# ============ OS ============
+.DS_Store
+Thumbs.db

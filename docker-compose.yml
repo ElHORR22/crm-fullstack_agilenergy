@@ -1,0 +1,53 @@
+version: '3.8'
+
+# ✅ FIX CRITIQUE : Tous les secrets viennent d'un fichier .env (non commité sur Git).
+# Créer un fichier .env à la racine du projet (voir .env.example).
+# Ne jamais écrire les mots de passe directement ici.
+
+services:
+  mysqldb:
+    image: mysql:8.0
+    container_name: agilenergy-db
+    restart: always
+    environment:
+      - MYSQL_DATABASE=sndp
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./BStagePFE
+    container_name: agilenergy-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/sndp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    restart: on-failure
+
+  frontend:
+    build: ./AgilEnergyCRM
+    container_name: agilenergy-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
