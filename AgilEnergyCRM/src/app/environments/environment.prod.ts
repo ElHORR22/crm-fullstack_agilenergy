@@ -1,5 +1,4 @@
 export const environment = {
-    production: true,
-    apiUrl: 'https://ton-domaine.com'  // ← changer avant déploiement
-  };
-  
+  production: true,
+  apiUrl: 'https://crm-fullstackagilenergy-production.up.railway.app'
+};
