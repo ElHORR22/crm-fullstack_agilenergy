@@ -1,0 +1,53 @@
+<header class="main-header" *ngIf="showHeader">
+  <div class="logo">
+    <img src="assets/agilenergy.png" alt="logo">
+  </div>
+
+  <div class="home-link">
+    <a href="/acceuil">Accueil</a>
+  </div>
+</header>
+
+<app-sidebar *ngIf="showSidebar"></app-sidebar>
+
+<router-outlet></router-outlet>
+
+<footer>
+  <div class="contact">
+    <h4>Contact</h4>
+    <ul>
+      <li>Téléphone : 70 284 500</li>
+      <li>Fax : 71 704 333</li>
+      <li>Email : <a href="mailto:boc@agil.com.tn">boc&#64;agil.com.tn</a></li>
+    </ul>
+  </div>
+
+  <div class="reseau-container">
+    <h4>Suivez-nous</h4>
+    <div class="reseau-icons">
+      <a href="https://www.instagram.com/agilenergytunisie/" target="_blank">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.facebook.com/agil.com.tn" target="_blank">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a href="https://www.youtube.com/@agilTun" target="_blank">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a href="https://www.linkedin.com/company/agil-tunisie/" target="_blank">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="map">
+    <p><strong>Siège social :</strong> Société Nationale de Distribution des Pétroles Agil Energy S.A, Av. Mohamed Ali
+      Akid, Cité Olympique, 1003 El Khadra-Tunis, Tunisie</p>
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3035.116349071878!2d10.1953747!3d36.8398725!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd34c100541ec1%3A0x9adf9b6c18f0a32b!2sSNDP%2C%20Soci%C3%A9t%C3%A9%20nationale%20de%20distribution%20des%20p%C3%A9troles%2C%20AGIL%20Energy!5e1!3m2!1sfr!2stn!4v1742956997398!5m2!1sfr!2stn"
+      width="1400" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+
+  <p>&copy; 2025 Agil Energy. Tous droits réservés.</p>
+</footer>

@@ -1,0 +1,327 @@
+<header class="main-header">
+    <div class="logo">
+        <img src="assets/agilenergy.png" alt="logo">
+    </div>
+    <nav>
+        <ul class="menu">
+            <li><a href="/acceuil" (click)="scrollTo('home')">Accueil</a></li>
+            <li><a (click)="scrollTo('services')">Services</a></li>
+            <li><a (click)="scrollTo('about')">À propos</a></li>
+            <li><a href="/login" class="login-btn">Se Connecter</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-background">
+        <img src="assets/CRM.png" alt="background">
+        <div class="overlay"></div>
+    </div>
+    <div class="hero-content">
+        <h1>SNDP Agil Energy</h1>
+        <p>Une solution de gestion centralisée pour votre activité pétrolière.</p>
+    </div>
+</section>
+
+<div class="social-bar">
+    <a href="https://www.instagram.com/agilenergytunisie/" target="_blank"><img src="assets/insta.png" alt="Instagram"></a>
+    <a href="https://www.facebook.com/agil.com.tn" target="_blank"><img src="assets/fb.png" alt="Facebook"></a>
+    <a href="https://www.youtube.com/@agilTun" target="_blank"><img src="assets/yb.png" alt="YouTube"></a>
+    <a href="https://www.linkedin.com/company/agil-tunisie/" target="_blank"><img src="assets/in.png" alt="LinkedIn"></a>
+</div>
+<br>
+<br>
+<main>
+    <section id="services" class="services">
+        <h2>Nos Services</h2>
+        <div class="contenuservices" id="contenuservices">
+            <div class="carte" data-target="carburants">
+                <img src="assets/carburants.jpg" alt="Carburants">
+                <div class="contenuscarte" (click)="scrollTo('carburants')">
+                    <h3>Carburants</h3>
+                    <p>Fourniture de carburants pour particuliers et entreprises</p>
+                </div>
+            </div>
+            <div class="carte">
+                <img src="assets/lubrifiant.png" alt="Lubrifiants">
+                <div class="contenuscarte" (click)="scrollTo('lubrifiant')">
+                    <h3>Lubrifiants</h3>
+                    <p>Large choix de lubrifiants pour tous types de véhicules</p>
+                </div>
+            </div>
+            <div class="carte">
+                <img src="assets/energies.png" alt="Produits Spéciaux">
+                <div class="contenuscarte" (click)="scrollTo('produitS')">
+                    <h3>Produits Spéciaux</h3>
+                    <p>Des produits raffinés afin de satisfaire nos clients</p>
+                </div>
+            </div>
+            <div class="carte">
+                <img src="assets/225.jpg" alt="Réseau Agil">
+                <div class="contenuscarte" (click)="scrollTo('réseau')">
+                    <h3>Réseau Agil</h3>
+                    <p>Un réseau de distribution fiable et étendu</p>
+                </div>
+            </div>
+            <div class="carte">
+                <img src="assets/Gaz.jpg" alt="Gaz">
+                <div class="contenuscarte" (click)="scrollTo('gaz')">
+                    <h3>Gaz</h3>
+                    <p>Fourniture de gaz pour divers besoins industriels</p>
+                </div>
+            </div>
+            <div class="carte">
+                <img src="assets/Aviation.jpg" alt="Aviation">
+                <div class="contenuscarte" (click)="scrollTo('aviation')">
+                    <h3>Aviation</h3>
+                    <p>Services spécialisés dans l'approvisionnement pour l'aviation</p>
+                </div>
+            </div>
+            <div class="carte">
+                <img src="assets/marine.jpg" alt="Marine">
+                <div class="contenuscarte" (click)="scrollTo('marine')">
+                    <h3>Marine</h3>
+                    <p>Produits et services pour le secteur maritime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <br>
+    <br>
+    <section id="carburants" class="cartella">
+        <h2>Nos Carburants</h2>
+        <p>Découvrez nos solutions pour une consommation d'énergie optimisée</p>
+        <div class="cartellatexte">
+            <h3>Carburants</h3>
+            <p>Occupant la position de leader sur le marché, l'activité Carburants représente l'un des points forts
+                d'Agil
+                Energy.</p>
+            <p>Soucieuse de veiller à la qualité des produits qu’elle commercialise et donc de fournir à sa clientèle
+                des
+                produits qui répondent aux spécifications légales, la SNDP s’est dotée de deux laboratoires mobiles
+                équipés
+                des instruments d’analyse les plus performants.</p>
+            <p>Mise en service depuis Mai 2002, l’analyse des échantillons prélevés sur l’ensemble de nos points de
+                vente a
+                corroboré la conformité de nos produits</p>
+            <p>Agil Energy dispose de grandes capacités de stockage réparties entre le dépôt de la Goulette, le terminal
+                de
+                TANKMED à la Skhira et le dépôt de la SSTC à Zarzis.</p>
+            <p>Elle dispose aussi d'une importante flotte de camions lui permettant de satisfaire les besoins de
+                n'importe
+                quel consommateur quelle que soit sa taille.</p>
+            <p>Outre les livraisons de Carburant en vrac, AGIL met à la disposition des consommateurs des cartes-bons
+                valorisés et des bons en valeur leur permettant de s'approvisionner auprès de n'importe quelle
+                station-service d'Agil Energy.</p>
+        </div>
+        <img src="assets/Emballage.jpg" alt="Cartella" class="cadreimage">
+    </section>
+    <br>
+    <br>
+    <section id="lubrifiant" class="cartella">
+        <video #backgroundVideo autoplay muted loop playsinline class="backgroundvid">
+            <source src="assets/lubrifiants.mp4" type="video/mp4">
+        </video>
+        <div class="audessuscontenu">
+            <h2>Nos Lubrifiants</h2>
+            <p>Découvrez notre large choix de lubrifiants pour tous types de véhicules</p>
+            <div class="cartellatexte">
+                <h3>Lubrifiants</h3>
+                <p>Grâce à sa présence sur tout le territoire national à travers ses stations-service, son réseau de
+                    clients
+                    directs, sa large gamme de produits, ses compétences humaines et ses moyens logistiques et
+                    techniques,
+                    AGIL Lubrifiants couvre aujourd'hui une part importante des besoins du marché national en
+                    Lubrifiants.
+                </p>
+                <p>Agil Energy S.A. dispose:</p>
+                <p>- Une large gamme de lubrifiants et graisses pour moteurs et industrie de haute qualité et conforme
+                    aux
+                    normes internationales exigées par les constructeurs de moteurs.</p>
+                <p>- Une structure logistique adaptée aux conditions changeantes du marché.</p>
+                <p>- Une équipe professionnelle d’assistance donnant au concept « Proximité client » une dimension
+                    concrète.
+                </p>
+                <p>- Un Système Qualité répondant aux exigences des normes ISO 9001:2008.</p>
+                <p>- Un laboratoire d’analyses doté d’équipements modernes et fiables assurant pour tous nos lubrifiants
+                    un
+                    contrôle qualité stricte et systématique.</p>
+            </div>
+            <img src="assets/lubrifiant.png" alt="Cartella" class="cadreimage">
+        </div>
+    </section>
+    <br>
+    <br>
+    <section id="produitS" class="cartella">
+        <h2>Nos Produits Spéciaux</h2>
+        <p>Découvrez notre gamme de carburants adaptés aux besoins des particuliers et des entreprises</p>
+        <div class="cartellatexte">
+            <h3>Produits Spéciaux</h3>
+            <p>Agil Energy S.A. jouit d'une grande expérience dans la commercialisation du white spirit.</p>
+            <p>Les ressources logistiques et humaines mises à disposition nous permettent une large flexibilité et une
+                importante réactivité afin de satisfaire les exigences de nos clients.</p>
+            <p>Le white spirit est commercialisé en vrac et est soumis à une multitude d'analyses et de contrôles afin
+                de
+                garantir sa conformité aux spécifications de la norme NT 04.53 (1990).</p>
+            <p>Le white spirit est un mélange de paraffines et aromatiques.</p>
+            <p>Il est incolore, chimiquement stable et a une odeur caractéristique. Son intervalle de distillation est
+                compris entre 135°C et 205°C.</p>
+            <p>En plus des applications habituelles comme agent de nettoyage, le white spirit est aussi largement
+                utilisé
+                comme solvant pour les peintures, les vernis, les cires, etc.</p>
+        </div>
+        <img src="assets/Produit.jpg" alt="Cartella" class="cadreimage">
+    </section>
+    <br>
+    <br>
+    <section id="réseau" class="cartella">
+        <video #backgroundVideo autoplay muted loop playsinline class="backgroundvid">
+            <source src="assets/agilis.mp4" type="video/mp4">
+        </video>
+        <div class="audessuscontenu">
+            <h2>Notre Réseau</h2>
+            <p>Découvrez notre réseau de distribution fiable et étendu</p>
+            <div class="cartellatexte">
+                <h3>Réseau Agil</h3>
+                <p>Agil Energy S.A. a mis à la disposition des automobilistes un important réseau routier constitué de
+                    plus
+                    de 227 stations-services réparties sur tout le territoire tunisien.</p>
+                <p>Le réseau Agil Energy représente autant de relais d'approvisionnement que de repos et de rencontre
+                    appréciés par les conducteurs de véhicules dans toutes les régions du pays, même celles où la
+                    densité de
+                    la population et l'activité économique sont encore réduites.</p>
+            </div>
+            <img src="assets/reseau.jpg" alt="Cartella" class="cadreimage">
+        </div>
+    </section>
+    <br>
+    <br>
+    <section id="gaz" class="cartella">
+        <h2>AgilGaz</h2>
+        <p>Découvrez notre activité de gaz</p>
+        <div class="cartellatexte">
+            <h3>AgilGaz</h3>
+            <p>Le marché du GPL en Tunisie, dont la consommation actuelle est d'environ 450 mille tonnes par an, est un
+                marché vivement concurrentiel où AGILGAZ occupe depuis toujours la position de leader</p>
+            <p>Agil Energy S.A. commercialise le GPL en bouteilles destiné essentiellement à l'usage domestique, le GPL
+                en
+                vrac pour les différentes industries et le GPL-Carburant dans les stations-service.</p>
+            <p>Elle dispose de trois centres d'emplissage situés à Bizerte, à Radés et à Gabes, et d'une importante
+                flotte
+                de camions spécialisés pour la distribution du GPL en vrac.</p>
+            <p>Dans le cadre de la coopération Tuniso-Algérienne Agil Energy S.A. a conclu un accord avec la société
+                algérienne NAFTAL pour le remplissage des bouteilles dans les centres Tebassa et Ain Beidha pour les
+                besoins
+                du Nord ouest.</p>
+        </div>
+        <img src="assets/Gaz.jpg" alt="Cartella" class="cadreimage">
+    </section>
+    <br>
+    <br>
+    <section id="aviation" class="cartella">
+        <h2>AgilAir</h2>
+        <p>Découvrez notre activité de refuelling</p>
+        <div class="cartellatexte">
+            <h3>AgilAir</h3>
+            <p>Forte de son expérience de plus de trois décennies dans l’activité de refuelling, AGILAIR a réussi à
+                conquérir la plus grande part de marché national en assurant le ravitaillement des avions appartenant
+                aux
+                grandes compagnies nationales et étrangères.</p>
+            <p>AGILAIR dispose de la plus grande capacité de stockage de Kérosène répartie sur tous les dépôts
+                aéroportuaires sis à Tunis Carthage, Monastir, Djerba, Tabarka, Tozeur et Sfax.</p>
+            <p>La SNDP est présente également sur l’aéroport Enfidha à travers la Société de Stockage de Carburant
+                Aviation
+                « SSCA » dont elle détient 35% de son capital.</p>
+            <p>Tous les dépôts d’AGILAIR appliquent les réglementations Internationales en vigueur et notamment la
+                réglementation IATA en matière de sécurité et de ravitaillement des avions.</p>
+            <p>Le personnel d’AGILAIR jouit d’une expérience et d’un savoir-faire fort appréciés par les compagnies
+                aériennes.</p>
+            <p>Grâce au système Qualité que la société a mis en place depuis 1997, AGILAIR mesure et analyse
+                continuellement
+                le degré de satisfaction de ses clients afin d’assurer une amélioration continue de la qualité de ses
+                services.</p>
+            <p>La SNDP a toujours conclu des partenariats techniques avec des multinationales telle que ENI et
+                actuellement
+                la major British Petroleum « BP », pour avoir l’assistance technique pour la bonne marche de l’activité
+                aviation et se conformer aux standards internationaux.</p>
+        </div>
+        <img src="assets/agilair.png" alt="Cartella" class="cadreimage">
+    </section>
+    <br>
+    <br>
+    <section id="marine" class="cartella">
+        <video #backgroundVideo autoplay muted loop playsinline class="backgroundvid">
+            <source src="assets/agilmarine.mp4" type="video/mp4">
+        </video>
+        <div class="audessuscontenu">
+            <h2>AgilMarine</h2>
+            <p>Découvrez notre activité dans le secteur maritime</p>
+            <div class="cartellatexte">
+                <h3>AgilMarine</h3>
+                <p>Agil Energy S.A. approvisionne tout type de navire dans n'importe quel port commercial tunisien:
+                    Goulette, Bizerte, Radès, Sfax, Gabès, Zarzis et Menzel Bourguiba.</p>
+                <p>Grâce à la disponibilité des produits dans ses dépôts de stockage, à l'importance de sa flotte et à
+                    la
+                    qualification de son personnel, Agil Energy S.A. assure un service de qualité 7j / 7j.</p>
+                <p>Notre savoir-faire, notre longue expérience dans le domaine de la marine et notre bonne image de
+                    marque
+                    nous ont permis de gagner la confiance de nombreux clients.</p>
+                <p>Parmi nos produits commercialisés dans le secteur maritime : </p>
+                <p>- Gasoil</p>
+                <p>- Fuel Oil de différentes viscosités</p>
+                <p>- Lubrifiants et graisses</p>
+            </div>
+            <img src="assets/agilmarine.jpg" alt="Cartella" class="cadreimage">
+        </div>
+    </section>
+    <br>
+    <br>
+    <section id="agilis" class="cartella">
+        <video #backgroundVideo autoplay muted loop playsinline class="backgroundvid">
+            <source src="assets/carta.mp4" type="video/mp4">
+        </video>
+        <div class="audessuscontenu">
+            <h2>Carte Agilis</h2>
+            <div class="cartellatexte">
+                <a href="https://www.agilenergy.com.tn/agilis/">
+                    <h3>Découvrez notre service Agilis</h3>
+                </a>
+            </div>
+        </div>
+    </section>
+    <br>
+    <br>
+    <section id="about" class="cartella">
+        <video #backgroundVideo autoplay muted loop playsinline class="backgroundvid">
+            <source src="assets/agil-energy.mp4" type="video/mp4">
+        </video>
+        <div class="audessuscontenu">
+            <h2>A Propos</h2>
+            <div class="cartellatexte">
+                <h3>A Propos de nous</h3>
+                <p>La Société Nationale de Distribution des Pétroles Agil Energy S.A. est une entreprise publique ayant
+                    pour
+                    mission la commercialisation des produits pétroliers et de leurs dérivés sous le label Agil Energy.
+                </p>
+                <p>Elle fait partie des grandes entreprises publiques tunisiennes qui, par leur dynamisme et la
+                    diversité de
+                    leurs activités, soutiennent l’économie nationale et lui assurent une croissance continue.</p>
+                <p>Avec un chiffre d’affaires HT de 1 845 millions de dinars en 2020, Agil Energy S.A. joue un rôle
+                    d’avant-garde sur la voie du progrès et de l’excellence dans laquelle s’est engagée la Tunisie de
+                    l’ère
+                    nouvelle.</p>
+                <p>En développant ses activités, Agil Energy S.A. a fini par occuper la première place parmi les
+                    entreprises
+                    du secteur, tant par le volume de ses ventes que par l’importance de son chiffre d’affaires et le
+                    savoir
+                    faire de ses ressources humaines et s’emploie constamment à consolider cette position en offrant à
+                    ses
+                    clients la meilleure qualité de produit et de service.</p>
+                <p>Agil Energy S.A. est présente partout à travers ses 216 stations-service réparties sur tout le
+                    territoire
+                    tunisien, ses 54 stations portuaires et ses 6 dépôts aéroportuaires.</p>
+            </div>
+            <img src="assets/Emballage.jpg" alt="Cartella" class="cadreimage">
+        </div>
+    </section>
+</main>

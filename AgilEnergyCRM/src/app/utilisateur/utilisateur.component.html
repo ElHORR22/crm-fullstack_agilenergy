@@ -1,0 +1,18 @@
+<main class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Bienvenue sur Agil Energy CRM</h1>
+        <p>Votre portail centralisé de gestion commerciale et analytique.</p>
+    </header>
+
+    <section class="module-grid">
+        <div *ngFor="let module of displayedModules" class="module-card" (click)="navigate(module.route)">
+            <div class="module-image-wrapper">
+                <img [src]="module.image" alt="{{ module.title }}" />
+            </div>
+            <div class="module-info">
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.subtitle }}</p>
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,0 +1,30 @@
+<div class="sidebar-hover-zone"></div>
+<nav class="sidebar">
+    <ul>
+      <li *ngIf="role === 'COMMERCIAL' || role === 'ADMINISTRATEUR'"><a routerLink="/prospect">Prospects</a></li>
+      <li *ngIf="role === 'COMMERCIAL' || role === 'ADMINISTRATEUR'"><a routerLink="/client">Clients</a></li>
+      <li *ngIf="role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR'"><a routerLink="/produit">Produits</a></li>
+      <li *ngIf="role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR'"><a routerLink="/emballage">Emballages</a></li>
+      <li *ngIf="role === 'COMMERCIAL' || role === 'ADMINISTRATEUR'"><a routerLink="/devis">Devis</a></li>
+      <li *ngIf="role === 'ADMINISTRATEUR'"><a routerLink="/parametrage">Paramétrage</a></li>
+      <li *ngIf="role === 'ADMINISTRATEUR'"><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="role === 'ADMINISTRATEUR'"> <a routerLink="/gestion_utilisateur">Comptes utilisateurs</a></li>   
+      <li *ngIf="role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR' || role == 'CLIENT'"><a routerLink="/utilisateur">Acceuil Principale</a></li>   
+    </ul>
+    <div class="sidebar-footer" *ngIf="user">
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>     
+        <div class="user-details">
+          <p class="user-name"><strong>{{ user.nom }} {{ user.prenom }}</strong></p>
+          <p class="user-role">{{ role | titlecase }}</p>
+          <div class="status">
+            <span class="status-indicator" [ngClass]="user.actif ? 'active' : 'inactive'"></span>
+            <span>{{ user.actif ? 'Actif' : 'Inactif' }}</span>
+          </div>
+        </div>
+      </div>     
+      <button class="logout-btn" (click)="logout()">Déconnexion</button>      
+    </div>    
+</nav>

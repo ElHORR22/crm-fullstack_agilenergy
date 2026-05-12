@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ddd;
+}
+
+:root {
+  --primary-color: #1a73e8;
+  --secondary-color: #f5f7fa;
+  --card-bg: #ffffff;
+  --text-color: #202124;
+  --subtle-text: #5f6368;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+main {
+  padding: 2rem;
+  background-color: #f9fafb;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+}
+
+.mesdevis-container {
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.mesdevis-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #1a202c;
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.no-devis-message {
+  font-size: 16px;
+  color: #718096;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.devis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.devis-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.devis-card:hover {
+  transform: translateY(-5px);
+}
+
+.devis-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #4a5568;
+  margin-bottom: 1rem;
+}
+
+.devis-sujet {
+  font-size: 18px;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.devis-ttc {
+  font-size: 16px;
+  color: #2b6cb0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.devis-footer {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.btn-consulter {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-consulter:hover {
+  background-color: #1669c1;
+}
+
+.devis-count {
+  text-align: center;
+  font-size: 16px;
+  color: #4a5568;
+  margin-bottom: 2rem;
+}

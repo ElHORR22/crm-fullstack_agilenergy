@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+    
+  body {
+    background-color: #000;
+    color: #000;
+  }
+    
+  header {
+    background: #000;
+    color: #000;
+    padding: 5px 30px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+    
+  .logo img {
+    width: 45px; 
+    height: 65px; 
+  }
+
+  nav h3 {
+    font-size: 18px;
+    color: #FFF;
+    margin-left: -135vh;
+  }
+    
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+    
+  nav ul li {
+    display: inline;
+  }
+    
+  nav ul li a {
+    text-decoration: none;
+    color: #FFF;
+    font-weight: 600;
+    transition: 0.3s;
+    margin-left: 400px;
+  }
+    
+  nav ul li a:hover {
+    color: #FFD700;  
+  }
+  
+  .logincontainer {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .backgroundvideo {
+    position: absolute;
+    top: 0;
+    left: 1;
+    width: 99vw;
+    height: 99vh;
+    object-fit: cover;
+    z-index: 1; 
+  }
+  
+  .logincarte {
+    position: relative;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 300px; 
+    z-index: 1; 
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+    
+  .logincontainer h2 {
+      margin-bottom: 15px;
+      color: #00563F;
+  }
+    
+  .logincontainer input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+    
+  .logincontainer .passwordoublie {
+      color: #00563F;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+  }
+    
+  button {
+    padding: 10px;
+    width: 100%;
+    background-color: #ffdd00;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ed1c24;
+}
+  
+footer {
+  background: #000;
+  color: #FFF;
+  text-align: center;
+  padding: 50px;
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  object-fit: cover;
+}
+
+footer .contact,
+footer .map,
+footer .reseausociaux {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+footer .contact h4,
+footer .map h4,
+footer .reseausociaux h4 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+footer .contact ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+footer .contact ul li {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+footer .contact ul li a {
+  color: #ffdd00;
+  text-decoration: none;
+}
+
+footer .contact ul li a:hover {
+  text-decoration: underline;
+}
+
+footer .map iframe {
+  border-radius: 8px;
+}
+
+footer p {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.reseausociaux {
+  display: flex;
+  gap: 15px;
+}
+
+.reseausociaux a {
+  font-size: 24px;
+  color: #FFF;
+  transition: color 0.3s;
+}
+
+.reseausociaux a:hover {
+  color: #ffdd00;
+}
+
+.h4 {
+  padding: 20px;
+  font-size: 26px;
+  margin-right: auto;
+}

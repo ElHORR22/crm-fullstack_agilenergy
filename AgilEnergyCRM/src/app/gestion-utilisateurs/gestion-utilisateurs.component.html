@@ -1,0 +1,261 @@
+<main class="main-content">
+  <section class="hero">
+    <div class="bigcard">
+      <div class="bigcard-content">
+        <h2>Liste des Utilisateurs</h2>
+
+        <div class="lbarre">
+          <input type="text" [(ngModel)]="searchTerm" (input)="searchUtilisateurs()"
+            placeholder="Rechercher un utilisateur" class="recherche" />
+          <button (click)="toggleAddForm()" class="bouton2">Ajouter un Utilisateur</button>
+
+          <div class="side-panel" *ngIf="showAddForm">
+            <div class="side-panel-header">
+              <h3>Ajouter un Utilisateur</h3>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="progressValue"></div>
+            </div>
+            <p class="progress-text">{{ progressValue }}% du formulaire complété</p>
+
+            <div class="side-panel-content">
+              <h4>Informations Générales</h4>
+
+              <label>Nom :</label>
+              <input [(ngModel)]="newUtilisateur.nom" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.nom" class="messagerreur">Le nom est requis.</div>
+
+              <label>Prénom :</label>
+              <input [(ngModel)]="newUtilisateur.prenom" type="text" required (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.prenom" class="messagerreur">Le prénom est requis.</div>
+
+              <label>Email:</label>
+              <input [(ngModel)]="newUtilisateur.email" type="email" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newUtilisateur.email" class="messagerreur">L'email est requis.</div>
+
+              <label>Mot de passe:</label>
+              <input [(ngModel)]="newUtilisateur.mdp" type="password" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newUtilisateur.mdp" class="messagerreur">Le mot de passe est requis.</div>
+
+              <label>Matricule :</label>
+              <input [(ngModel)]="newUtilisateur.matricule" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.matricule" class="messagerreur">Le matricule est requis.</div>
+
+              <label>Fonction :</label>
+              <input [(ngModel)]="newUtilisateur.fonction" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.fonction" class="messagerreur">La fonction est requise.</div>
+
+              <h4>Coordonnées</h4>
+              <label>Mobile :</label>
+              <input [(ngModel)]="newUtilisateur.mobile" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.mobile" class="messagerreur">Le mobile est requis.</div>
+
+              <label>Téléphone :</label>
+              <input [(ngModel)]="newUtilisateur.telephone" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.telephone" class="messagerreur">Le téléphone est requis.</div>
+
+              <label>Adresse :</label>
+              <input [(ngModel)]="newUtilisateur.adresse" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.adresse" class="messagerreur">L'adresse est requise.</div>
+
+              <label>Ville :</label>
+              <input [(ngModel)]="newUtilisateur.ville" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.ville" class="messagerreur">La ville est requise.</div>
+
+              <label>Code Postal :</label>
+              <input [(ngModel)]="newUtilisateur.codePostal" type="text" (input)="updateProgress()" />
+              <div *ngIf="errorMessage && !newUtilisateur.codePostal" class="messagerreur">Le code postal est requis.
+              </div>
+
+              <h4>Paramètres du Compte</h4>
+              <label>Rôle:</label>
+              <select [(ngModel)]="newUtilisateur.role" required>
+                <option *ngFor="let role of roles" [ngValue]="role">{{ role.name }}</option>
+              </select>
+              <div *ngIf="errorMessage && !newUtilisateur.role" class="messagerreur">Le rôle est requis.</div>
+
+              <label>Actif ?</label>
+              <select [(ngModel)]="newUtilisateur.actif">
+                <option [ngValue]="true">Oui</option>
+                <option [ngValue]="false">Non</option>
+              </select>
+            </div>
+
+            <div class="side-panel-footer">
+              <button class="btn btn-primary" (click)="addUtilisateur()">Enregistrer</button>
+              <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-panel" *ngIf="showEditForm && selectedUtilisateur">
+          <div class="side-panel-header">
+            <h3>Modifier un Utilisateur</h3>
+          </div>
+
+          <div class="side-panel-content">
+            <h4>Informations Générales</h4>
+
+            <label>Nom :</label>
+            <input [(ngModel)]="selectedUtilisateur.nom" type="text" required />
+
+            <label>Prénom :</label>
+            <input [(ngModel)]="selectedUtilisateur.prenom" type="text" required />
+
+            <label>Email :</label>
+            <input [(ngModel)]="selectedUtilisateur.email" type="email" required />
+
+            <label>Matricule :</label>
+            <input [(ngModel)]="selectedUtilisateur.matricule" type="text" />
+
+            <label>Fonction :</label>
+            <input [(ngModel)]="selectedUtilisateur.fonction" type="text" />
+
+            <h4>Coordonnées</h4>
+            <label>Mobile :</label>
+            <input [(ngModel)]="selectedUtilisateur.mobile" type="text" />
+
+            <label>Téléphone :</label>
+            <input [(ngModel)]="selectedUtilisateur.telephone" type="text" />
+
+            <label>Adresse :</label>
+            <input [(ngModel)]="selectedUtilisateur.adresse" type="text" />
+
+            <label>Ville :</label>
+            <input [(ngModel)]="selectedUtilisateur.ville" type="text" />
+
+            <label>Code Postal :</label>
+            <input [(ngModel)]="selectedUtilisateur.codePostal" type="text" />
+
+            <h4>Paramètres du Comptes</h4>
+            <label>Rôle:</label>
+            <select [(ngModel)]="selectedUtilisateur.role" required>
+              <option *ngFor="let role of roles" [ngValue]="{ name: role }">{{ role }}</option>
+            </select>
+
+            <label>Actif ?</label>
+            <select [(ngModel)]="selectedUtilisateur.actif">
+              <option [ngValue]="true">Oui</option>
+              <option [ngValue]="false">Non</option>
+            </select>
+
+            <h4>Historique</h4>
+            <label>Date de Création :</label>
+            <input [(ngModel)]="selectedUtilisateur.dateCreation" type="date" readonly />
+
+            <label>Date de Modification :</label>
+            <input [(ngModel)]="selectedUtilisateur.dateModification" type="date" readonly />
+          </div>
+
+          <div class="side-panel-footer">
+            <button class="btn btn-primary" (click)="updateUtilisateur()">Mettre à jour</button>
+            <button class="btn btn-secondary" (click)="toggleEditForm()">Annuler</button>
+          </div>
+        </div>
+
+        <div *ngIf="successMessage" class="messagesucces">{{ successMessage }}</div>
+        <div *ngIf="showErrorPopup" class="error-popup-backdrop">
+          <div class="error-popup">
+            <h3>Erreur</h3>
+            <p>{{ errorMessage }}</p>
+            <button (click)="showErrorPopup = false">Fermer</button>
+          </div>
+        </div>
+
+        <div class="popup-overlay" *ngIf="showDetailPopup">
+          <div class="popup-card">
+            <div class="popup-header">
+              <h2>Détails de l'Utilisateur</h2>
+              <span class="close-btn" (click)="closePopup()">×</span>
+            </div>
+
+            <div class="popup-content">
+
+              <div class="popup-column">
+                <h3>Informations personnelles</h3>
+                <p><strong>ID :</strong> {{ selectedUtilisateur?.id }}</p>
+                <p><strong>Nom :</strong> {{ selectedUtilisateur?.nom }}</p>
+                <p><strong>Prénom :</strong> {{ selectedUtilisateur?.prenom }}</p>
+                <p><strong>Email :</strong> {{ selectedUtilisateur?.email }}</p>
+                <p><strong>Matricule :</strong> {{ selectedUtilisateur?.matricule }}</p>
+                <p><strong>Fonction :</strong> {{ selectedUtilisateur?.fonction }}</p>
+              </div>
+
+              <div class="popup-column">
+                <h3>Coordonnées</h3>
+                <p><strong>Mobile :</strong> {{ selectedUtilisateur?.mobile }}</p>
+                <p><strong>Téléphone :</strong> {{ selectedUtilisateur?.telephone }}</p>
+                <p><strong>Adresse :</strong> {{ selectedUtilisateur?.adresse }}</p>
+                <p><strong>Ville :</strong> {{ selectedUtilisateur?.ville }}</p>
+                <p><strong>Code Postal :</strong> {{ selectedUtilisateur?.codePostal }}</p>
+              </div>
+
+              <div class="popup-column">
+                <h3>Paramètres de compte</h3>
+                <p><strong>Rôle :</strong> {{ selectedUtilisateur?.role?.name }}</p>
+                <p><strong>Actif :</strong>
+                  <span *ngIf="selectedUtilisateur?.actif" class="bulle-verte"></span>
+                  <span *ngIf="!selectedUtilisateur?.actif" class="bulle-rouge"></span>
+                  {{ selectedUtilisateur?.actif ? 'Actif' : 'Inactif' }}
+                </p>
+              </div>
+
+              <div class="popup-column">
+                <h3>Historique</h3>
+                <p><strong>Date de création :</strong> {{ selectedUtilisateur!.dateCreation | date }}</p>
+                <p><strong>Date de modification :</strong> {{ selectedUtilisateur!.dateModification | date }}</p>
+              </div>
+
+            </div>
+
+            <div class="popup-footer">
+              <button class="btn-close" (click)="closePopup()">Fermer</button>
+            </div>
+          </div>
+        </div>
+
+        <table class="listeproduit">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Prénom</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let utilisateur of filteredUtilisateurs">
+              <td><input type="checkbox" [checked]="utilisateur.checked"
+                  (change)="onUtilisateurSelect(utilisateur, $event)" /></td>
+              <td>{{ utilisateur.id }}</td>
+              <td>{{ utilisateur.prenom }}</td>
+              <td>{{ utilisateur.email }}</td>
+              <td>{{ utilisateur.role?.name }}</td>
+              <td>
+                <span [class.actif]="utilisateur.actif" [class.inactif]="!utilisateur.actif">
+                  {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
+                </span>
+              </td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button class="actionsbouton" (click)="toggleDropdown(utilisateur)">Actions</button>
+                  <div class="champbouton" *ngIf="utilisateur.showDropdown">
+                    <button class="champbouton-item consulter" (click)="openPopup(utilisateur)">Consulter</button>
+                    <button class="champbouton-item modifier" (click)="editUtilisateur(utilisateur)">Modifier</button>
+                    <button class="champbouton-item supprimer"
+                      (click)="deleteUtilisateur(utilisateur.id!)">Supprimer</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </section>
+</main>

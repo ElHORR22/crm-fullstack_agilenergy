@@ -1,0 +1,155 @@
+<main class="main-content">
+  <section class="hero">
+    <div class="bigcard">
+      <div class="bigcard-content">
+        <h2>Liste des Emballages</h2>
+        <div class="lbarre">
+          <input type="text" [(ngModel)]="searchTerm" (input)="searchEmballages()" placeholder="Rechercher un emballage"
+            class="recherche" />
+          <button (click)="toggleAddForm()" class="bouton2">Ajouter un Emballage</button>
+          <div class="side-panel" *ngIf="showAddForm">
+            <div class="side-panel-header">
+              <h3>Ajouter un Emballage</h3>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="progressValue"></div>
+            </div>
+            <p class="progress-text">{{ progressValue }}% du formulaire complété</p>
+
+            <div class="side-panel-content">
+              <h4>Informations Générales</h4>
+
+              <label>Code d'Emballage:</label>
+              <input [(ngModel)]="newEmballage.codeEmballage" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newEmballage.codeEmballage" class="messagerreur">Le code d'emballage est
+                requis.</div>
+
+              <label>Libellé:</label>
+              <input [(ngModel)]="newEmballage.libelle" type="text" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newEmballage.libelle" class="messagerreur">Le libellé est requis.</div>
+
+              <label>Poids (kg):</label>
+              <input [(ngModel)]="newEmballage.poidsEmballage" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newEmballage.poidsEmballage" class="messagerreur">Le poids est requis.
+              </div>
+
+              <label>Type d'Emballage:</label>
+              <select [(ngModel)]="newEmballage.typemballage" (change)="updateProgress()" required>
+                <option value="Lubrifiants">Lubrifiants</option>
+                <option value="Gaz">Gaz</option>
+                <option value="Carburant">Carburant</option>
+              </select>
+              <div *ngIf="errorMessage && !newEmballage.typemballage" class="messagerreur">Le type est requis.</div>
+            </div>
+
+            <div *ngIf="errorMessage" class="messagerreur">{{ errorMessage }}</div>
+
+            <div class="side-panel-footer">
+              <button class="btn btn-primary" (click)="addEmballage()">Enregistrer</button>
+              <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+            </div>
+          </div>
+        </div>
+        <div class="side-panel" *ngIf="showEditForm && selectedEmballage">
+          <div class="side-panel-header">
+            <h3>Modifier un Emballage</h3>
+          </div>
+          <div class="side-panel-content">
+            <h4>Informations Générales</h4>
+
+            <label>Code d'Emballage:</label>
+            <input [(ngModel)]="selectedEmballage.codeEmballage" type="number" />
+
+            <label>Libellé:</label>
+            <input [(ngModel)]="selectedEmballage.libelle" type="text" />
+
+            <label>Poids:</label>
+            <input [(ngModel)]="selectedEmballage.poidsEmballage" type="number" />
+
+            <label>Type d'Emballage:</label>
+            <select [(ngModel)]="selectedEmballage.typemballage">
+              <option value="Lubrifiants">Lubrifiants</option>
+              <option value="Gaz">Gaz</option>
+              <option value="Carburant">Carburant</option>
+            </select>
+
+            <label>Date de Création:</label>
+            <input [(ngModel)]="selectedEmballage.dateCreation" type="date" readonly />
+
+            <label>Date de Modification:</label>
+            <input [(ngModel)]="selectedEmballage.dateModification" type="date" readonly />
+          </div>
+          <div class="side-panel-footer">
+            <button (click)="updateEmballage()" class="btn btn-primary">Mettre à jour</button>
+            <br>
+            <br>
+            <button (click)="toggleEditForm()" class="btn btn-secondary">Annuler</button>
+          </div>
+        </div>
+        <div *ngIf="successMessage" class="messagesucces"> {{ successMessage }} </div>
+        <div class="popup-overlay" *ngIf="showDetailPopup">
+          <div class="popup-card">
+            <div class="popup-header">
+              <h2>Détails de l'Emballage</h2>
+              <span class="close-btn" (click)="closePopup()">×</span>
+            </div>
+            <div class="popup-content">
+              <div class="popup-column">
+                <h3>Informations générales</h3>
+                <p><strong>ID :</strong> {{ selectedEmballage!.id }}</p>
+                <p><strong>Code :</strong> {{ selectedEmballage!.codeEmballage }}</p>
+                <p><strong>Libellé :</strong> {{ selectedEmballage!.libelle }}</p>
+                <p><strong>Type :</strong> {{ selectedEmballage!.typemballage }}</p>
+                <p><strong>Poids (kg) :</strong> {{ selectedEmballage!.poidsEmballage }}</p>
+              </div>
+              <div class="popup-column">
+                <h3>Historique</h3>
+                <p><strong>Date de création :</strong> {{ selectedEmballage!.dateCreation | date }}</p>
+                <p><strong>Date de modification :</strong> {{ selectedEmballage!.dateModification | date }}</p>
+              </div>
+            </div>
+            <div class="popup-footer">
+              <button class="btn-close" (click)="closePopup()">Fermer</button>
+            </div>
+          </div>
+        </div>
+        <table class="listemballages">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let emballage of filteredEmballages | filtre: searchTerm">
+              <td><input type="checkbox" [checked]="emballage.checked"
+                  (change)="onEmballageSelect(emballage, $event)" /></td>
+              <td>{{ emballage.id }}</td>
+              <td>{{ emballage.codeEmballage }}</td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button class="actionsbouton" (click)="toggleDropdown(emballage)">Actions</button>
+                  <div class="champbouton" *ngIf="emballage.showDropdown">
+                    <button class="champbouton-item consulter" (click)="openPopup(emballage)">Consulter</button>
+                    <button class="champbouton-item modifier" (click)="editEmballage(emballage)">Modifier</button>
+                    <button class="champbouton-item supprimer"
+                      (click)="deleteEmballage(emballage.id)">Supprimer</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="showErrorPopup" class="error-popup-backdrop">
+          <div class="error-popup">
+            <h3>Erreur</h3>
+            <p>{{ errorMessage }}</p>
+            <button (click)="showErrorPopup = false">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

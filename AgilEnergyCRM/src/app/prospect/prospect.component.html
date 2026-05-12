@@ -1,0 +1,315 @@
+<main class="main-content">
+  <section class="hero">
+    <div class="bigcard">
+      <div class="bigcard-content">
+        <h2>Liste des Prospects</h2>
+        <div class="lbarre">
+          <input type="text" [(ngModel)]="searchTerm" (input)="searchProspects()" placeholder="Rechercher un prospect"
+            class="recherche">
+          <button (click)="toggleAddForm()" class="bouton2">Ajouter un Prospect</button>
+          <div class="side-panel" *ngIf="showAddForm">
+            <div class="side-panel-header">
+              <h3>Ajouter un Prospect</h3>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="progressValue"></div>
+            </div>
+            <p class="progress-text">{{ progressValue }}% du formulaire complété</p>
+            <div class="side-panel-content">
+              <h4>Informations générales</h4>
+              <label>Nom & Prénom:</label>
+              <input [(ngModel)]="newProspect.nom" name="nom" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.nom" class="messagerreur">Le nom est requis.</div>
+
+              <label>Titre:</label>
+              <input [(ngModel)]="newProspect.titre" name="titre" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.titre" class="messagerreur">Le titre est requis.</div>
+
+              <label>Société:</label>
+              <input [(ngModel)]="newProspect.societe" name="societe" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.societe" class="messagerreur">La société est requise.</div>
+
+              <label>Statut du Prospect:</label>
+              <select [(ngModel)]="newProspect.statutprospect" name="statutprospect" (change)="updateProgress()"
+                required>
+                <option
+                  *ngFor="let s of ['À contacter', 'Contacté', 'En sommeil', 'Chaud', 'Perdu', 'Pré-qualifié', 'Qualifié']">
+                  {{ s }}</option>
+              </select>
+              <div *ngIf="errorMessage && !newProspect.statutprospect" class="messagerreur">Le statut du prospect est
+                requis.</div>
+
+              <h4>Coordonnées</h4>
+              <label>Email:</label>
+              <input type="email" [(ngModel)]="newProspect.email" name="email" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.email" class="messagerreur">L'email est requis.</div>
+
+              <label>Autre email:</label>
+              <input type="email" [(ngModel)]="newProspect.autremail" />
+
+              <label>Téléphone:</label>
+              <input [(ngModel)]="newProspect.telephone" name="telephone" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.telephone" class="messagerreur">Le téléphone est requis.</div>
+
+              <label>Mobile:</label>
+              <input [(ngModel)]="newProspect.mobile" name="mobile" />
+
+              <label>Fax:</label>
+              <input [(ngModel)]="newProspect.fax" name="fax" />
+
+              <label>Site Web:</label>
+              <input [(ngModel)]="newProspect.siteWeb" name="siteWeb" />
+
+              <h4>Adresse</h4>
+              <label>Adresse:</label>
+              <input [(ngModel)]="newProspect.adresse" name="adresse" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.adresse" class="messagerreur">L'adresse est requise.</div>
+
+              <label>Code Postal:</label>
+              <input type="number" [(ngModel)]="newProspect.codePostal" name="codePostal" (input)="updateProgress()"
+                required />
+              <div *ngIf="errorMessage && !newProspect.codePostal" class="messagerreur">Le code postal est requis.
+              </div>
+
+              <label>Ville:</label>
+              <input [(ngModel)]="newProspect.ville" name="ville" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.ville" class="messagerreur">La ville est requis.</div>
+
+              <label>Pays:</label>
+              <input [(ngModel)]="newProspect.pays" name="pays" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProspect.pays" class="messagerreur">Le pays est requis.</div>
+
+              <h4>Activité</h4>
+              <label>Chiffre d'affaires:</label>
+              <input type="number" [(ngModel)]="newProspect.chiffreA" name="chiffreA" (input)="updateProgress()"
+                required />
+              <div *ngIf="errorMessage && !newProspect.chiffreA" class="messagerreur">Le chiffre d'affaire est
+                requis.</div>
+
+              <label>Effectif:</label>
+              <input type="number" [(ngModel)]="newProspect.effectif" name="effectif" (input)="updateProgress()"
+                required />
+              <div *ngIf="errorMessage && !newProspect.effectif" class="messagerreur">L'effectif est requis.</div>
+
+              <label>Source Prospection:</label>
+              <select [(ngModel)]="newProspect.sourceProspection" name="sourceprospection" class="gouvernorat" required
+                (input)="updateProgress()">
+                <option *ngFor="let sourceprospection of sourceProspection" [ngValue]="sourceprospection">{{
+                  sourceprospection.nom }}</option>
+              </select>
+              <div *ngIf="errorMessage && !newProspect.sourceProspection" class="messagerreur">La Source de
+                Prospection est requise.</div>
+
+              <label>Secteur d'Activité:</label>
+              <select [(ngModel)]="newProspect.secteurActivite" name="secteurdactivite" class="gouvernorat"
+                (input)="updateProgress()" required>
+                <option *ngFor="let secteurdactivite of secteurActivite" [ngValue]="secteurdactivite">{{
+                  secteurdactivite.nom }}</option>
+              </select>
+              <div *ngIf="errorMessage && !newProspect.secteurActivite" class="messagerreur">Le Secteur d'Activité est
+                requis.</div>
+
+              <label>Gouvernorat:</label>
+              <select [(ngModel)]="newProspect.gouvernorat" name="gouvernorat" class="gouvernorat"
+                (input)="updateProgress()" required>
+                <option *ngFor="let gouvernorat of gouvernorats" [ngValue]="gouvernorat"> {{ gouvernorat.nom }}
+                </option>
+              </select>
+              <div *ngIf="errorMessage && !newProspect.gouvernorat" class="messagerreur">Le Gouvernorat est requis.
+              </div>
+            </div>
+
+            <div class="side-panel-footer">
+              <button class="btn btn-primary" (click)="addProspect()">Enregistrer</button>
+              <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+            </div>
+
+            <div *ngIf="errorMessage" class="messagerreur">{{ errorMessage }}</div>
+          </div>
+
+          <div class="side-panel" *ngIf="showEditForm && selectedProspect">
+            <div class="side-panel-header">
+              <h3>Modifier un Prospect</h3>
+            </div>
+            <div class="side-panel-content">
+              <h4>Informations générales</h4>
+              <label>Nom & Prénom:</label>
+              <input [(ngModel)]="selectedProspect.nom" name="nom" type="text" />
+
+              <label>Titre:</label>
+              <input [(ngModel)]="selectedProspect.titre" name="titre" type="text" />
+
+              <label>Société:</label>
+              <input [(ngModel)]="selectedProspect.societe" name="societe" type="text" />
+
+              <label>Statut du Prospect:</label>
+              <select [(ngModel)]="selectedProspect.statutprospect" name="statutprospect">
+                <option value="À contacter">À contacter</option>
+                <option value="Contacté">Contacté</option>
+                <option value="En sommeil">En sommeil</option>
+                <option value="Chaud">Chaud</option>
+                <option value="Perdu">Perdu</option>
+                <option value="Pré-qualifié">Pré-qualifié</option>
+                <option value="Qualifié">Qualifié</option>
+              </select>
+
+              <h4>Coordonnées</h4>
+              <label>Email:</label>
+              <input [(ngModel)]="selectedProspect.email" name="email" type="email" />
+
+              <label>Autre email:</label>
+              <input [(ngModel)]="selectedProspect.autremail" name="autremail" type="email" />
+
+              <label>Mobile:</label>
+              <input [(ngModel)]="selectedProspect.mobile" name="mobile" type="text" />
+
+              <label>Téléphone:</label>
+              <input [(ngModel)]="selectedProspect.telephone" name="telephone" type="text" required />
+              <div *ngIf="errorMessage && errorMessage.includes('téléphone')" class="messagerreur"> {{
+                errorMessage}}
+              </div>
+
+              <label>Fax:</label>
+              <input [(ngModel)]="selectedProspect.fax" name="fax" type="text" />
+              <div *ngIf="errorMessage && errorMessage.includes('fax')" class="messagerreur"> {{ errorMessage }}
+              </div>
+
+              <label>Site Web:</label>
+              <input [(ngModel)]="selectedProspect.siteWeb" name="siteWeb" type="text" />
+
+              <h4>Adresse</h4>
+              <label>Adresse:</label>
+              <input [(ngModel)]="selectedProspect.adresse" name="adresse" type="text" required />
+
+              <label>Code Postal:</label>
+              <input [(ngModel)]="selectedProspect.codePostal" name="codePostal" type="number" required />
+
+              <label>Ville:</label>
+              <input [(ngModel)]="selectedProspect.ville" name="ville" type="text" required />
+
+              <label>Pays:</label>
+              <input [(ngModel)]="selectedProspect.pays" name="pays" type="text" required />
+
+              <h4>Activité</h4>
+              <label>Chiffre d'affaires:</label>
+              <input [(ngModel)]="selectedProspect.chiffreA" name="chiffreA" type="number" />
+
+              <label>Effectif:</label>
+              <input [(ngModel)]="selectedProspect.effectif" name="effectif" type="number" />
+
+              <label>Source Prospection:</label>
+              <select [(ngModel)]="selectedProspect.sourceProspection" name="sourceprospection" class="gouvernorat"
+                required>
+                <option *ngFor="let sourceprospection of sourceProspection" [ngValue]="sourceprospection">
+                  {{ sourceprospection.nom }}
+                </option>
+              </select>
+
+              <label>Secteur d'Activité:</label>
+              <select [(ngModel)]="selectedProspect.secteurActivite" name="secteurdactivite" class="gouvernorat"
+                required>
+                <option *ngFor="let secteurdactivite of secteurActivite" [ngValue]="secteurdactivite">
+                  {{ secteurdactivite.nom }}
+                </option>
+              </select>
+
+              <label>Gouvernorat:</label>
+              <select [(ngModel)]="selectedProspect.gouvernorat" name="gouvernorat" class="gouvernorat" required>
+                <option *ngFor="let gouvernorat of gouvernorats" [ngValue]="gouvernorat">
+                  {{ gouvernorat.nom }}
+                </option>
+              </select>
+            </div>
+            <div class="side-panel-footer">
+              <button (click)="updateProspect()" class="btn btn-primary">Mettre à jour</button>
+              <br>
+              <br>
+              <button (click)="toggleEditForm()" class="btn btn-secondary">Annuler</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="successMessage" class="messagesucces">
+          {{ successMessage }}
+        </div>
+        <div class="popup-overlay" *ngIf="showDetailPopup">
+          <div class="popup-card">
+            <div class="popup-header">
+              <h2>Détails du Prospect</h2>
+              <span class="close-btn" (click)="closePopup()">×</span>
+            </div>
+            <div class="popup-content">
+              <div class="popup-column">
+                <h3>Général</h3>
+                <p><strong>ID :</strong> {{ selectedProspect!.id }}</p>
+                <p><strong>Nom :</strong> {{ selectedProspect!.nom }}</p>
+                <p><strong>Société :</strong> {{ selectedProspect!.societe }}</p>
+                <p><strong>Statut :</strong> {{ selectedProspect!.statutprospect }}</p>
+                <p><strong>Date inscription :</strong> {{ selectedProspect!.dateInscription | date:'dd/MM/yyyy'}}</p>
+                <p><strong>Date modification :</strong> {{ selectedProspect!.dateModification | date:'dd/MM/yyyy'}}</p>
+              </div>
+              <div class="popup-column">
+                <h3>Coordonnées</h3>
+                <p><strong>Email :</strong> {{ selectedProspect!.email }}</p>
+                <p><strong>Autre email :</strong> {{ selectedProspect!.autremail }}</p>
+                <p><strong>Téléphone :</strong> {{ selectedProspect!.mobile }}</p>
+                <p><strong>Fax :</strong> {{ selectedProspect!.fax }}</p>
+                <p><strong>Site Web :</strong> {{ selectedProspect!.siteWeb }}</p>
+              </div>
+              <div class="popup-column">
+                <h3>Localisation & Entreprise</h3>
+                <p><strong>Adresse :</strong> {{ selectedProspect!.adresse }}</p>
+                <p><strong>Ville :</strong> {{ selectedProspect!.ville }}</p>
+                <p><strong>Code postal :</strong> {{ selectedProspect!.codePostal }}</p>
+                <p><strong>Pays :</strong> {{ selectedProspect!.pays }}</p>
+                <p><strong>Gouvernorat :</strong> {{ selectedProspect!.gouvernorat?.nom }}</p>
+                <p><strong>Secteur activité :</strong> {{ selectedProspect!.secteurActivite?.nom }}</p>
+                <p><strong>Source prospection :</strong> {{ selectedProspect!.sourceProspection?.nom }}</p>
+                <p><strong>Chiffre d'affaires :</strong> {{ selectedProspect!.chiffreA }}</p>
+                <p><strong>Effectif :</strong> {{ selectedProspect!.effectif }}</p>
+              </div>
+            </div>
+            <div class="popup-footer">
+              <button class="btn-close" (click)="closePopup()">Fermer</button>
+            </div>
+          </div>
+        </div>
+        <table class="listeprospects">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Nom</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let prospect of filteredProspects | filter: searchTerm">
+              <td><input type="checkbox" [checked]="prospect.checked" (change)="onProspectSelect(prospect, $event)" />
+              </td>
+              <td>{{ prospect.id }}</td>
+              <td>{{ prospect.nom }}</td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button class="actionsbouton" (click)="toggleDropdown(prospect)">Actions</button>
+                  <div class="champbouton" *ngIf="prospect.showDropdown">
+                    <button class="champbouton-item consulter" (click)="openPopup(prospect)">Consulter</button>
+                    <button class="champbouton-item modifier" (click)="editProspect(prospect)">Modifier</button>
+                    <button class="champbouton-item supprimer" (click)="deleteProspect(prospect.id)">Supprimer</button>
+                    <button class="champbouton-item convertir" (click)="convertirProspect(prospect)">Convertir en
+                      Client</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="showErrorPopup" class="error-popup-backdrop">
+          <div class="error-popup">
+            <h3>Erreur</h3>
+            <p>{{ errorMessage }}</p>
+            <button (click)="showErrorPopup = false">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,237 @@
+<main class="main-content">
+  <section class="hero">
+    <div class="bigcard">
+      <div class="bigcard-content">
+        <h2>Liste des Produits</h2>
+        <div class="lbarre">
+          <input type="text" [(ngModel)]="searchTerm" (input)="searchProduits()" placeholder="Rechercher un produit"
+            class="recherche" />
+          <button (click)="toggleAddForm()" class="bouton2">Ajouter un Produit</button>
+          <div class="side-panel" *ngIf="showAddForm">
+            <div class="side-panel-header">
+              <h3>Ajouter un Emballage</h3>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-bar" [style.width.%]="progressValue"></div>
+            </div>
+            <p class="progress-text">{{ progressValue }}% du formulaire complété</p>
+
+            <div class="side-panel-content">
+              <h4>Informations Générales</h4>
+              <label>Code du Produit:</label>
+              <input [(ngModel)]="newProduit.codeProduit" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProduit.codeProduit" class="messagerreur">Le code du produit est
+                requis.</div>
+
+              <label>Code d'Emballage:</label>
+              <select [(ngModel)]="newProduit.codeEmballage" (input)="updateProgress()" required>
+                <option *ngFor="let emb of emballages" [value]="emb.codeEmballage">{{ emb.codeEmballage }}</option>
+              </select>
+              <div *ngIf="errorMessage && !newProduit.codeEmballage" class="messagerreur">Le code d'emballage est
+                requis.</div>
+
+              <label>Libellé:</label>
+              <input [(ngModel)]="newProduit.libelleProduit" type="text" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProduit.libelleProduit" class="messagerreur">Le libellé est requis.
+              </div>
+
+              <label>Poids:</label>
+              <input [(ngModel)]="newProduit.poidsProduit" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProduit.poidsProduit" class="messagerreur">Le poids est requis.</div>
+
+              <h4>Caractéristiques</h4>
+              <label>Type du Produit:</label>
+              <select [(ngModel)]="newProduit.typeProduit" (input)="updateProgress()" required>
+                <option value="Lubrifiants">Lubrifiants</option>
+                <option value="Gaz">Gaz</option>
+                <option value="Carburant">Carburant</option>
+              </select>
+
+              <label>Actif ?</label>
+              <select [(ngModel)]="newProduit.actif" (input)="updateProgress()" required>
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+              </select>
+
+              <label>Package ?</label>
+              <select [(ngModel)]="newProduit.packageProduit" (input)="updateProgress()" required>
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+              </select>
+
+              <label>EcoZit ?</label>
+              <select [(ngModel)]="newProduit.ecozit" (input)="updateProgress()" required>
+                <option value="Oui">Oui</option>
+                <option value="Non">Non</option>
+              </select>
+
+              <h4>Gestion des Prix</h4>
+              <label>Prix de Gros:</label>
+              <input [(ngModel)]="newProduit.prixGros" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProduit.prixGros" class="messagerreur">Le prix en gros du produit est
+                requis.</div>
+
+              <label>Prix de Détail:</label>
+              <input [(ngModel)]="newProduit.prixDetail" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProduit.prixDetail" class="messagerreur">Le prix en détail du produit
+                est requis.</div>
+
+              <label>Prix Gérant:</label>
+              <input [(ngModel)]="newProduit.prixGerant" type="number" (input)="updateProgress()" required />
+              <div *ngIf="errorMessage && !newProduit.prixGerant" class="messagerreur">Le prix gérant du produit est
+                requis.</div>
+
+              <label>Catégorie:</label>
+              <select [(ngModel)]="newProduit.categorie" (input)="updateProgress()" required>
+                <option value="Local">Local</option>
+                <option value="Importé">Importé</option>
+              </select>
+              <div *ngIf="errorMessage && !newProduit.categorie" class="messagerreur">La catégorie est requise</div>
+            </div>
+            <div class="side-panel-footer">
+              <button class="btn btn-primary" (click)="addProduit()">Enregistrer</button>
+              <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+            </div>
+          </div>
+        </div>
+        <div class="side-panel" *ngIf="showEditForm && selectedProduit">
+          <div class="side-panel-header">
+            <h3>Modifier un Emballage</h3>
+          </div>
+          <div class="side-panel-content">
+            <h4>Informations Générales</h4>
+            <label>Code du Produit:</label>
+            <input [(ngModel)]="selectedProduit.codeProduit" type="number" required />
+
+            <label>Code d'Emballage:</label>
+            <select [(ngModel)]="selectedProduit.codeEmballage" required>
+              <option *ngFor="let emb of emballages" [value]="emb.codeEmballage">{{ emb.codeEmballage }}</option>
+            </select>
+
+            <label>Libellé:</label>
+            <input [(ngModel)]="selectedProduit.libelleProduit" type="text" required />
+
+            <label>Poids:</label>
+            <input [(ngModel)]="selectedProduit.poidsProduit" type="number" required />
+
+            <h4>Caractéristiques</h4>
+            <label>Type du Produit:</label>
+            <select [(ngModel)]="selectedProduit.typeProduit" required>
+              <option value="Lubrifiants">Lubrifiants</option>
+              <option value="Gaz">Gaz</option>
+              <option value="Carburant">Carburant</option>
+            </select>
+
+            <label>Actif ?</label>
+            <select [(ngModel)]="selectedProduit.actif" required>
+              <option value="Oui">Oui</option>
+              <option value="Non">Non</option>
+            </select>
+
+            <label>Package ?</label>
+            <select [(ngModel)]="selectedProduit.packageProduit" required>
+              <option value="Oui">Oui</option>
+              <option value="Non">Non</option>
+            </select>
+
+            <label>EcoZit ?</label>
+            <select [(ngModel)]="selectedProduit.ecozit" required>
+              <option value="Oui">Oui</option>
+              <option value="Non">Non</option>
+            </select>
+
+            <h4>Gestion des Prix</h4>
+            <label>Prix de Gros:</label>
+            <input [(ngModel)]="selectedProduit.prixGros" type="number" required />
+
+            <label>Prix de Détail:</label>
+            <input [(ngModel)]="selectedProduit.prixDetail" type="number" required />
+
+            <label>Prix Gérant:</label>
+            <input [(ngModel)]="selectedProduit.prixGerant" type="number" required />
+
+            <label>Catégorie:</label>
+            <select [(ngModel)]="selectedProduit.categorie" required>
+              <option value="Local">Local</option>
+              <option value="Importé">Importé</option>
+            </select>
+
+            <label>Date de Création:</label>
+            <input [(ngModel)]="selectedProduit.dateCreation" type="date" readonly />
+
+            <label>Date de Modification:</label>
+            <input [(ngModel)]="selectedProduit.dateModification" type="date" readonly />
+          </div>
+          <div class="side-panel-footer">
+            <button (click)="updateProduit()" class="btn btn-primary">Mettre à jour</button>
+            <br>
+            <br>
+            <button (click)="toggleEditForm()" class="btn btn-secondary">Annuler</button>
+          </div>
+        </div>
+
+        <div *ngIf="successMessage" class="messagesucces">{{ successMessage }}</div>
+        <div class="popup-overlay" *ngIf="showDetailPopup">
+          <div class="popup-card">
+            <div class="popup-header">
+              <h2>Détails de l'Emballage</h2>
+              <span class="close-btn" (click)="closePopup()">×</span>
+            </div>
+            <div class="popup-content">
+              <div class="popup-column">
+                <h3>Informations générales</h3>
+                <p><strong>ID :</strong> {{ selectedProduit!.id }}</p>
+                <p><strong>Code :</strong> {{ selectedProduit!.codeEmballage }}</p>
+                <p><strong>Libellé :</strong> {{ selectedProduit!.libelleProduit }}</p>
+                <p><strong>Type :</strong> {{ selectedProduit!.typeProduit }}</p>
+                <p><strong>Poids (kg) :</strong> {{ selectedProduit!.poidsProduit }}</p>
+              </div>
+              <div class="popup-column">
+                <h3>Historique</h3>
+                <p><strong>Date de création :</strong> {{ selectedProduit!.dateCreation | date }}</p>
+                <p><strong>Date de modification :</strong> {{ selectedProduit!.dateModification | date }}</p>
+              </div>
+            </div>
+            <div class="popup-footer">
+              <button class="btn-close" (click)="closePopup()">Fermer</button>
+            </div>
+          </div>
+        </div>
+        <table class="listeproduit">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let produit of filteredProduits | filtreproduit: searchTerm">
+              <td><input type="checkbox" [checked]="produit.checked" (change)="onProduitSelect(produit, $event)" /></td>
+              <td>{{ produit.id }}</td>
+              <td>{{ produit.codeProduit }}</td>
+              <td class="actions">
+                <div class="actions-container">
+                  <button class="actionsbouton" (click)="toggleDropdown(produit)">Actions</button>
+                  <div class="champbouton" *ngIf="produit.showDropdown">
+                    <button class="champbouton-item consulter" (click)="openPopup(produit)">Consulter</button>
+                    <button class="champbouton-item modifier" (click)="editProduit(produit)">Modifier</button>
+                    <button class="champbouton-item supprimer" (click)="deleteProduit(produit.id)">Supprimer</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="showErrorPopup" class="error-popup-backdrop">
+          <div class="error-popup">
+            <h3>Erreur</h3>
+            <p>{{ errorMessage }}</p>
+            <button (click)="showErrorPopup = false">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

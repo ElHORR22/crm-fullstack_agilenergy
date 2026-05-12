@@ -1,0 +1,124 @@
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  z-index: 1001;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.home-link a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 1400px;
+}
+
+footer {
+  background: #000;
+  color: #FFF;
+  text-align: center;
+  padding: 50px;
+  margin-top: 50px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  object-fit: cover;
+  font-family: 'Poppins', sans-serif;
+}
+
+footer .contact {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+footer .contact h4 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+footer .contact ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+footer .contact ul li {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+footer .contact ul li a {
+  color: #ffdd00;
+  text-decoration: none;
+}
+
+footer .contact ul li a:hover {
+  text-decoration: underline;
+}
+
+footer .map {
+  margin-top: 20px;
+  text-align: left;
+}
+
+footer .map h4 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+footer .map iframe {
+  border-radius: 8px;
+}
+
+footer p {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.reseau-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
+  color: white;
+}
+
+.reseau-container h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.reseau-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.reseau-icons a {
+  font-size: 24px;
+  color: #FFF;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+
+.reseau-icons a:hover {
+  color: #ffdd00;
+}
+
+.h4 {
+  padding: 20px;
+  font-size: 26px;
+  margin-right: auto;
+}
