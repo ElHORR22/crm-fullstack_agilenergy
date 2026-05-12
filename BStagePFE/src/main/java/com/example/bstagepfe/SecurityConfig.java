@@ -53,9 +53,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:4200",
-                "https://crm-fullstackagilenergy-production.up.railway.app",
-                "https://crm-fullstack-agilenergy.vercel.app"));
+            "http://localhost:4200",
+            "https://crm-fullstack-agilenergy.vercel.app",
+            "https://crm-fullstackagilenergy-production.up.railway.app"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of(
                 "Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
