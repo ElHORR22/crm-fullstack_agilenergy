@@ -2,7 +2,10 @@
   "buildCommand": "npm run build -- --configuration=production",
   "outputDirectory": "dist/stage-pfe/browser",
   "framework": "angular",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    {
+      "src": "/[^.]+",
+      "dest": "/index.html"
+    }
   ]
 }
