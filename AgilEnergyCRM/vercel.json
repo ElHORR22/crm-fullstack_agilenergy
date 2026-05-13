@@ -3,9 +3,7 @@
   "outputDirectory": "dist/stage-pfe/browser",
   "framework": "angular",
   "routes": [
-    {
-      "src": "/[^.]+",
-      "dest": "/index.html"
-    }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
