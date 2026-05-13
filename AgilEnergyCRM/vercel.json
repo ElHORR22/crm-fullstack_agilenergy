@@ -1,9 +1,4 @@
 {
   "outputDirectory": "dist/stage-pfe/browser",
-  "rewrites": [
-    {
-      "source": "/((?!.*\\.).*)",
-      "destination": "/index.html"
-    }
-  ]
+  "framework": "angular"
 }
