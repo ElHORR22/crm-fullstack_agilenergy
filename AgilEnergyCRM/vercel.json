@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build -- --configuration=production",
-  "outputDirectory": "dist/stage-pfe/browser",
+  "outputDirectory": "dist/stage-pfe",
   "framework": "angular",
   "routes": [
     { "handle": "filesystem" },
