@@ -54,7 +54,7 @@
                 }
               ],
               "outputHashing": "all",
-              "baseHref": "/AGILENERGYCRM/"
+              "baseHref": "/"
             },
             "development": {
               "optimization": false,
