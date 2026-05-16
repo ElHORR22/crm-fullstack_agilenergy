@@ -8,7 +8,7 @@ import { Produit } from "../modeles/produit.model";
     providedIn: 'root'
 })
 export class ProduitService {
-    private apiUrl = 'http://localhost:8080/api/produits';
+    private apiUrl = '${environment.apiUrl}/api/produits';
   
     constructor(private http: HttpClient) {}
   
@@ -17,11 +17,11 @@ export class ProduitService {
     }      
 
     getEmballages(): Observable<Emballage[]> {
-      return this.http.get<Emballage[]>('http://localhost:8080/api/emballages');
+      return this.http.get<Emballage[]>('${environment.apiUrl}/api/emballages');
     }
   
     addProduit(produit: any): Observable<Produit> {
-      return this.http.post<Produit>('http://localhost:8080/api/produits', produit);
+      return this.http.post<Produit>('${environment.apiUrl}/api/produits', produit);
     }
     
     updateProduit(produit: Produit): Observable<Produit> {

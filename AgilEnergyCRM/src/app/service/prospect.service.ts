@@ -9,32 +9,32 @@ import { Client } from '../modeles/client.model';
 })
 export class ProspectService {
 
-  private apiUrl = 'http://localhost:8080/api/prospects';  
+  private apiUrl = '${environment.apiUrl}/api/prospects';  
 
   constructor(private http: HttpClient) { }
 
   getAllProspects(): Observable<Prospect[]> {
-    return this.http.get<Prospect[]>('http://localhost:8080/api/prospects');
+    return this.http.get<Prospect[]>('${environment.apiUrl}/api/prospects');
   }
 
   getGouvernorats(): Observable<Gouvernorat[]> {
-    return this.http.get<Gouvernorat[]>('http://localhost:8080/api/gouvernorats');
+    return this.http.get<Gouvernorat[]>('${environment.apiUrl}/api/gouvernorats');
   }
 
   getSourceProspection(): Observable<SourceProspection[]> {
-    return this.http.get<SourceProspection[]>('http://localhost:8080/api/sourcesprospection');
+    return this.http.get<SourceProspection[]>('${environment.apiUrl}/api/sourcesprospection');
   }
 
   getSecteurActivite(): Observable<SecteurActivite[]> {
-    return this.http.get<SecteurActivite[]>('http://localhost:8080/api/secteurs');
+    return this.http.get<SecteurActivite[]>('${environment.apiUrl}/api/secteurs');
   }
   
   addProspect(prospect: Prospect): Observable<Prospect> {
-    return this.http.post<Prospect>('http://localhost:8080/api/prospects', prospect);
+    return this.http.post<Prospect>('${environment.apiUrl}/api/prospects', prospect);
   }  
   
   updateProspect(prospect: Prospect): Observable<Prospect> {
-    return this.http.put<Prospect>(`http://localhost:8080/api/prospects/${prospect.id}`, prospect);
+    return this.http.put<Prospect>('${environment.apiUrl}/api/prospects/${prospect.id}', prospect);
   }  
   
   deleteProspect(id: number): Observable<void> {

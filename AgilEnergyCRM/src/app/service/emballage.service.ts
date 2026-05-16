@@ -7,7 +7,7 @@ import { Emballage } from "../modeles/emballage.model";
     providedIn: 'root'
 })
 export class EmballageService {
-    private apiUrl = 'http://localhost:8080/api/emballages';
+    private apiUrl = '${environment.apiUrl}/api/emballages';
   
     constructor(private http: HttpClient) {}
   
@@ -16,7 +16,7 @@ export class EmballageService {
     }      
   
     addEmballage(emballage: any): Observable<Emballage> {
-      return this.http.post<Emballage>('http://localhost:8080/api/emballages', emballage);
+      return this.http.post<Emballage>('${environment.apiUrl}/api/emballages', emballage);
     }
     
     updateEmballage(emballage: Emballage): Observable<Emballage> {

@@ -8,8 +8,8 @@ import { Role, Utilisateur } from '../modeles/utilisateur.model';
 })
 export class GestionUtilisateurService {
 
-  private apiUrl = 'http://localhost:8080/api/utilisateurs';
-  private rolesUrl = 'http://localhost:8080/api/roles';
+  private apiUrl = '${environment.apiUrl}/api/utilisateurs';
+  private rolesUrl = '${environment.apiUrl}/api/roles';
 
   constructor(private http: HttpClient) {}
 
