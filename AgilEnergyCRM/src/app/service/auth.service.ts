@@ -8,7 +8,6 @@ import { environment } from '../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  // ✅ FIX 1 : URL centralisée dans environment.ts — plus de localhost hardcodé
   private baseUrl = `${environment.apiUrl}/api/auth`;
 
   constructor(private http: HttpClient) { }
@@ -22,12 +21,10 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(res));
   }
 
-  // ✅ FIX 6 : Méthode isLoggedIn ajoutée — utilisée par le guard
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
 
-  // ✅ FIX 6 : Méthode getToken pour l'interceptor
   getToken(): string | null {
     return localStorage.getItem('token');
   }
@@ -45,7 +42,6 @@ export class AuthService {
     return null;
   }
 
-  // ✅ FIX 9 : Suppression du removeItem('role') inutile (n'a jamais été stocké séparément)
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
