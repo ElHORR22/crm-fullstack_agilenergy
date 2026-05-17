@@ -7,16 +7,16 @@ import { Tva, SourceProspection, SecteurActivite } from '../modeles/parametrage.
   providedIn: 'root'
 })
 export class ParametrageService {
-  private baseUrl = '${environment.apiUrl}/api/parametrage';
+  private baseUrl = `${environment.apiUrl}/api/parametrage`;
 
   constructor(private http: HttpClient) {}
 
   getAllTVA(): Observable<Tva[]> {
-    return this.http.get<Tva[]>('${environment.apiUrl}/api/parametrage/tva');
+    return this.http.get<Tva[]>(`${environment.apiUrl}/api/parametrage/tva`);
   }  
 
   updateTva(updatedTva: number): Observable<Tva> {
-    const url = '${environment.apiUrl}/api/parametrage/tva'; 
+    const url = `${environment.apiUrl}/api/parametrage/tva`; 
     return this.http.put<Tva>(url, { valeur: updatedTva });
   }  
 

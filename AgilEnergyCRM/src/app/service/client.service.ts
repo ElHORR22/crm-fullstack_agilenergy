@@ -8,7 +8,7 @@ import { Client, Gouvernorat, SecteurActivite } from '../modeles/client.model';
 })
 export class ClientService {
 
-  private apiUrl = '${environment.apiUrl}/api/clients';  
+  private apiUrl = `${environment.apiUrl}/api/clients`;  
 
   constructor(private http: HttpClient) { }
 
@@ -17,19 +17,19 @@ export class ClientService {
   }
 
   getGouvernorats(): Observable<Gouvernorat[]> {
-    return this.http.get<Gouvernorat[]>('${environment.apiUrl}/api/gouvernorats');
+    return this.http.get<Gouvernorat[]>(`${environment.apiUrl}/api/gouvernorats`);
   }
 
   getSecteurActivite(): Observable<SecteurActivite[]> {
-    return this.http.get<SecteurActivite[]>('${environment.apiUrl}/api/secteurs');
+    return this.http.get<SecteurActivite[]>(`${environment.apiUrl}/api/secteurs`);
   }
   
   addClient(client: Client): Observable<Client> {
-    return this.http.post<Client>('${environment.apiUrl}/api/clients', client);
+    return this.http.post<Client>(`${environment.apiUrl}/api/clients`, client);
   }   
   
   updateClient(client: Client): Observable<Client> {
-    return this.http.put<Client>('${environment.apiUrl}/api/clients/${client.id}', client);
+    return this.http.put<Client>(`${environment.apiUrl}/api/clients/${client.id}`, client);
   }  
   
   deleteClient(id: number): Observable<void> {

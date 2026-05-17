@@ -19,7 +19,7 @@ export interface ClientsProspectsCount {
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private baseUrl = '${environment.apiUrl}/api/dashboard';
+  private baseUrl = `${environment.apiUrl}/api/dashboard`;
 
   constructor(private http: HttpClient) {}
 
