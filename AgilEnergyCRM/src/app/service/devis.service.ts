@@ -5,7 +5,7 @@ import { Devis } from '../modeles/devis.model';
 import { LigneDevis } from '../modeles/lignedevis.model';
 import { environment } from '../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: 'root` })
 export class DevisService {
 
   // ✅ FIX 1 : URLs centralisées via environment.ts
@@ -58,7 +58,7 @@ export class DevisService {
     return this.http.delete<void>(`${this.ligneUrl}/${id}`);
   }
 
-  // ✅ FIX 7 : Le PDF est téléchargé via HttpClient (avec JWT dans le header grâce à l'interceptor)
+  // ✅ FIX 7 : Le PDF est téléchargé via HttpClient (avec JWT dans le header grâce à l`interceptor)
   // au lieu de window.open() qui ne peut pas envoyer de header Authorization
   exportPDF(devisId: number): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${devisId}/pdf`, {

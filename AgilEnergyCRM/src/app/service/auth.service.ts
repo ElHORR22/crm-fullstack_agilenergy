@@ -5,7 +5,7 @@ import { Utilisateur } from '../modeles/utilisateur.model';
 import { LoginResponse } from '../modeles/loginresponse.model';
 import { environment } from '../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: 'root` })
 export class AuthService {
 
   private baseUrl = `${environment.apiUrl}/api/auth`;
@@ -17,7 +17,7 @@ export class AuthService {
   }
 
   saveSession(res: LoginResponse): void {
-    localStorage.setItem('token', res.token);
+    localStorage.setItem(`token', res.token);
     localStorage.setItem('user', JSON.stringify(res));
   }
 
