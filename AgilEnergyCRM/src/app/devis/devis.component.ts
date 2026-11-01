@@ -8,14 +8,12 @@ import { ProspectService } from '../service/prospect.service';
 import { ClientService } from '../service/client.service';
 import { ProduitService } from '../service/produit.service';
 import { EmballageService } from '../service/emballage.service';
-import { ParametrageService } from '../service/parametrage.service';
 
 import { Devis } from '../modeles/devis.model';
 import { Prospect } from '../modeles/prospect.model';
 import { Client } from '../modeles/client.model';
 import { Produit } from '../modeles/produit.model';
 import { Emballage } from '../modeles/emballage.model';
-import { Tva } from '../modeles/parametrage.model';
 
 import { FilterPipe } from './Filter';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
@@ -60,7 +58,6 @@ export class DevisComponent implements OnInit, OnDestroy {
   successMessage = '';
 
   tvaValue = 0;
-  tvaList: Tva[] = [];
 
   errorMessage = '';
   showErrorPopup = false;
@@ -69,7 +66,6 @@ export class DevisComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private onDocClick = (e: MouseEvent) => this.closeAllDropdownsOnOutsideClick(e);
-  devis: any;
 
   constructor(
     private fb: FormBuilder,
@@ -77,8 +73,7 @@ export class DevisComponent implements OnInit, OnDestroy {
     private prospectService: ProspectService,
     private clientService: ClientService,
     private produitService: ProduitService,
-    private emballageService: EmballageService,
-    private paramService: ParametrageService
+    private emballageService: EmballageService
   ) { }
 
   ngOnInit(): void {
@@ -105,24 +100,28 @@ export class DevisComponent implements OnInit, OnDestroy {
       this.produitService.getAllProduits(),
       this.emballageService.getAllEmballages(),
       this.devisService.getAllDevis(),
-      this.devisService.getTVA(),
-      this.paramService.getAllTVA()
+      this.devisService.getTVA()
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([clients, prospects, produits, emballages, devis, tvaUnique, tvaList]) => {
-        this.filteredClients = this.clients = clients;
-        this.filteredProspects = this.prospects = prospects.filter(p => !p.isDeleted);
-        this.produits = produits.filter(p => !p.isDeleted);
-        this.emballages = emballages.filter(e => !e.isDeleted);
+      .subscribe({
+        next: ([clients, prospects, produits, emballages, devis, tva]) => {
+          this.filteredClients = this.clients = clients;
+          this.filteredProspects = this.prospects = prospects.filter(p => !p.isDeleted);
+          this.produits = produits.filter(p => !p.isDeleted);
+          this.emballages = emballages.filter(e => !e.isDeleted);
 
-        this.filteredDevis = this.devisList = devis;
+          this.filteredDevis = this.devisList = devis;
 
-        this.tvaList = tvaList;
-        this.tvaValue = tvaList?.[0]?.valeur ?? tvaUnique;
-        this.devisForm.get('TVA')?.setValue(this.tvaValue);
+          this.tvaValue = tva;
+          this.devisForm.get('TVA')?.setValue(this.tvaValue);
 
-        document.addEventListener('click', this.onDocClick);
-        this.updateProgress();
+          document.addEventListener('click', this.onDocClick);
+          this.updateProgress();
+        },
+        error: () => {
+          this.errorMessage = "Erreur lors du chargement des données des devis.";
+          this.showErrorPopup = true;
+        }
       });
   }
 
@@ -190,8 +189,18 @@ export class DevisComponent implements OnInit, OnDestroy {
   }
 
   toggleAddForm(): void {
-    if (this.isEditMode) this.showEditForm = !this.showEditForm;
-    else this.showAddForm = !this.showAddForm;
+    if (this.isEditMode || this.showAddForm) {
+      this.cancel();
+    } else {
+      this.showAddForm = true;
+    }
+  }
+
+  // Ferme le formulaire et sort du mode édition (sans quoi le prochain « Ajouter » éditerait encore).
+  cancel(): void {
+    this.resetForm();
+    this.showAddForm = false;
+    this.showEditForm = false;
   }
 
   openPopup(devis: Devis): void {
@@ -274,10 +283,11 @@ export class DevisComponent implements OnInit, OnDestroy {
     this.totalTTC = 0;
     this.totalPoidsKg = 0;
 
+    const tvaValue = this.tauxTvaEffectif();
+
     this.lignes.controls.forEach((ligne: any) => {
       const quantite = ligne.get('quantite')?.value ?? 0;
       const prixUnitaireHT = ligne.get('prixUnitaireHT')?.value ?? 0;
-      const tvaValue = ligne.get('TVA')?.value ?? this.tvaValue;
 
       const poidsProduit = ligne.get('poidsProduit')?.value ?? 0;
       const poidsEmballage = ligne.get('poidsEmballage')?.value ?? 0;
@@ -300,12 +310,40 @@ export class DevisComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Même règle que le backend (DevisCalculatorService) : client exonéré avec date limite non dépassée.
+  tauxTvaEffectif(): number {
+    const client: Client | null = this.isClientSelected ? this.devisForm?.get('client')?.value : null;
+    if (client && (client.exonere === true || (client.exonere as unknown) === 'true')) {
+      const limite = client.dateLimiteExo ? new Date(client.dateLimiteExo) : null;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (!limite || limite >= today) return 0;
+    }
+    return this.tvaValue;
+  }
+
+  // Changement de client : le type de prix et l'exonération peuvent changer.
+  onDestinataireChange(): void {
+    this.lignes.controls.forEach((_, i) => this.onProduitChange(i));
+    this.calculateTotal();
+  }
+
+  onLibelleChange(i: number): void {
+    const ligne = this.lignes.at(i);
+    const produit = this.produits.find(p => p.libelleProduit === ligne.get('libelleProduit')?.value);
+    if (produit) {
+      ligne.patchValue({ codeProduit: produit.codeProduit }, { emitEvent: false });
+    }
+    this.onProduitChange(i);
+  }
+
   onLigneChange(index: number): void {
     const ligne = this.lignes.at(index);
     const { codeProduit, codeEmballage } = ligne.value;
 
     const produit = this.produits.find(p => p.codeProduit === codeProduit);
-    const emballage = this.emballages.find(e => e.codeEmballage === codeEmballage);
+    // codeEmballage est l'objet Emballage sélectionné (ngValue), pas le code brut.
+    const emballage = this.getEmballage(codeEmballage);
 
     ligne.patchValue({
       poidsProduit: produit?.poidsProduit ?? 0,
@@ -386,8 +424,8 @@ export class DevisComponent implements OnInit, OnDestroy {
 
     const form = this.devisForm.value;
 
-    const clientId = this.isClientSelected ? (form.client?.idC ?? form.client?.id ?? null) : null;
-    const prospectId = this.isProspect ? (form.prospect?.idP ?? form.prospect?.id ?? null) : null;
+    const clientId = this.isClientSelected ? (form.client?.id ?? null) : null;
+    const prospectId = this.isProspect ? (form.prospect?.id ?? null) : null;
 
     if (clientId && prospectId) {
       this.errorMessage = "Choisir soit un client soit un prospect (pas les deux).";
@@ -464,13 +502,14 @@ export class DevisComponent implements OnInit, OnDestroy {
     this.isEditMode = true;
     this.showEditForm = true;
 
-    this.isClientSelected = !!devis.client;
-    this.isProspect = !!devis.prospect;
+    // L'API renvoie clientId / prospectId (pas d'objet client imbriqué).
+    this.isClientSelected = devis.clientId != null;
+    this.isProspect = !this.isClientSelected && devis.prospectId != null;
 
     this.devisForm.patchValue({
       sujet: devis.sujetDevis,
-      client: devis.client ? (this.clients.find(c => (c as any).idC === (devis.client as any).idC) ?? null) : null,
-      prospect: devis.prospect ? (this.prospects.find(p => (p as any).idP === (devis.prospect as any).idP) ?? null) : null,
+      client: this.isClientSelected ? (this.clients.find(c => c.id === devis.clientId) ?? null) : null,
+      prospect: this.isProspect ? (this.prospects.find(p => p.id === devis.prospectId) ?? null) : null,
       echeance: devis.echeance,
       delaiLivraison: devis.delaiLivraison,
       modeLivraison: devis.modeLivraison,

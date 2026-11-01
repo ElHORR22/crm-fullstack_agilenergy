@@ -12,9 +12,10 @@ export class ParametrageService {
 
   constructor(private http: HttpClient) {}
 
-  getAllTVA(): Observable<Tva[]> {
-    return this.http.get<Tva[]>(`${environment.apiUrl}/api/parametrage/tva`);
-  }  
+  // Une seule TVA (singleton id=1) : l'API renvoie un objet, pas une liste.
+  getTVA(): Observable<Tva> {
+    return this.http.get<Tva>(`${this.baseUrl}/tva`);
+  }
 
   updateTva(updatedTva: number): Observable<Tva> {
     const url = `${environment.apiUrl}/api/parametrage/tva`; 

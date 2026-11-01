@@ -9,7 +9,7 @@
           <button (click)="toggleAddForm()" class="bouton2">Ajouter un Produit</button>
           <div class="side-panel" *ngIf="showAddForm">
             <div class="side-panel-header">
-              <h3>Ajouter un Emballage</h3>
+              <h3>Ajouter un Produit</h3>
             </div>
 
             <div class="progress-container">
@@ -97,7 +97,7 @@
         </div>
         <div class="side-panel" *ngIf="showEditForm && selectedProduit">
           <div class="side-panel-header">
-            <h3>Modifier un Emballage</h3>
+            <h3>Modifier un Produit</h3>
           </div>
           <div class="side-panel-content">
             <h4>Informations Générales</h4>
@@ -175,14 +175,15 @@
         <div class="popup-overlay" *ngIf="showDetailPopup">
           <div class="popup-card">
             <div class="popup-header">
-              <h2>Détails de l'Emballage</h2>
+              <h2>Détails du Produit</h2>
               <span class="close-btn" (click)="closePopup()">×</span>
             </div>
             <div class="popup-content">
               <div class="popup-column">
                 <h3>Informations générales</h3>
                 <p><strong>ID :</strong> {{ selectedProduit!.id }}</p>
-                <p><strong>Code :</strong> {{ selectedProduit!.codeEmballage }}</p>
+                <p><strong>Code :</strong> {{ selectedProduit!.codeProduit }}</p>
+                <p><strong>Code emballage :</strong> {{ selectedProduit!.codeEmballage }}</p>
                 <p><strong>Libellé :</strong> {{ selectedProduit!.libelleProduit }}</p>
                 <p><strong>Type :</strong> {{ selectedProduit!.typeProduit }}</p>
                 <p><strong>Poids (kg) :</strong> {{ selectedProduit!.poidsProduit }}</p>
@@ -204,6 +205,7 @@
               <th></th>
               <th>ID</th>
               <th>Code</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>

@@ -151,6 +151,7 @@
                 <option value="Perdu">Perdu</option>
                 <option value="Pré-qualifié">Pré-qualifié</option>
                 <option value="Qualifié">Qualifié</option>
+                <option value="Converti" disabled>Converti</option>
               </select>
 
               <h4>Coordonnées</h4>
@@ -171,7 +172,7 @@
 
               <label>Fax:</label>
               <input [(ngModel)]="selectedProspect.fax" name="fax" type="text" />
-              <div *ngIf="errorMessage && errorMessage.includes('fax')" class="messagerreur"> {{ errorMessage }}
+              <div *ngIf="errorMessage && errorMessage.includes('Fax')" class="messagerreur"> {{ errorMessage }}
               </div>
 
               <label>Site Web:</label>
@@ -251,7 +252,8 @@
                 <h3>Coordonnées</h3>
                 <p><strong>Email :</strong> {{ selectedProspect!.email }}</p>
                 <p><strong>Autre email :</strong> {{ selectedProspect!.autremail }}</p>
-                <p><strong>Téléphone :</strong> {{ selectedProspect!.mobile }}</p>
+                <p><strong>Téléphone :</strong> {{ selectedProspect!.telephone }}</p>
+                <p><strong>Mobile :</strong> {{ selectedProspect!.mobile }}</p>
                 <p><strong>Fax :</strong> {{ selectedProspect!.fax }}</p>
                 <p><strong>Site Web :</strong> {{ selectedProspect!.siteWeb }}</p>
               </div>
@@ -279,6 +281,7 @@
               <th></th>
               <th>ID</th>
               <th>Nom</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -294,7 +297,7 @@
                     <button class="champbouton-item consulter" (click)="openPopup(prospect)">Consulter</button>
                     <button class="champbouton-item modifier" (click)="editProspect(prospect)">Modifier</button>
                     <button class="champbouton-item supprimer" (click)="deleteProspect(prospect.id)">Supprimer</button>
-                    <button class="champbouton-item convertir" (click)="convertirProspect(prospect)">Convertir en
+                    <button class="champbouton-item convertir" *ngIf="prospect.statutprospect !== 'Converti'" (click)="convertirProspect(prospect)">Convertir en
                       Client</button>
                   </div>
                 </div>

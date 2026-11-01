@@ -24,7 +24,7 @@
                 <label>Sujet du Devis</label>
                 <input class="formcontrole" formControlName="sujet" (input)="updateProgress()"
                   placeholder="Sujet du devis" />
-                <div *ngIf="errorMessage && !devis?.sujetDevis" class="messagerreur">Le Sujet est requis.</div>
+                <div *ngIf="devisForm.get('sujet')?.invalid && devisForm.get('sujet')?.touched" class="messagerreur">Le Sujet est requis.</div>
 
                 <label>Sélection du destinataire</label>
                 <div class="choix section">
@@ -36,11 +36,9 @@
 
                 <div class="etitre" *ngIf="isClientSelected">
                   <label>Nom du Client</label>
-                  <select class="formselection" formControlName="client">
+                  <select class="formselection" formControlName="client" (change)="onDestinataireChange()">
                     <option *ngFor="let client of clients" [ngValue]="client">{{ client.nom }}</option>
                   </select>
-                  <div *ngIf="errorMessage && !devis?.client" class="messagerreur">Le nom du client est requis.
-                  </div>
                 </div>
 
                 <div class="etitre" *ngIf="!isClientSelected">
@@ -48,13 +46,11 @@
                   <select class="formselection" formControlName="prospect">
                     <option *ngFor="let prospect of prospects" [ngValue]="prospect">{{ prospect.nom }}</option>
                   </select>
-                  <div *ngIf="errorMessage && !devis?.prospect" class="messagerreur">Le nom du prospect est requis.
-                  </div>
                 </div>
 
                 <label>Échéance</label>
                 <input type="date" class="formcontrole" (input)="updateProgress()" formControlName="echeance" />
-                <div *ngIf="errorMessage && !devis?.echeance" class="messagerreur">L'écheance est requise.</div>
+                <div *ngIf="devisForm.get('echeance')?.invalid && devisForm.get('echeance')?.touched" class="messagerreur">L'écheance est requise.</div>
 
                 <label>Délai de Livraison</label>
                 <select class="formselection" (input)="updateProgress()" formControlName="delaiLivraison">
@@ -62,7 +58,7 @@
                   <option value="Produit sur Commande 60 Jours">Produit sur Commande 60 Jours</option>
                   <option value="Produit Disponible">Produit Disponible</option>
                 </select>
-                <div *ngIf="errorMessage && !devis?.delaiLivraison" class="messagerreur">Le Délai de Livraison est
+                <div *ngIf="devisForm.get('delaiLivraison')?.invalid && devisForm.get('delaiLivraison')?.touched" class="messagerreur">Le Délai de Livraison est
                   requis.</div>
 
                 <label>Mode de Livraison</label>
@@ -71,7 +67,7 @@
                   <option value="Client">Client</option>
                   <option value="Transport par Voie Maritime">Transport par Voie Maritime</option>
                 </select>
-                <div *ngIf="errorMessage && !devis?.modeLivraison" class="messagerreur">La Mode de Livraison est
+                <div *ngIf="devisForm.get('modeLivraison')?.invalid && devisForm.get('modeLivraison')?.touched" class="messagerreur">La Mode de Livraison est
                   requise.</div>
 
                 <label>Mode de Paiement</label>
@@ -82,7 +78,7 @@
                   <option value="Au comptant">Au comptant</option>
                   <option value="Mode de Paiement Client">Mode de Paiement Client</option>
                 </select>
-                <div *ngIf="errorMessage && !devis?.modePaiement" class="messagerreur">Le Mode de Paiement est requis.
+                <div *ngIf="devisForm.get('modePaiement')?.invalid && devisForm.get('modePaiement')?.touched" class="messagerreur">Le Mode de Paiement est requis.
                 </div>
 
                 <div formArrayName="lignes">
@@ -93,21 +89,19 @@
                         <select class="formselection" formControlName="codeProduit" (change)="onProduitChange(i)">
                           <option *ngFor="let p of produits" [value]="p.codeProduit">{{ p.codeProduit }}</option>
                         </select>
-                        <div *ngIf="errorMessage && !devis?.produit" class="messagerreur">Le Produit est requis.</div>
+                        <div *ngIf="ligne.get('codeProduit')?.invalid && ligne.get('codeProduit')?.touched" class="messagerreur">Le Produit est requis.</div>
 
                         <label>Libellé</label>
-                        <select class="formselection" formControlName="libelleProduit" (change)="onProduitChange(i)">
+                        <select class="formselection" formControlName="libelleProduit" (change)="onLibelleChange(i)">
                           <option *ngFor="let p of produits" [value]="p.libelleProduit">{{ p.libelleProduit }}
                           </option>
                         </select>
-                        <div *ngIf="errorMessage && !devis?.libelleProduit" class="messagerreur">Le Libellé est
-                          requis.</div>
 
                         <label>Code Emballage</label>
                         <select class="formselection" formControlName="codeEmballage" (change)="onProduitChange(i)">
                           <option *ngFor="let e of emballages" [ngValue]="e">{{ e.codeEmballage }}</option>
                         </select>
-                        <div *ngIf="errorMessage && !devis?.codeEmballage" class="messagerreur">Le Code d'Emballage
+                        <div *ngIf="ligne.get('codeEmballage')?.invalid && ligne.get('codeEmballage')?.touched" class="messagerreur">Le Code d'Emballage
                           est requis.</div>
                       </div>
 
@@ -115,7 +109,7 @@
                         <label>Quantité</label>
                         <input type="number" class="formcontrole" formControlName="quantite"
                           (input)="onLigneChange(i)" />
-                        <div *ngIf="errorMessage && !devis?.quantite" class="messagerreur">La Quantité est requise.
+                        <div *ngIf="ligne.get('quantite')?.invalid && ligne.get('quantite')?.touched" class="messagerreur">La Quantité est requise.
                         </div>
                       </div>
 
@@ -127,7 +121,7 @@
 
                       <div class="colonne2">
                         <label>TVA (%)</label>
-                        <input type="number" class="formcontrole" [value]="devisForm.get('TVA')?.value" readonly />
+                        <input type="number" class="formcontrole" [value]="tauxTvaEffectif()" readonly />
                       </div>
 
                       <div class="colonne2">
@@ -162,7 +156,7 @@
                 </div>
                 <div class="side-panel-footer">
                   <button class="btn btn-primary" type="submit"> {{ isEditMode ? 'Mettre à jour' : 'Créer le devis'}}</button>
-                  <button class="btn btn-secondary" (click)="toggleAddForm()">Annuler</button>
+                  <button type="button" class="btn btn-secondary" (click)="cancel()">Annuler</button>
                 </div>
               </form>
             </div>
@@ -179,7 +173,7 @@
         <div class="popup-overlay" *ngIf="showDetailPopup">
           <div class="popup-card">
             <div class="popup-header">
-              <h2>Détails de l'Emballage</h2>
+              <h2>Détails du Devis</h2>
               <span class="close-btn" (click)="closePopup()">×</span>
             </div>
             <div class="popup-content">
@@ -187,8 +181,8 @@
                 <h3>Informations générales</h3>
                 <p><strong>ID :</strong> {{ selectedDevis!.id }}</p>
                 <p><strong>Sujet :</strong> {{ selectedDevis!.sujetDevis }}</p>
-                <p><strong>Nom du Client :</strong> {{ selectedDevis!.client?.nom }}</p>
-                <p><strong>Nom du Prospect :</strong> {{ selectedDevis!.prospect?.nom }}</p>
+                <p><strong>Nom du Client :</strong> {{ selectedDevis!.nomClient }}</p>
+                <p><strong>Nom du Prospect :</strong> {{ selectedDevis!.nomProspect }}</p>
               </div>
               <div class="popup-column">
                 <h3>Détails du Devis</h3>
@@ -216,6 +210,7 @@
               <th></th>
               <th>ID</th>
               <th>Sujet</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>

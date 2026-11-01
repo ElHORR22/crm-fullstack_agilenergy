@@ -43,14 +43,6 @@ export class DashboardService {
     return this.http.get<number>(`${this.baseUrl}/ca-mensuel`, { params });
   }
 
-  getCaDernierMois() {
-    return this.http.get<{ mois: number; ca: number }[]>('/api/devis/chiffre-affaires-dernier-mois');
-  }
-
-  getChiffreAffairesParMois(mois: number, annee: number): Observable<number> {
-    return this.http.get<number>(`${this.baseUrl}/chiffre-affaires?mois=${mois}&annee=${annee}`);
-  }
-
   getDevisParMois(): Observable<MoisDevis[]> {
     return this.http.get<MoisDevis[]>(`${this.baseUrl}/devis-par-mois`);
   }

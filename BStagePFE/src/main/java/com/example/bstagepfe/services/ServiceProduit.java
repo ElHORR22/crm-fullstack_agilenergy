@@ -1,4 +1,5 @@
 package com.example.bstagepfe.services;
+import jakarta.persistence.EntityNotFoundException;
 import com.example.bstagepfe.entities.Produit;
 import com.example.bstagepfe.repos.ProduitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ public class ServiceProduit {
     private ProduitRepository produitRepository;
 
     public List<Produit> getAllProduits() {
-        return produitRepository.findAll();
+        return produitRepository.findByIsDeletedFalse();
     }
 
     public Produit addProduit(Produit produit) {
@@ -36,12 +37,12 @@ public class ServiceProduit {
             produit.setDateModification(detailsproduit.getDateModification());
 
             return produitRepository.save(produit);
-        }).orElseThrow(() -> new RuntimeException("Emballage non trouvé !"));
+        }).orElseThrow(() -> new EntityNotFoundException("Produit non trouvé !"));
     }
 
     public void deleteProduit(Long id) {
         Produit produit = produitRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produit non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Produit non trouvé avec l'ID : " + id));
         produit.setIsDeleted(true);
         produitRepository.save(produit);
     }

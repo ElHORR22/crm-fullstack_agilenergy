@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 
 import { UtilisateurComponent } from './utilisateur.component';
 
@@ -7,8 +10,10 @@ describe('UtilisateurComponent', () => {
   let fixture: ComponentFixture<UtilisateurComponent>;
 
   beforeEach(async () => {
+    // Composant standalone : il s'importe (et non se déclare) ; HttpClient et Router sont simulés.
     await TestBed.configureTestingModule({
-      declarations: [UtilisateurComponent]
+      imports: [UtilisateurComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
     .compileComponents();
 

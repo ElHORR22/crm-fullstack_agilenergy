@@ -66,7 +66,6 @@ export class ClientComponent implements OnInit {
     this.loadClients();
     this.loadGouvernorats();  
     this.loadSecteurActivite();
-    this.loadContacts(this.clientId)
   }
 
   updateProgress() {
@@ -147,9 +146,9 @@ export class ClientComponent implements OnInit {
   searchClients(): void {
     if (this.searchTerm) {
       this.filteredClients = this.clients.filter(client => 
-        client.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-        client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-        client.telephone.toString().includes(this.searchTerm) ||
+        (client.nom ?? '').toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+        (client.email ?? '').toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+        (client.telephone ?? '').toString().includes(this.searchTerm) ||
         client.id?.toString().includes(this.searchTerm)
       );
     } else {
@@ -217,7 +216,7 @@ export class ClientComponent implements OnInit {
     }
 
     const faxStr = this.newClient.fax?.toString().trim();
-    if (!/^\d{8}$/.test(faxStr)) {
+    if (faxStr && !/^\d{8}$/.test(faxStr)) {
       this.errorMessage = 'Le numéro de Fax doit contenir exactement 8 chiffres !';
       return;
     }
@@ -229,9 +228,12 @@ export class ClientComponent implements OnInit {
 
     this.errorMessage = '';
   
-    this.clientService.addClient(this.newClient).subscribe(() => {
-      this.loadClients(); 
-      this.toggleAddForm(); 
+    this.clientService.addClient(this.newClient).subscribe({
+      next: () => {
+        this.loadClients();
+        this.toggleAddForm();
+      },
+      error: () => this.errorMessage = "Erreur lors de l'ajout du client."
     });
   }
   
@@ -316,7 +318,7 @@ export class ClientComponent implements OnInit {
 
   addContact() {
     if (!this.newContact.nom || !this.newContact.prenom || !this.newContact.fonction ||
-        !this.newContact.fax || !this.newContact.mobile || !this.newContact.telephone || !this.newContact.email) {
+        !this.newContact.mobile || !this.newContact.telephone || !this.newContact.email) {
       this.errorMessage = 'Veuillez remplir tous les champs obligatoires.';
       return;
     }
@@ -353,13 +355,15 @@ export class ClientComponent implements OnInit {
       return;
     }
   
-    const cpStr = this.newContact.codePostal!.toString().trim();
-    if (!/^\d{4}$/.test(cpStr)) {
+    // Code postal facultatif : vérifié seulement s'il est renseigné
+    const cpStr = this.newContact.codePostal ? this.newContact.codePostal.toString().trim() : '';
+    if (cpStr && !/^\d{4}$/.test(cpStr)) {
       this.errorMessage = 'Le code postal doit contenir 4 chiffres.';
       return;
     }
   
-    this.newContact.client = { id: this.selectedClient!.id };
+    // Le backend attend clientId pour rattacher le contact à son client.
+    this.newContact.clientId = this.selectedClient!.id;
   
     this.contactService.addContact(this.newContact).subscribe({
       next: () => {
@@ -375,8 +379,6 @@ export class ClientComponent implements OnInit {
   
   updateContact() {
     if (!this.selectedContact) return;
-  
-    this.selectedContact.clientId = this.clientId;
   
     this.contactService.updateContact(this.selectedContact.id!, this.selectedContact).subscribe({
       next: () => {
@@ -404,7 +406,6 @@ export class ClientComponent implements OnInit {
         next: () => {
           this.contacts = this.contacts.filter(c => c.id !== contact.id);
           alert('Contact supprimé avec succès');
-          this.loadContacts(this.clientId);
         },
         error: (err) => {
           alert('Erreur lors de la suppression du contact');

@@ -7,6 +7,11 @@ export class Devis {
     sujetDevis: string = '';
     client?: Client;
     prospect?: Prospect;
+    // Champs renvoyés par l'API (DevisResponseDTO) : le destinataire n'est pas un objet imbriqué.
+    clientId?: number | null;
+    prospectId?: number | null;
+    nomClient?: string;
+    nomProspect?: string;
     echeance: string = '';
     delaiLivraison: string = '';
     modeLivraison: string = '';

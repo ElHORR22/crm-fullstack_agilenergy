@@ -1,5 +1,3 @@
-version: '3.8'
-
 # ✅ FIX CRITIQUE : Tous les secrets viennent d'un fichier .env (non commité sur Git).
 # Créer un fichier .env à la racine du projet (voir .env.example).
 # Ne jamais écrire les mots de passe directement ici.

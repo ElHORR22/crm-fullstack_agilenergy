@@ -24,8 +24,9 @@ public class GouvernoratController {
         return gouvernoratService.getGouvernoratByNom(nom);
     }
 
-    @GetMapping("/{id}")
-    public Optional<Gouvernorat> getGouvernoratById(Long id) {
+    // Préfixe /id : un second GET "/{…}" entrait en conflit avec "/{nom}".
+    @GetMapping("/id/{id}")
+    public Optional<Gouvernorat> getGouvernoratById(@PathVariable Long id) {
         return gouvernoratService.getGouvernoratById(id);
     }
 

@@ -10,10 +10,11 @@ export class FilterPipe implements PipeTransform {
       return prospect;
     }
     return prospect.filter(prospect =>
-      prospect.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prospect.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prospect.telephone.toString().includes(searchTerm) ||
-      prospect.id!.toString().includes(searchTerm)
+      // nom/email peuvent être null en base : ?? '' évite une erreur qui viderait la liste.
+      (prospect.nom ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (prospect.email ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (prospect.telephone ?? '').toString().includes(searchTerm) ||
+      prospect.id?.toString().includes(searchTerm)
     );
   }
 }

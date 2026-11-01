@@ -1,4 +1,5 @@
 package com.example.bstagepfe.services;
+import jakarta.persistence.EntityNotFoundException;
 import com.example.bstagepfe.entities.Client;
 import com.example.bstagepfe.repos.ClientRepository;
 import com.example.bstagepfe.repos.GouvernoratRepository;
@@ -66,8 +67,8 @@ public class ServiceClient {
             client.setChiffreA(clientDetails.getChiffreA());
             client.setEffectif(clientDetails.getEffectif());
             client.setExonere(clientDetails.getExonere());
-            client.setIsConverted(clientDetails.getIsConverted());
             client.setDateLimiteExo(clientDetails.getDateLimiteExo());
+            client.setConditionPaiement(clientDetails.getConditionPaiement());
             client.setTypeprixAchat(clientDetails.getTypeprixAchat());
             client.setEmail(clientDetails.getEmail());
             client.setAutremail(clientDetails.getAutremail());
@@ -79,9 +80,8 @@ public class ServiceClient {
             client.setCodePostal(clientDetails.getCodePostal());
             client.setVille(clientDetails.getVille());
             client.setPays(clientDetails.getPays());
-            client.setDateModification(clientDetails.getDateModification());
-            client.setIsDeleted(clientDetails.getIsDeleted());
-            client.setProspect(clientDetails.getProspect());
+            // isConverted, isDeleted, prospect et les dates sont gérés par le serveur :
+            // ils ne sont pas repris du corps de la requête.
 
             if (clientDetails.getGouvernorat() != null && clientDetails.getGouvernorat().getId() != null) {
                 gouvernoratRepository.findById(clientDetails.getGouvernorat().getId())
@@ -94,14 +94,14 @@ public class ServiceClient {
             }
 
             return clientRepository.save(client);
-        }).orElseThrow(() -> new RuntimeException("Client non trouvé !"));
+        }).orElseThrow(() -> new EntityNotFoundException("Client non trouvé !"));
     }
 
 
     @Transactional
     public void deleteClient(Long idC) {
         Client client = clientRepository.findById(idC)
-                .orElseThrow(() -> new RuntimeException("Client non trouvé avec l'ID : " + idC));
+                .orElseThrow(() -> new EntityNotFoundException("Client non trouvé avec l'ID : " + idC));
         client.setIsDeleted(true);
         clientRepository.save(client);
     }

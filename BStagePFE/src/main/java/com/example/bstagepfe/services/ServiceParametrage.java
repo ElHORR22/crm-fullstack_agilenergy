@@ -1,4 +1,5 @@
 package com.example.bstagepfe.services;
+import jakarta.persistence.EntityNotFoundException;
 
 import com.example.bstagepfe.entities.SecteurActivite;
 import com.example.bstagepfe.entities.SourceProspection;
@@ -40,7 +41,7 @@ public class ServiceParametrage {
     // et on applique la nouvelle valeur reçue dans la requête.
     public TVA updateTVA(TVA tvaRequest) {
         TVA existing = tvaRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("TVA non trouvée"));
+                .orElseThrow(() -> new EntityNotFoundException("TVA non trouvée"));
         existing.setValeur(tvaRequest.getValeur());
         return tvaRepository.save(existing);
     }

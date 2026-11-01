@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 
 import { NonautoriseComponent } from './nonautorise.component';
 
@@ -7,8 +10,10 @@ describe('NonautoriseComponent', () => {
   let fixture: ComponentFixture<NonautoriseComponent>;
 
   beforeEach(async () => {
+    // Composant standalone : il s'importe (et non se déclare) ; HttpClient et Router sont simulés.
     await TestBed.configureTestingModule({
-      declarations: [NonautoriseComponent]
+      imports: [NonautoriseComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     })
     .compileComponents();
 

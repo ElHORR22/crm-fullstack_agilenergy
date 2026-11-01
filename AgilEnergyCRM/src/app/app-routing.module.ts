@@ -17,9 +17,10 @@ import { NonautoriseComponent } from './nonautorise/nonautorise.component';
 import { ResetPasswordComponent } from './resetpassword/resetpassword.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: 'acceuil', pathMatch: 'full' },
   { path: 'acceuil', component: AcceuilComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'utilisateur', component: UtilisateurComponent },
+  { path: 'utilisateur', component: UtilisateurComponent, canActivate: [authGuard] },
   { path: 'client', component: ClientComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR', 'COMMERCIAL'] } },
   { path: 'prospect', component: ProspectComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR', 'COMMERCIAL'] } },
   { path: 'emballage', component: EmballageComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR', 'COMMERCIAL', 'LOGISTICIEN'] } },
@@ -30,7 +31,8 @@ const routes: Routes = [
   { path: 'mesdevis', component: MesdevisComponent, canActivate: [authGuard], data: { roles: ['CLIENT'] } },
   { path: 'gestion_utilisateur', component: GestionUtilisateurComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR'] } },
   { path: 'nonautorise', component: NonautoriseComponent },
-  { path: 'reset-password', component: ResetPasswordComponent }
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: '**', redirectTo: 'acceuil' }
 ];
 
 @NgModule({
