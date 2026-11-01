@@ -5,13 +5,11 @@
 
 ---
 
-## 🔐 Comptes de démonstration
+## 🔐 Premier compte administrateur
 
-| Email | Mot de passe | Rôle |
-|-------|-------------|------|
-| admin@agil.com.tn | admin123 | Administrateur |
-| commercial@agil.com.tn | com123 | Commercial |
-| logistique@agil.com.tn | log123 | Logistique |
+Au premier démarrage, si la base ne contient aucun utilisateur, le backend crée un administrateur
+à partir des variables d'environnement `ADMIN_EMAIL` et `ADMIN_PASSWORD`.
+Les autres comptes (commercial, logisticien, client) se créent ensuite depuis « Comptes utilisateurs ».
 
 ---
 

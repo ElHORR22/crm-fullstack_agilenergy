@@ -64,6 +64,9 @@ public class ServiceDevis {
         return toResponseDTO(saved);
     }
 
+    // open-in-view=false : les lectures qui parcourent ligneDevis (LAZY) doivent rester
+    // dans une transaction, sinon LazyInitializationException.
+    @Transactional
     public List<DevisResponseDTO> getAllDevisDto() {
         return devisRepository.findAllWithLignes()
                 .stream()
@@ -71,6 +74,7 @@ public class ServiceDevis {
                 .toList();
     }
 
+    @Transactional
     public DevisResponseDTO getDevisDtoById(Long id) {
         Devis devis = devisRepository.findDevisById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Devis non trouvé"));
@@ -112,6 +116,7 @@ public class ServiceDevis {
         return devisRepository.getChiffreAffairesByMonth(startDate);
     }
 
+    @Transactional
     public List<DevisResponseDTO> getDevisByEmailDto(String email) {
         return devisRepository.findDevisByClientOrProspectEmail(email)
                 .stream()

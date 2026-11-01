@@ -18,7 +18,7 @@ export interface ClientsProspectsCount {
   prospects: number;
 }
 
-@Injectable({ providedIn: 'root` })
+@Injectable({ providedIn: 'root' })
 export class DashboardService {
   private baseUrl = `${environment.apiUrl}/api/dashboard`;
 
@@ -38,7 +38,7 @@ export class DashboardService {
 
   getCaMensuel(annee: number, mois: number): Observable<number> {
     const params = new HttpParams()
-      .set(`annee', annee.toString())
+      .set('annee', annee.toString())
       .set('mois', mois.toString());
     return this.http.get<number>(`${this.baseUrl}/ca-mensuel`, { params });
   }

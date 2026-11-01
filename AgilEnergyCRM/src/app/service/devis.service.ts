@@ -5,7 +5,7 @@ import { Devis } from '../modeles/devis.model';
 import { LigneDevis } from '../modeles/lignedevis.model';
 import { environment } from '../environments/environment';
 
-@Injectable({ providedIn: 'root` })
+@Injectable({ providedIn: 'root' })
 export class DevisService {
 
   // ✅ FIX 1 : URLs centralisées via environment.ts
