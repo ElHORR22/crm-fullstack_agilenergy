@@ -1,5 +1,6 @@
 package com.example.bstagepfe.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,7 +21,9 @@ public class Utilisateur {
     private String prenom;
     private String fonction;
 
+    // Accepté en entrée (création, changement de mot de passe) mais jamais renvoyé dans le JSON.
     @Column(name = "mdp")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String mdp;
 
     private String mobile;
@@ -29,7 +32,10 @@ public class Utilisateur {
     private String ville;
     private String codePostal;
 
+    // Empreinte SHA-256 du jeton de réinitialisation (le jeton brut n'est envoyé que par email).
+    @JsonIgnore
     private String resetToken;
+    @JsonIgnore
     private LocalDateTime tokenExpiration;
 
     private boolean actif = true;

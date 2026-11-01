@@ -24,9 +24,16 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 || error.status === 403) {
-          localStorage.clear();
-          this.router.navigate(['/login']);
+        // Les erreurs de /api/auth (mauvais mot de passe, lien expiré…) sont gérées par les composants.
+        if (!req.url.includes('/api/auth/')) {
+          if (error.status === 401) {
+            // Session absente ou expirée, ou compte désactivé : retour à la connexion.
+            localStorage.clear();
+            this.router.navigate(['/login']);
+          } else if (error.status === 403) {
+            // Connecté mais rôle insuffisant : la session reste valide.
+            this.router.navigate(['/nonautorise']);
+          }
         }
         return throwError(() => error);
       })

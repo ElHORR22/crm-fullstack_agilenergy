@@ -12,7 +12,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -64,11 +66,6 @@ public class DevisController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/par-email")
-    public ResponseEntity<List<DevisResponseDTO>> getDevisByEmail(@RequestParam String email) {
-        return ResponseEntity.ok(serviceDevis.getDevisByEmailDto(email));
-    }
-
     @GetMapping("/mes-devis")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<DevisResponseDTO>> getMesDevis(Principal principal) {
@@ -77,7 +74,13 @@ public class DevisController {
     }
 
     @GetMapping("/{id}/pdf")
-    public void exportPDF(@PathVariable Long id, HttpServletResponse response) throws IOException, DocumentException {
+    public void exportPDF(@PathVariable Long id, Authentication authentication, HttpServletResponse response)
+            throws IOException, DocumentException {
+        boolean estClient = authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_CLIENT".equals(a.getAuthority()));
+        if (estClient && !serviceDevis.appartientA(id, authentication.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ce devis ne vous appartient pas");
+        }
         serviceDevis.generatePDF(id, response);
     }
 }

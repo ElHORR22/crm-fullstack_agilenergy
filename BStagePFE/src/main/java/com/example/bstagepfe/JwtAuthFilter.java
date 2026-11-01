@@ -1,5 +1,7 @@
 package com.example.bstagepfe;
 
+import com.example.bstagepfe.entities.Utilisateur;
+import com.example.bstagepfe.repos.UtilisateurRepository;
 import com.example.bstagepfe.services.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -24,9 +26,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     // ✅ FIX 5 : N'injecte plus directement le secret — délègue à JWTService
     // FIX original : @Value("${app.jwt.secret=}") permettait une valeur vide dangereuse
     private final JWTService jwtService;
+    private final UtilisateurRepository utilisateurRepository;
 
-    public JwtAuthFilter(JWTService jwtService) {
+    public JwtAuthFilter(JWTService jwtService, UtilisateurRepository utilisateurRepository) {
         this.jwtService = jwtService;
+        this.utilisateurRepository = utilisateurRepository;
     }
 
     @Override
@@ -49,14 +53,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             Claims claims = jwtService.validateAndExtractClaims(token);
 
             String email = claims.getSubject();
-            String role = (String) claims.get("role");
 
-            var auth = new UsernamePasswordAuthenticationToken(
-                    email,
-                    null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
-            );
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            // Le compte est relu à chaque requête : un utilisateur désactivé ou supprimé
+            // perd l'accès immédiatement, et un changement de rôle s'applique sans attendre
+            // l'expiration du jeton (24 h).
+            Utilisateur user = utilisateurRepository.findByEmail(email).orElse(null);
+            if (user != null && user.isActif() && user.getRole() != null && user.getRole().getName() != null) {
+                var auth = new UsernamePasswordAuthenticationToken(
+                        email,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName().name()))
+                );
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } else {
+                log.warn("JWT refusé pour [{}] : compte inexistant, inactif ou sans rôle", email);
+            }
 
         } catch (JwtException e) {
             // ✅ FIX 4 : Le catch n'est plus silencieux — log du problème pour le débogage

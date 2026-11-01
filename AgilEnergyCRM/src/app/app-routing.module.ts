@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'produit', component: ProduitComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR', 'COMMERCIAL', 'LOGISTICIEN'] } },
   { path: 'devis', component: DevisComponent, canActivate: [authGuard], data: { roles: ['COMMERCIAL', 'ADMINISTRATEUR'] } },
   { path: 'parametrage', component: ParametrageComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR'] } },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], data: { roles: ['COMMERCIAL', 'ADMINISTRATEUR'] } },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR'] } },
   { path: 'mesdevis', component: MesdevisComponent, canActivate: [authGuard], data: { roles: ['CLIENT'] } },
   { path: 'gestion_utilisateur', component: GestionUtilisateurComponent, canActivate: [authGuard], data: { roles: ['ADMINISTRATEUR'] } },
   { path: 'nonautorise', component: NonautoriseComponent },

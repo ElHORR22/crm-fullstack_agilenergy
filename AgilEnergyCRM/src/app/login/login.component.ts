@@ -53,8 +53,10 @@ export class LoginComponent implements AfterViewInit {
         this.router.navigate(['/utilisateur']);
       },
       error: err => {
-        if (err.status === 401 || err.status === 403) {
-          this.router.navigate(['/nonautorise']);
+        if (err.status === 401) {
+          this.errorMessage = "Email ou mot de passe incorrect.";
+        } else if (err.status === 403) {
+          this.errorMessage = "Ce compte est désactivé.";
         } else {
           this.errorMessage = "Le serveur ne répond pas. Veuillez réessayer plus tard.";
         }

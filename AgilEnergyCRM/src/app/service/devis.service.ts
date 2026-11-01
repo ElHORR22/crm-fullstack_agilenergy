@@ -26,8 +26,9 @@ export class DevisService {
     return this.http.get<Devis>(`${this.baseUrl}/${id}`);
   }
 
-  getDevisByEmail(email: string): Observable<Devis[]> {
-    return this.http.get<Devis[]>(`${this.baseUrl}/par-email?email=${encodeURIComponent(email)}`);
+  // Devis du client connecté : l'email est lu côté serveur depuis le JWT.
+  getMesDevis(): Observable<Devis[]> {
+    return this.http.get<Devis[]>(`${this.baseUrl}/mes-devis`);
   }
 
   addDevis(devis: Devis): Observable<Devis> {

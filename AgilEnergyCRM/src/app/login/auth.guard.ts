@@ -23,7 +23,7 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     //    mais le backend DOIT aussi vérifier le JWT à chaque requête.
     //    Cette vérification côté client est une UX, pas une sécurité réelle.
     if (!userRole || !expectedRoles.includes(userRole)) {
-      return router.parseUrl('/unauthorized');
+      return router.parseUrl('/nonautorise');
     }
   }
 

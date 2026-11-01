@@ -40,7 +40,7 @@ class DashboardTest {
     private DevisRepository devisRepository;
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "ADMINISTRATEUR")
     void testGetClientsProspectsCount_DoitRetournerLesValeursInitiales() throws Exception {
         Client c = new Client();
         c.setNom("Entreprise Alpha");
@@ -59,7 +59,7 @@ class DashboardTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "ADMINISTRATEUR")
     void testChiffreAffairesTotal_SommeCorrecte() throws Exception {
         Devis d1 = new Devis();
         d1.setTotalTTC(new BigDecimal("2000.00"));
