@@ -33,7 +33,8 @@ Les autres comptes (commercial, logisticien, client) se créent ensuite depuis �
 - 🔐 **Auth JWT** — Login sécurisé, rôles (Administrateur, Commercial, Logisticien, Client) contrôlés côté serveur
 - 👥 **Prospects → Clients** — Conversion en 1 clic : le client est créé avec les données du prospect, qui passe au statut « Converti »
 - 📄 **Devis PDF** — Calcul TTC, poids et éco-zit recalculés côté serveur, exonération de TVA par client ; un client ne télécharge que ses propres devis
-- 📊 **Dashboard** — Montant total des devis, évolution mensuelle, clients par gouvernorat/secteur, devis par mois, top produits
+- 🔄 **Cycle de vie des devis** — Brouillon → Envoyé → Accepté ou Refusé ; seul un brouillon est modifiable, un devis accepté n'est jamais supprimé, le client accepte ou refuse ses devis depuis « Mes devis » et ne voit pas les brouillons ; les devis envoyés dont l'échéance est passée sont signalés
+- 📊 **Dashboard** — Chiffre d'affaires des devis acceptés et son évolution mensuelle, devis par statut et taux de conversion, clients par gouvernorat/secteur, devis par mois, top produits
 - 🏭 **Catalogue** — Produits & emballages avec codes, prix multiples, poids
 - 👤 **Gestion utilisateurs** — CRUD avec rôles, activation/désactivation (effet immédiat)
 - 📧 **Mot de passe oublié** — Lien par email valable 15 minutes (Spring Mail)

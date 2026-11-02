@@ -71,6 +71,13 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), request);
     }
 
+    // Action incompatible avec l'état actuel (ex. modifier un devis déjà envoyé).
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex,
+                                                                  HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage(), request);
+    }
+
     // Corps JSON illisible ou paramètre d'URL du mauvais type (ex. /clients/abc).
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Map<String, Object>> handleBadInput(Exception ex, HttpServletRequest request) {

@@ -2,6 +2,7 @@ package com.example.bstagepfe.controllers;
 
 import com.example.bstagepfe.DTO.DevisRequestDTO;
 import com.example.bstagepfe.DTO.DevisResponseDTO;
+import com.example.bstagepfe.entities.StatutDevis;
 import com.example.bstagepfe.services.ServiceDevis;
 import com.example.bstagepfe.services.ServiceParametrage;
 import com.itextpdf.text.DocumentException;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/devis")
@@ -66,11 +68,27 @@ public class DevisController {
         return ResponseEntity.noContent().build();
     }
 
+    // Body : { "statut": "ENVOYE" | "ACCEPTE" | "REFUSE" | "BROUILLON" }
+    @PutMapping("/{id}/statut")
+    public ResponseEntity<DevisResponseDTO> changerStatut(@PathVariable Long id,
+                                                          @RequestBody Map<String, StatutDevis> body) {
+        return ResponseEntity.ok(serviceDevis.changerStatut(id, body.get("statut")));
+    }
+
     @GetMapping("/mes-devis")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<DevisResponseDTO>> getMesDevis(Principal principal) {
         String email = principal.getName();
-        return ResponseEntity.ok(serviceDevis.getDevisByEmailDto(email));
+        return ResponseEntity.ok(serviceDevis.getDevisVisiblesParClient(email));
+    }
+
+    // Le client accepte ou refuse un devis qui lui a été envoyé. Body : { "statut": "ACCEPTE" | "REFUSE" }
+    @PutMapping("/{id}/reponse")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<DevisResponseDTO> repondre(@PathVariable Long id,
+                                                     @RequestBody Map<String, StatutDevis> body,
+                                                     Principal principal) {
+        return ResponseEntity.ok(serviceDevis.repondreClient(id, principal.getName(), body.get("statut")));
     }
 
     @GetMapping("/{id}/pdf")
@@ -78,7 +96,7 @@ public class DevisController {
             throws IOException, DocumentException {
         boolean estClient = authentication.getAuthorities().stream()
                 .anyMatch(a -> "ROLE_CLIENT".equals(a.getAuthority()));
-        if (estClient && !serviceDevis.appartientA(id, authentication.getName())) {
+        if (estClient && !serviceDevis.estVisiblePar(id, authentication.getName())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ce devis ne vous appartient pas");
         }
         serviceDevis.generatePDF(id, response);

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ClientsProspectsCount, DashboardService, MoisDevis, ProduitDemandes } from '../service/dashboard.service';
 import { CommonModule } from '@angular/common';
+import { LIBELLES_STATUT, STATUTS_DEVIS } from '../modeles/devis.model';
 import { NgChartsModule } from 'ng2-charts';
 import { Chart, ArcElement, Tooltip, Legend, PieController, DoughnutController, ChartDataset } from 'chart.js';
 Chart.register(ArcElement, Tooltip, Legend, PieController, DoughnutController);
@@ -63,7 +64,7 @@ export class DashboardComponent implements OnInit {
     datasets: [
       {
         data: [],
-        label: 'Total des devis TTC (TND)',
+        label: 'Devis acceptés TTC (TND)',
         backgroundColor: ['#3498db', '#2ecc71']
       }
     ]
@@ -79,6 +80,11 @@ export class DashboardComponent implements OnInit {
 
   topProduitsLabels: string[] = [];
   topProduitsData: number[] = [];
+
+  // Répartition des devis par statut et taux de conversion (acceptés / devis ayant reçu une réponse).
+  statutChartLabels: string[] = STATUTS_DEVIS.map(s => LIBELLES_STATUT[s]);
+  statutChartData = [{ data: [0, 0, 0, 0], backgroundColor: ['#90a4ae', '#1e88e5', '#43a047', '#e53935'], borderWidth: 0 }];
+  tauxConversion: number | null = null;
 
   clientsProspectsChartLabels: string[] = ['Clients', 'Prospects'];
   clientsProspectsChartData = [{ data: [0, 0], backgroundColor: ['#1a73e8', '#e0f7fa'], borderWidth: 0 }];
@@ -127,6 +133,7 @@ export class DashboardComponent implements OnInit {
     this.loadDevisParMois();
     this.loadTopProduits();
     this.loadClientsProspectsCount();
+    this.loadDevisParStatut();
   }
 
   scrollTo(section: string) {
@@ -209,6 +216,19 @@ export class DashboardComponent implements OnInit {
     });
   }
   
+  loadDevisParStatut(): void {
+    this.dashboardService.getDevisParStatut().subscribe(compte => {
+      this.statutChartData = [{ ...this.statutChartData[0], data: STATUTS_DEVIS.map(s => compte[s] ?? 0) }];
+      this.tauxConversion = DashboardComponent.calculerTauxConversion(compte.ACCEPTE ?? 0, compte.REFUSE ?? 0);
+    });
+  }
+
+  // null tant qu'aucun devis n'a reçu de réponse (pas de taux significatif).
+  static calculerTauxConversion(acceptes: number, refuses: number): number | null {
+    const reponses = acceptes + refuses;
+    return reponses === 0 ? null : (acceptes / reponses) * 100;
+  }
+
   loadClientsProspectsCount(): void {
     this.dashboardService.getClientsProspectsCount().subscribe({
       next: (data: ClientsProspectsCount) => {

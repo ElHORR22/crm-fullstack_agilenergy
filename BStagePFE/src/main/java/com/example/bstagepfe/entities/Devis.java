@@ -32,6 +32,13 @@ public class Devis {
     private BigDecimal totalTTC;
     private BigDecimal totalPoidsKg;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private StatutDevis statut = StatutDevis.BROUILLON;
+
+    // Date du dernier changement de statut (envoi, acceptation, refus).
+    private LocalDate dateStatut;
+
     @OneToMany(mappedBy="devis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
     @JsonManagedReference
     private List<LigneDevis> ligneDevis;
@@ -43,6 +50,23 @@ public class Devis {
     @ManyToOne
     @JoinColumn(name = "prospect_id", referencedColumnName = "idP")
     private Prospect prospect;
+
+    // Les devis créés avant l'ajout des statuts ont une colonne vide : ce sont des brouillons.
+    public StatutDevis getStatut() {
+        return statut != null ? statut : StatutDevis.BROUILLON;
+    }
+
+    public void setStatut(StatutDevis statut) {
+        this.statut = statut;
+    }
+
+    public LocalDate getDateStatut() {
+        return dateStatut;
+    }
+
+    public void setDateStatut(LocalDate dateStatut) {
+        this.dateStatut = dateStatut;
+    }
 
     public Long getId() {
         return id;

@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -67,6 +68,20 @@ class SecurityTest {
     @WithMockUser(roles = "CLIENT")
     void testAccesClientALaListeDesDevis_DevraitEtreInterdit() throws Exception {
         mockMvc.perform(get("/api/devis"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "CLIENT")
+    void testClientNePeutPasChangerLeStatutCommeUnCommercial() throws Exception {
+        mockMvc.perform(put("/api/devis/1/statut").contentType("application/json").content("{\"statut\":\"ACCEPTE\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "COMMERCIAL")
+    void testCommercialNePeutPasRepondreALaPlaceDuClient() throws Exception {
+        mockMvc.perform(put("/api/devis/1/reponse").contentType("application/json").content("{\"statut\":\"ACCEPTE\"}"))
                 .andExpect(status().isForbidden());
     }
 

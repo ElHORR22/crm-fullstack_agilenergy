@@ -2,6 +2,26 @@ import { Client } from "./client.model";
 import { LigneDevis } from "./lignedevis.model";
 import { Prospect } from "./prospect.model";
 
+// Cycle de vie : BROUILLON -> ENVOYE -> ACCEPTE ou REFUSE (même règle que StatutDevis côté Java).
+export type StatutDevis = 'BROUILLON' | 'ENVOYE' | 'ACCEPTE' | 'REFUSE';
+
+export const STATUTS_DEVIS: StatutDevis[] = ['BROUILLON', 'ENVOYE', 'ACCEPTE', 'REFUSE'];
+
+export const LIBELLES_STATUT: Record<StatutDevis, string> = {
+    BROUILLON: 'Brouillon',
+    ENVOYE: 'Envoyé',
+    ACCEPTE: 'Accepté',
+    REFUSE: 'Refusé'
+};
+
+// Libellé du bouton qui fait passer un devis au statut donné.
+export const ACTIONS_STATUT: Record<StatutDevis, string> = {
+    BROUILLON: 'Repasser en brouillon',
+    ENVOYE: 'Marquer comme envoyé',
+    ACCEPTE: 'Marquer comme accepté',
+    REFUSE: 'Marquer comme refusé'
+};
+
 export class Devis {
     id?: number;
     sujetDevis: string = '';
@@ -20,6 +40,12 @@ export class Devis {
     dateModification?: string = '';
     totalTTC?: number;
     totalPoidsKg?: number;
+    statut?: StatutDevis;
+    dateStatut?: string;
+    // Statuts atteignables depuis le statut actuel (calculés par le backend).
+    transitionsPossibles?: StatutDevis[];
+    // Envoyé mais échéance dépassée sans réponse.
+    expire?: boolean;
     ligneDevis?: LigneDevis[];
     showDropdown?: boolean;
     checked?: boolean;

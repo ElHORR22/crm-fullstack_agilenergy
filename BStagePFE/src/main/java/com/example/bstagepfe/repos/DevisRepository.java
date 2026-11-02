@@ -13,11 +13,20 @@ public interface DevisRepository extends JpaRepository<Devis, Long> {
     @Query("SELECT DISTINCT d FROM Devis d LEFT JOIN FETCH d.ligneDevis")
     List<Devis> findAllWithLignes();
 
-    @Query("SELECT SUM(d.totalTTC) FROM Devis d")
+    // Chiffre d'affaires = devis acceptés uniquement (un brouillon ou un refus n'est pas une vente).
+    @Query("SELECT COALESCE(SUM(d.totalTTC), 0) FROM Devis d WHERE d.statut = com.example.bstagepfe.entities.StatutDevis.ACCEPTE")
     Double getChiffreAffairesTotal();
 
-    @Query("SELECT COALESCE(SUM(d.totalTTC), 0) FROM Devis d WHERE YEAR(d.dateCreation) = :annee AND MONTH(d.dateCreation) = :mois")
+    // Rattaché au mois d'acceptation (dateStatut), pas au mois de création.
+    @Query("SELECT COALESCE(SUM(d.totalTTC), 0) FROM Devis d " +
+            "WHERE d.statut = com.example.bstagepfe.entities.StatutDevis.ACCEPTE " +
+            "AND YEAR(d.dateStatut) = :annee AND MONTH(d.dateStatut) = :mois")
     Double getChiffreAffairesParMois(int annee, int mois);
+
+    // Les devis antérieurs aux statuts (colonne vide) sont comptés comme brouillons.
+    @Query("SELECT COALESCE(d.statut, com.example.bstagepfe.entities.StatutDevis.BROUILLON), COUNT(d) FROM Devis d " +
+            "GROUP BY COALESCE(d.statut, com.example.bstagepfe.entities.StatutDevis.BROUILLON)")
+    List<Object[]> countByStatut();
 
     @Query("SELECT FUNCTION('MONTH', d.dateCreation), SUM(d.totalTTC) FROM Devis d " +
             "WHERE d.dateCreation >= :startDate " +

@@ -1,6 +1,7 @@
 package com.example.bstagepfe.controllers;
 import com.example.bstagepfe.DTO.MoisDevis;
 import com.example.bstagepfe.DTO.ProduitDemandes;
+import com.example.bstagepfe.entities.StatutDevis;
 import com.example.bstagepfe.repos.ClientRepository;
 import com.example.bstagepfe.repos.ProspectRepository;
 import com.example.bstagepfe.repos.DevisRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,6 +63,19 @@ public class DashboardController {
         return allProduits.stream()
                 .limit(5)
                 .collect(Collectors.toList());
+    }
+
+    // Nombre de devis par statut, tous statuts présents (0 si aucun devis) et dans l'ordre du cycle de vie.
+    @GetMapping("/devis-par-statut")
+    public Map<StatutDevis, Long> getDevisParStatut() {
+        Map<StatutDevis, Long> result = new LinkedHashMap<>();
+        for (StatutDevis statut : StatutDevis.values()) {
+            result.put(statut, 0L);
+        }
+        for (Object[] ligne : devisRepository.countByStatut()) {
+            result.put((StatutDevis) ligne[0], ((Number) ligne[1]).longValue());
+        }
+        return result;
     }
 
     @GetMapping("/clients-prospects-count")

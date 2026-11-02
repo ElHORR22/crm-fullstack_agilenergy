@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Devis } from '../modeles/devis.model';
+import { Devis, StatutDevis } from '../modeles/devis.model';
 import { LigneDevis } from '../modeles/lignedevis.model';
 import { environment } from '../environments/environment';
 
@@ -41,6 +41,16 @@ export class DevisService {
 
   deleteDevis(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  // Équipe commerciale : envoi, acceptation, refus ou retour en brouillon.
+  changerStatut(id: number, statut: StatutDevis): Observable<Devis> {
+    return this.http.put<Devis>(`${this.baseUrl}/${id}/statut`, { statut });
+  }
+
+  // Client : accepter ou refuser un devis qui lui a été envoyé.
+  repondre(id: number, statut: 'ACCEPTE' | 'REFUSE'): Observable<Devis> {
+    return this.http.put<Devis>(`${this.baseUrl}/${id}/reponse`, { statut });
   }
 
   getLignesByDevisId(devisId: number): Observable<LigneDevis[]> {

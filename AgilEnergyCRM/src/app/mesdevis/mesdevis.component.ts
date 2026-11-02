@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DevisService } from '../service/devis.service';
-import { Devis } from '../modeles/devis.model';
+import { Devis, LIBELLES_STATUT } from '../modeles/devis.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 export class MesdevisComponent implements OnInit {
   devisClient: Devis[] = [];
   role: string | null = null;
+  readonly libellesStatut = LIBELLES_STATUT;
 
   constructor(private devisService: DevisService) {}
 
@@ -23,6 +24,10 @@ export class MesdevisComponent implements OnInit {
     if (userStr) {
       this.role = JSON.parse(userStr).role;
     }
+    this.chargerDevis();
+  }
+
+  chargerDevis(): void {
     this.devisService.getMesDevis().subscribe({
       next: data => this.devisClient = data
     });
@@ -31,7 +36,14 @@ export class MesdevisComponent implements OnInit {
   visualiser(devisId: number): void {
     this.devisService.downloadPDF(devisId);
   }
-  
+
+  repondre(devis: Devis, reponse: 'ACCEPTE' | 'REFUSE'): void {
+    const verbe = reponse === 'ACCEPTE' ? 'accepter' : 'refuser';
+    if (!confirm(`Voulez-vous ${verbe} le devis #${devis.id} « ${devis.sujetDevis} » ? Ce choix est définitif.`)) return;
+
+    this.devisService.repondre(devis.id!, reponse).subscribe({
+      next: () => this.chargerDevis(),
+      error: (err) => alert(err?.error?.message ?? 'Impossible d\'enregistrer votre réponse.')
+    });
+  }
 }
-
-
