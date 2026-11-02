@@ -73,9 +73,9 @@ npx ng serve
 cp .env.example .env   # Remplir les valeurs
 docker compose up --build
 ```
-L'image du frontend est construite en mode production : elle appelle l'API définie dans
-`AgilEnergyCRM/src/app/environments/environment.prod.ts` (Railway). Pour viser le backend
-du `docker compose`, y mettre `http://localhost:8080`.
+Application disponible sur http://localhost:4200 (API sur http://localhost:8080).
+Pour un déploiement en ligne, mettre l'URL publique de l'API dans
+`AgilEnergyCRM/src/app/environments/environment.prod.ts` et celle du frontend dans les origines CORS de `SecurityConfig`.
 
 ### Tests
 ```bash

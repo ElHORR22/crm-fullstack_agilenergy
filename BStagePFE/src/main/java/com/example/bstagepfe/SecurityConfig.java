@@ -85,11 +85,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-            "http://localhost:4200",
-            "https://crm-fullstack-agilenergy.vercel.app",
-            "https://crm-fullstackagilenergy-production.up.railway.app"
-        ));
+        // Frontend servi par ng serve et par le conteneur nginx (tous deux sur le port 4200).
+        // Pour un déploiement en ligne, ajouter ici l'URL publique du frontend.
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of(
                 "Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
