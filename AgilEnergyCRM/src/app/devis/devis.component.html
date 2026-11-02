@@ -6,6 +6,10 @@
         <div class="lbarre">
           <input type="text" [(ngModel)]="searchTerm" (input)="searchDevis()" placeholder="Rechercher un devis"
             class="recherche">
+          <select [(ngModel)]="statutFiltre" class="filtre-statut" aria-label="Filtrer par statut">
+            <option value="">Tous les statuts</option>
+            <option *ngFor="let s of statuts" [value]="s">{{ libellesStatut[s] }}</option>
+          </select>
           <button (click)="toggleAddForm()" class="bouton2">Ajouter un Devis</button>
           <div class="side-panel" *ngIf="showAddForm || (showEditForm && selectedDevis)">
             <div class="side-panel-header">
@@ -183,6 +187,12 @@
                 <p><strong>Sujet :</strong> {{ selectedDevis!.sujetDevis }}</p>
                 <p><strong>Nom du Client :</strong> {{ selectedDevis!.nomClient }}</p>
                 <p><strong>Nom du Prospect :</strong> {{ selectedDevis!.nomProspect }}</p>
+                <p><strong>Statut :</strong>
+                  <span class="badge-statut" [ngClass]="'statut-' + (selectedDevis!.statut ?? 'BROUILLON')">
+                    {{ libellesStatut[selectedDevis!.statut ?? 'BROUILLON'] }}
+                  </span>
+                  <span *ngIf="selectedDevis!.expire" class="badge-statut statut-expire">Échéance dépassée</span>
+                </p>
               </div>
               <div class="popup-column">
                 <h3>Détails du Devis</h3>
@@ -197,6 +207,7 @@
                 <p><strong>Echeance :</strong> {{ selectedDevis!.echeance | date }}</p>
                 <p><strong>Date de création :</strong> {{ selectedDevis!.dateCreation | date }}</p>
                 <p><strong>Date de modification :</strong> {{ selectedDevis!.dateModification | date }}</p>
+                <p><strong>Dernier changement de statut :</strong> {{ selectedDevis!.dateStatut | date }}</p>
               </div>
             </div>
             <div class="popup-footer">
@@ -210,21 +221,32 @@
               <th></th>
               <th>ID</th>
               <th>Sujet</th>
+              <th>Statut</th>
+              <th>Total TTC</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let devis of filteredDevis | filter: searchTerm">
+            <tr *ngFor="let devis of devisAffiches | filter: searchTerm">
               <td><input type="checkbox" [checked]="devis.checked" (change)="onDevisSelect(devis, $event)" /></td>
               <td>{{ devis.id }}</td>
               <td>{{ devis.sujetDevis }}</td>
+              <td>
+                <span class="badge-statut" [ngClass]="'statut-' + (devis.statut ?? 'BROUILLON')">
+                  {{ libellesStatut[devis.statut ?? 'BROUILLON'] }}
+                </span>
+                <span *ngIf="devis.expire" class="badge-statut statut-expire" title="Échéance dépassée sans réponse">Expiré</span>
+              </td>
+              <td>{{ devis.totalTTC | number:'1.0-3' }} TND</td>
               <td class="actions">
                 <div class="actions-container">
                   <button class="actionsbouton" (click)="toggleDropdown(devis)">Actions</button>
                   <div class="champbouton" *ngIf="devis.showDropdown">
                     <button class="champbouton-item consulter" (click)="openPopup(devis)">Consulter</button>
-                    <button class="champbouton-item modifier" (click)="editDevis(devis)">Modifier</button>
-                    <button class="champbouton-item supprimer" (click)="deleteDevis(devis.id!)">Supprimer</button>
+                    <button class="champbouton-item modifier" *ngIf="estModifiable(devis)" (click)="editDevis(devis)">Modifier</button>
+                    <button class="champbouton-item statut" *ngFor="let cible of devis.transitionsPossibles"
+                      (click)="changerStatut(devis, cible)">{{ actionsStatut[cible] }}</button>
+                    <button class="champbouton-item supprimer" *ngIf="estSupprimable(devis)" (click)="deleteDevis(devis.id!)">Supprimer</button>
                     <button class="champbouton-item visualiser" *ngIf="devis.checked" (click)="visualiser(devis.id!)">Visualiser</button>
                   </div>
                 </div>

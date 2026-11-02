@@ -6,6 +6,7 @@ import com.example.bstagepfe.repos.ClientRepository;
 import com.example.bstagepfe.repos.ProspectRepository;
 import com.example.bstagepfe.repos.DevisRepository;
 import com.example.bstagepfe.entities.Devis;
+import com.example.bstagepfe.entities.StatutDevis;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,17 +61,36 @@ class DashboardTest {
 
     @Test
     @WithMockUser(roles = "ADMINISTRATEUR")
-    void testChiffreAffairesTotal_SommeCorrecte() throws Exception {
-        Devis d1 = new Devis();
-        d1.setTotalTTC(new BigDecimal("2000.00"));
-        devisRepository.save(d1);
-
-        Devis d2 = new Devis();
-        d2.setTotalTTC(new BigDecimal("1500.50"));
-        devisRepository.save(d2);
+    void testChiffreAffairesTotal_SeulsLesDevisAcceptesComptent() throws Exception {
+        devisRepository.save(devis("2000.00", StatutDevis.ACCEPTE));
+        devisRepository.save(devis("1500.50", StatutDevis.ACCEPTE));
+        devisRepository.save(devis("9999.00", StatutDevis.BROUILLON));
+        devisRepository.save(devis("8888.00", StatutDevis.REFUSE));
 
         mockMvc.perform(get("/api/dashboard/chiffre-affaires"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("3500.5"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMINISTRATEUR")
+    void testDevisParStatut_TousLesStatutsPresents() throws Exception {
+        devisRepository.save(devis("100.00", StatutDevis.ACCEPTE));
+        devisRepository.save(devis("100.00", StatutDevis.ENVOYE));
+        devisRepository.save(devis("100.00", StatutDevis.ENVOYE));
+
+        mockMvc.perform(get("/api/dashboard/devis-par-statut"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.BROUILLON", is(0)))
+                .andExpect(jsonPath("$.ENVOYE", is(2)))
+                .andExpect(jsonPath("$.ACCEPTE", is(1)))
+                .andExpect(jsonPath("$.REFUSE", is(0)));
+    }
+
+    private Devis devis(String totalTTC, StatutDevis statut) {
+        Devis d = new Devis();
+        d.setTotalTTC(new BigDecimal(totalTTC));
+        d.setStatut(statut);
+        return d;
     }
 }

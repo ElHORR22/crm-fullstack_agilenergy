@@ -60,8 +60,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/utilisateurs/**", "/api/roles/**", "/api/dashboard/**")
                             .hasRole(ADMIN)
 
-                        // Le CLIENT ne voit que ses devis ; l'appartenance du PDF est vérifiée dans DevisController.
+                        // Le CLIENT ne voit que ses devis et ne peut qu'y répondre ;
+                        // l'appartenance est vérifiée dans ServiceDevis / DevisController.
                         .requestMatchers(HttpMethod.GET, "/api/devis/mes-devis").hasRole(CLIENT)
+                        .requestMatchers(HttpMethod.PUT, "/api/devis/*/reponse").hasRole(CLIENT)
                         .requestMatchers(HttpMethod.GET, "/api/devis/*/pdf").hasAnyRole(ADMIN, COMMERCIAL, CLIENT)
 
                         .requestMatchers("/api/clients/**", "/api/prospects/**", "/api/contacts/**",

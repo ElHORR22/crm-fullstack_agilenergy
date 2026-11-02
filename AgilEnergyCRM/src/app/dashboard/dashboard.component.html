@@ -7,7 +7,7 @@
 
     <section class="card revenue-card" aria-labelledby="ca-title" tabindex="0">
       <header class="card-header">
-        <h3 id="ca-title">Montant total des devis (TTC)</h3>
+        <h3 id="ca-title">Chiffre d'affaires (devis acceptés, TTC)</h3>
         <span class="period" aria-live="polite">{{ periode }}</span>
       </header>
 
@@ -23,7 +23,7 @@
           {{ caEvolution | number:'1.0-2' }}% par rapport au mois précédent
         </div>
         <ng-template #pasDeComparaison>
-          <div class="evolution" role="status">Aucun devis le mois précédent : pas de comparaison possible</div>
+          <div class="evolution" role="status">Aucun devis accepté le mois précédent : pas de comparaison possible</div>
         </ng-template>
       </div>
 
@@ -90,6 +90,23 @@
           datasets: clientsProspectsChartData
         }" [type]="'doughnut'" [options]="clientsProspectsChartOptions"
         aria-label="Graphique en anneau comparant le nombre de clients et prospects" role="img">
+      </canvas>
+    </section>
+
+    <section class="card chart-card" aria-labelledby="statuts-chart-title" tabindex="0">
+      <h4 id="statuts-chart-title" class="chart-title">Devis par statut</h4>
+      <p class="taux-conversion" role="status">
+        <ng-container *ngIf="tauxConversion !== null; else pasDeTaux">
+          Taux de conversion : <strong>{{ tauxConversion | number:'1.0-1' }} %</strong>
+          <small>(acceptés / acceptés + refusés)</small>
+        </ng-container>
+        <ng-template #pasDeTaux>Taux de conversion : aucun devis n'a encore reçu de réponse</ng-template>
+      </p>
+      <canvas baseChart [data]="{
+          labels: statutChartLabels,
+          datasets: statutChartData
+        }" [type]="'doughnut'" [options]="chartOptions"
+        aria-label="Graphique en anneau des devis par statut" role="img">
       </canvas>
     </section>
   </div>

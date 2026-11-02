@@ -57,6 +57,8 @@ public class ServiceDevis {
     @Transactional
     public DevisResponseDTO addDevisFromDto(DevisRequestDTO dto) {
         Devis devis = mapDtoToEntity(dto);
+        devis.setStatut(StatutDevis.BROUILLON);
+        devis.setDateStatut(LocalDate.now());
         attachLines(devis);
         calculator.compute(devis);
 
@@ -86,6 +88,10 @@ public class ServiceDevis {
     public DevisResponseDTO updateDevisFromDto(Long id, DevisRequestDTO dto) {
         Devis devis = devisRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Devis non trouvé"));
+        if (!devis.getStatut().estModifiable()) {
+            throw new IllegalStateException("Seul un devis en brouillon peut être modifié "
+                    + "(repassez un devis envoyé en brouillon pour le corriger).");
+        }
 
         Devis updated = mapDtoToEntity(dto);
 
@@ -107,8 +113,46 @@ public class ServiceDevis {
         return toResponseDTO(saved);
     }
 
+    @Transactional
     public void deleteDevis(Long id) {
-        devisRepository.deleteById(id);
+        Devis devis = devisRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Devis non trouvé"));
+        if (!devis.getStatut().estSupprimable()) {
+            throw new IllegalStateException("Un devis envoyé ou accepté ne peut pas être supprimé.");
+        }
+        devisRepository.delete(devis);
+    }
+
+    // Changement de statut par l'équipe commerciale (envoi, acceptation, refus, retour en brouillon).
+    @Transactional
+    public DevisResponseDTO changerStatut(Long id, StatutDevis cible) {
+        Devis devis = devisRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Devis non trouvé"));
+        appliquerTransition(devis, cible);
+        return toResponseDTO(devisRepository.save(devis));
+    }
+
+    // Réponse du client à un devis qui lui a été envoyé : uniquement accepter ou refuser.
+    @Transactional
+    public DevisResponseDTO repondreClient(Long id, String email, StatutDevis reponse) {
+        if (reponse != StatutDevis.ACCEPTE && reponse != StatutDevis.REFUSE) {
+            throw new IllegalArgumentException("Réponse attendue : ACCEPTE ou REFUSE");
+        }
+        if (!estVisiblePar(id, email)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ce devis ne vous appartient pas");
+        }
+        Devis devis = devisRepository.findById(id).orElseThrow();
+        appliquerTransition(devis, reponse);
+        return toResponseDTO(devisRepository.save(devis));
+    }
+
+    private void appliquerTransition(Devis devis, StatutDevis cible) {
+        StatutDevis actuel = devis.getStatut();
+        if (!actuel.peutPasserA(cible)) {
+            throw new IllegalStateException("Passage impossible de " + actuel + " à " + cible);
+        }
+        devis.setStatut(cible);
+        devis.setDateStatut(LocalDate.now());
     }
 
     public List<Object[]> getCaDernierMois() {
@@ -116,18 +160,22 @@ public class ServiceDevis {
         return devisRepository.getChiffreAffairesByMonth(startDate);
     }
 
+    // Devis du client connecté, sans les brouillons (pas encore envoyés).
     @Transactional
-    public List<DevisResponseDTO> getDevisByEmailDto(String email) {
+    public List<DevisResponseDTO> getDevisVisiblesParClient(String email) {
         return devisRepository.findDevisByClientOrProspectEmail(email)
                 .stream()
+                .filter(d -> d.getStatut().estVisibleParClient())
                 .map(this::toResponseDTO)
                 .toList();
     }
 
-    // Un devis appartient au client (ou prospect) dont l'email est celui du compte connecté.
+    // Le devis appartient au client (ou prospect) dont l'email est celui du compte connecté,
+    // et il lui a été envoyé (un brouillon reste interne).
     @Transactional
-    public boolean appartientA(Long id, String email) {
+    public boolean estVisiblePar(Long id, String email) {
         return devisRepository.findById(id)
+                .filter(d -> d.getStatut().estVisibleParClient())
                 .map(d -> {
                     if (d.getClient() != null) return email.equals(d.getClient().getEmail());
                     if (d.getProspect() != null) return email.equals(d.getProspect().getEmail());
@@ -205,6 +253,7 @@ public class ServiceDevis {
             document.add(new Paragraph("Date d'émission : " + devis.getDateCreation().format(formatter), infoFont));
         }
         document.add(new Paragraph("Numéro de devis : #" + devis.getId(), infoFont));
+        document.add(new Paragraph("Statut : " + libelle(devis.getStatut()), infoFont));
         document.add(new Paragraph(" "));
 
         PdfPTable table = new PdfPTable(6);
@@ -271,6 +320,15 @@ public class ServiceDevis {
         document.add(signTable);
 
         document.close();
+    }
+
+    private static String libelle(StatutDevis statut) {
+        return switch (statut) {
+            case BROUILLON -> "Brouillon";
+            case ENVOYE -> "Envoyé";
+            case ACCEPTE -> "Accepté";
+            case REFUSE -> "Refusé";
+        };
     }
 
     private PdfPCell makeCell(String content, BaseColor background) {
@@ -348,6 +406,14 @@ public class ServiceDevis {
 
         dto.setTotalTTC(devis.getTotalTTC());
         dto.setTotalPoidsKg(devis.getTotalPoidsKg());
+
+        StatutDevis statut = devis.getStatut();
+        dto.setStatut(statut);
+        dto.setDateStatut(devis.getDateStatut());
+        dto.setTransitionsPossibles(statut.transitionsPossibles());
+        dto.setExpire(statut == StatutDevis.ENVOYE
+                && devis.getEcheance() != null
+                && devis.getEcheance().isBefore(LocalDate.now()));
 
         if (devis.getClient() != null) {
             dto.setClientId(devis.getClient().getId());

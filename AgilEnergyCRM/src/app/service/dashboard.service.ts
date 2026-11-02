@@ -2,6 +2,7 @@ import { environment } from '../environments/environment';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { StatutDevis } from "../modeles/devis.model";
 
 export interface MoisDevis {
   mois: string;
@@ -49,6 +50,11 @@ export class DashboardService {
 
   getTopProduits(): Observable<ProduitDemandes[]> {
     return this.http.get<ProduitDemandes[]>(`${this.baseUrl}/produits-top5`);
+  }
+
+  // Nombre de devis par statut (tous les statuts sont présents, éventuellement à 0).
+  getDevisParStatut(): Observable<Record<StatutDevis, number>> {
+    return this.http.get<Record<StatutDevis, number>>(`${this.baseUrl}/devis-par-statut`);
   }
 
   getClientsProspectsCount(): Observable<ClientsProspectsCount> {

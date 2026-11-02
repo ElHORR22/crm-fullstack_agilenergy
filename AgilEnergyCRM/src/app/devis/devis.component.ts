@@ -9,7 +9,7 @@ import { ClientService } from '../service/client.service';
 import { ProduitService } from '../service/produit.service';
 import { EmballageService } from '../service/emballage.service';
 
-import { Devis } from '../modeles/devis.model';
+import { ACTIONS_STATUT, Devis, LIBELLES_STATUT, STATUTS_DEVIS, StatutDevis } from '../modeles/devis.model';
 import { Prospect } from '../modeles/prospect.model';
 import { Client } from '../modeles/client.model';
 import { Produit } from '../modeles/produit.model';
@@ -551,8 +551,47 @@ export class DevisComponent implements OnInit, OnDestroy {
         this.successMessage = 'Devis supprimé avec succès !';
         setTimeout(() => this.successMessage = '', 3000);
       },
-      error: () => {
-        this.errorMessage = "Erreur lors de la suppression.";
+      error: (err) => {
+        this.errorMessage = err?.error?.message ?? "Erreur lors de la suppression.";
+        this.showErrorPopup = true;
+      }
+    });
+  }
+
+  // ---------- Statuts ----------
+
+  readonly statuts = STATUTS_DEVIS;
+  readonly libellesStatut = LIBELLES_STATUT;
+  readonly actionsStatut = ACTIONS_STATUT;
+  statutFiltre: StatutDevis | '' = '';
+
+  // Liste affichée : recherche texte (filteredDevis) puis filtre par statut.
+  get devisAffiches(): Devis[] {
+    return this.statutFiltre
+      ? this.filteredDevis.filter(d => (d.statut ?? 'BROUILLON') === this.statutFiltre)
+      : this.filteredDevis;
+  }
+
+  estModifiable(devis: Devis): boolean {
+    return (devis.statut ?? 'BROUILLON') === 'BROUILLON';
+  }
+
+  estSupprimable(devis: Devis): boolean {
+    const statut = devis.statut ?? 'BROUILLON';
+    return statut === 'BROUILLON' || statut === 'REFUSE';
+  }
+
+  changerStatut(devis: Devis, cible: StatutDevis): void {
+    if (!confirm(`${this.actionsStatut[cible]} : devis #${devis.id} « ${devis.sujetDevis} » ?`)) return;
+
+    this.devisService.changerStatut(devis.id!, cible).subscribe({
+      next: () => {
+        this.devisService.getAllDevis().subscribe(liste => this.devisList = this.filteredDevis = liste);
+        this.successMessage = `Devis #${devis.id} : ${this.libellesStatut[cible].toLowerCase()}.`;
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.message ?? 'Changement de statut impossible.';
         this.showErrorPopup = true;
       }
     });

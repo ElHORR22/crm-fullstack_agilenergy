@@ -1,8 +1,11 @@
 package com.example.bstagepfe.DTO;
 
+import com.example.bstagepfe.entities.StatutDevis;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public class DevisResponseDTO {
 
@@ -26,7 +29,26 @@ public class DevisResponseDTO {
     private String nomClient;
     private String nomProspect;
 
+    private StatutDevis statut;
+    private LocalDate dateStatut;
+    // Statuts atteignables depuis le statut actuel : le front s'en sert pour proposer les actions.
+    private Set<StatutDevis> transitionsPossibles;
+    // Devis envoyé dont l'échéance est passée sans réponse.
+    private boolean expire;
+
     private List<LigneDevisResponseDTO> ligneDevis;
+
+    public StatutDevis getStatut() { return statut; }
+    public void setStatut(StatutDevis statut) { this.statut = statut; }
+
+    public LocalDate getDateStatut() { return dateStatut; }
+    public void setDateStatut(LocalDate dateStatut) { this.dateStatut = dateStatut; }
+
+    public Set<StatutDevis> getTransitionsPossibles() { return transitionsPossibles; }
+    public void setTransitionsPossibles(Set<StatutDevis> transitionsPossibles) { this.transitionsPossibles = transitionsPossibles; }
+
+    public boolean isExpire() { return expire; }
+    public void setExpire(boolean expire) { this.expire = expire; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

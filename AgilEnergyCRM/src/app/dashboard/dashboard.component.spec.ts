@@ -25,4 +25,12 @@ describe('DashboardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('calcule le taux de conversion sur les devis ayant reçu une réponse', () => {
+    expect(DashboardComponent.calculerTauxConversion(3, 1)).toBe(75);
+  });
+
+  it("n'affiche pas de taux tant qu'aucun devis n'a reçu de réponse", () => {
+    expect(DashboardComponent.calculerTauxConversion(0, 0)).toBeNull();
+  });
 });
