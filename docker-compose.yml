@@ -10,9 +10,11 @@ services:
     environment:
       - MYSQL_DATABASE=sndp
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-    # Exposé uniquement sur la machine hôte (pas sur le réseau).
+    # Exposé uniquement sur la machine hôte (pas sur le réseau), sur le port 3307 pour ne pas
+    # entrer en conflit avec un MySQL déjà installé sur le PC. Le backend joint la base par le
+    # réseau Docker (mysqldb:3306), ce port ne sert qu'aux outils comme MySQL Workbench.
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
