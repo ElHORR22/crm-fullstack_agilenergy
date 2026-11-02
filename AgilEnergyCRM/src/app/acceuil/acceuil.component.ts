@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { AfterViewInit, Component, ElementRef, HostListener, QueryList, ViewChildren } from '@angular/core';
 
 @Component({
   selector: 'app-acceuil',
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './acceuil.component.html',
   styleUrls: ['./acceuil.component.css'],
   standalone: true,

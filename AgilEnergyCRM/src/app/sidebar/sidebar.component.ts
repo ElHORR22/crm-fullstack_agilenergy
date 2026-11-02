@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -16,6 +16,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   role: string | null = null;
   user: Utilisateur | null = null;
+  // Sidebar ouverte par le bouton menu (sinon elle ne s'affiche qu'au survol).
+  ouvert = false;
 
   private navigationSub?: Subscription;
 
@@ -49,7 +51,21 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
+  basculer(): void {
+    this.ouvert = !this.ouvert;
+  }
+
+  fermer(): void {
+    this.ouvert = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  fermerAuClavier(): void {
+    this.fermer();
+  }
+
   logout() {
+    this.fermer();
     this.authService.logout();
     this.router.navigate(['/login']);
   }

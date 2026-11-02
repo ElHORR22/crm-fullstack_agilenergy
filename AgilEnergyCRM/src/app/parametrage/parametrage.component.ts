@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { FormsModule } from '@angular/forms';
 import { ParametrageService } from '../service/parametrage.service';
 import { Tva, SourceProspection, SecteurActivite } from '../modeles/parametrage.model';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,9 +11,10 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './parametrage.component.html',
   styleUrl: './parametrage.component.css',
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class ParametrageComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
   selectedParam: string = 'TVA';
   newTvaValue!: number;
   sources: SourceProspection[] = [];
@@ -93,8 +95,13 @@ export class ParametrageComponent implements OnInit {
     }
   }
 
-  deleteSource(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette Source de Prospection ?")) {
+  async deleteSource(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: 'Supprimer la source de prospection',
+      message: "Êtes-vous sûr de vouloir supprimer cette Source de Prospection ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.paramService.deleteSource(id).subscribe({
         next: () => {
           this.loadCurrentParam();
@@ -127,8 +134,13 @@ export class ParametrageComponent implements OnInit {
     }
   }
 
-  deleteSecteur(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce Secteur d'Activité ?")) {
+  async deleteSecteur(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: "Supprimer le secteur d'activité",
+      message: "Êtes-vous sûr de vouloir supprimer ce Secteur d'Activité ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.paramService.deleteSecteur(id).subscribe({
         next: () => {
           this.loadCurrentParam();

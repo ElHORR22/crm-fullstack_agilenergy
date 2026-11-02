@@ -16,35 +16,36 @@
           {{ chiffreAffaires | number:'1.0-2' }} TND
         </div>
 
-        <div *ngIf="caEvolution !== null; else pasDeComparaison" class="evolution"
-          [ngClass]="{'positive': caEvolution >= 0, 'negative': caEvolution < 0}"
-          aria-live="polite" aria-atomic="true" role="status">
-          <i class="fa" [ngClass]="caEvolution >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'" aria-hidden="true"></i>
-          {{ caEvolution | number:'1.0-2' }}% par rapport au mois précédent
-        </div>
-        <ng-template #pasDeComparaison>
+        @if (caEvolution !== null) {
+          <div class="evolution"
+            [ngClass]="{'positive': caEvolution >= 0, 'negative': caEvolution < 0}"
+            aria-live="polite" aria-atomic="true" role="status">
+            <i class="fa" [ngClass]="caEvolution >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'" aria-hidden="true"></i>
+            {{ caEvolution | number:'1.0-2' }}% par rapport au mois précédent
+          </div>
+        } @else {
           <div class="evolution" role="status">Aucun devis accepté le mois précédent : pas de comparaison possible</div>
-        </ng-template>
+        }
       </div>
 
       <div class="card-footer">
         <button (click)="voirDetails()" class="btn btn-primary" aria-haspopup="dialog" aria-controls="popup-analytics"
-          [attr.aria-expanded]="showPopup ? 'true' : 'false'"> Voir détails</button>
+        [attr.aria-expanded]="showPopup ? 'true' : 'false'"> Voir détails</button>
       </div>
     </section>
 
-    <div *ngIf="showPopup" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-title"
-      id="popup-analytics" tabindex="-1">
-      <div class="popup-content">
-        <h3 id="popup-title">Analyse du chiffre d'affaires</h3>
-
-        <canvas baseChart [data]="popupChartData" [type]="popupChartType"
-          aria-label="Graphique d'analyse du chiffre d'affaires" role="img">
-        </canvas>
-
-        <button (click)="showPopup = false" class="btn btn-danger btn-fermer">Fermer</button>
+    @if (showPopup) {
+      <div class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popup-title"
+        id="popup-analytics" tabindex="-1">
+        <div class="popup-content">
+          <h3 id="popup-title">Analyse du chiffre d'affaires</h3>
+          <canvas baseChart [data]="popupChartData" [type]="popupChartType"
+            aria-label="Graphique d'analyse du chiffre d'affaires" role="img">
+          </canvas>
+          <button (click)="showPopup = false" class="btn btn-danger btn-fermer">Fermer</button>
+        </div>
       </div>
-    </div>
+    }
 
     <section class="card chart-card" aria-labelledby="governorate-chart-title" tabindex="0">
       <h4 id="governorate-chart-title" class="chart-title">Répartition des clients par gouvernorat</h4>
@@ -96,11 +97,12 @@
     <section class="card chart-card" aria-labelledby="statuts-chart-title" tabindex="0">
       <h4 id="statuts-chart-title" class="chart-title">Devis par statut</h4>
       <p class="taux-conversion" role="status">
-        <ng-container *ngIf="tauxConversion !== null; else pasDeTaux">
+        @if (tauxConversion !== null) {
           Taux de conversion : <strong>{{ tauxConversion | number:'1.0-1' }} %</strong>
           <small>(acceptés / acceptés + refusés)</small>
-        </ng-container>
-        <ng-template #pasDeTaux>Taux de conversion : aucun devis n'a encore reçu de réponse</ng-template>
+        } @else {
+          Taux de conversion : aucun devis n'a encore reçu de réponse
+        }
       </p>
       <canvas baseChart [data]="{
           labels: statutChartLabels,

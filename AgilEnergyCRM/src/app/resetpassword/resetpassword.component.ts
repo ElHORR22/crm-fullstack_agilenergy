@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../service/auth.service';
@@ -7,11 +8,12 @@ import { AuthService } from '../service/auth.service';
 @Component({
     selector: 'app-reset-password',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule],
+    imports: [FormsModule, RouterModule],
     templateUrl: './resetpassword.component.html',
     styleUrls: ['./resetpassword.component.css']
 })
 export class ResetPasswordComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
     token: string = '';
     newPassword: string = '';
     confirmPassword: string = ''; // Ajouté pour la sécurité
@@ -35,7 +37,7 @@ export class ResetPasswordComponent implements OnInit {
 
         this.authService.resetPassword(this.token, this.newPassword).subscribe({
             next: () => {
-                alert("Succès ! Votre mot de passe a été réinitialisé.");
+                this.dialogue.succes("Votre mot de passe a été réinitialisé. Vous pouvez vous connecter.");
                 this.router.navigate(['/login']);
             },
             error: (err) => {

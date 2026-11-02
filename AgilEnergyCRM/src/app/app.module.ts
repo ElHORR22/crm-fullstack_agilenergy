@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +16,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   declarations: [AppComponent],
   imports: [BrowserModule, CommonModule, FormsModule, AppRoutingModule, NgChartsModule, SidebarComponent],
   providers: [
+    provideAnimationsAsync(), // animations des dialogues et notifications Angular Material
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],

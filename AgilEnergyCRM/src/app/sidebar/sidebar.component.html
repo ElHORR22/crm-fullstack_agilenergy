@@ -1,21 +1,50 @@
+<!-- Bouton menu : seul moyen d'ouvrir la sidebar sur écran tactile ou au clavier
+     (le survol de la zone de gauche reste disponible à la souris). -->
+<button type="button" class="menu-toggle" (click)="basculer()"
+  [attr.aria-expanded]="ouvert" aria-controls="menu-principal"
+  [attr.aria-label]="ouvert ? 'Fermer le menu' : 'Ouvrir le menu'">
+  <i class="fas" [ngClass]="ouvert ? 'fa-times' : 'fa-bars'" aria-hidden="true"></i>
+</button>
+@if (ouvert) {
+  <div class="sidebar-backdrop" (click)="fermer()"></div>
+}
 <div class="sidebar-hover-zone"></div>
-<nav class="sidebar">
-    <ul>
-      <li *ngIf="role === 'COMMERCIAL' || role === 'ADMINISTRATEUR'"><a routerLink="/prospect">Prospects</a></li>
-      <li *ngIf="role === 'COMMERCIAL' || role === 'ADMINISTRATEUR'"><a routerLink="/client">Clients</a></li>
-      <li *ngIf="role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR'"><a routerLink="/produit">Produits</a></li>
-      <li *ngIf="role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR'"><a routerLink="/emballage">Emballages</a></li>
-      <li *ngIf="role === 'COMMERCIAL' || role === 'ADMINISTRATEUR'"><a routerLink="/devis">Devis</a></li>
-      <li *ngIf="role === 'ADMINISTRATEUR'"><a routerLink="/parametrage">Paramétrage</a></li>
-      <li *ngIf="role === 'ADMINISTRATEUR'"><a routerLink="/dashboard">Dashboard</a></li>
-      <li *ngIf="role === 'ADMINISTRATEUR'"> <a routerLink="/gestion_utilisateur">Comptes utilisateurs</a></li>   
-      <li *ngIf="role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR' || role == 'CLIENT'"><a routerLink="/utilisateur">Acceuil Principale</a></li>   
-    </ul>
-    <div class="sidebar-footer" *ngIf="user">
+<nav class="sidebar" id="menu-principal" [class.ouvert]="ouvert" aria-label="Menu principal">
+  <ul>
+    @if (role === 'COMMERCIAL' || role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/prospect" routerLinkActive="actif" (click)="fermer()">Prospects</a></li>
+    }
+    @if (role === 'COMMERCIAL' || role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/client" routerLinkActive="actif" (click)="fermer()">Clients</a></li>
+    }
+    @if (role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/produit" routerLinkActive="actif" (click)="fermer()">Produits</a></li>
+    }
+    @if (role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/emballage" routerLinkActive="actif" (click)="fermer()">Emballages</a></li>
+    }
+    @if (role === 'COMMERCIAL' || role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/devis" routerLinkActive="actif" (click)="fermer()">Devis</a></li>
+    }
+    @if (role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/parametrage" routerLinkActive="actif" (click)="fermer()">Paramétrage</a></li>
+    }
+    @if (role === 'ADMINISTRATEUR') {
+      <li><a routerLink="/dashboard" routerLinkActive="actif" (click)="fermer()">Dashboard</a></li>
+    }
+    @if (role === 'ADMINISTRATEUR') {
+      <li> <a routerLink="/gestion_utilisateur" routerLinkActive="actif" (click)="fermer()">Comptes utilisateurs</a></li>
+    }
+    @if (role === 'COMMERCIAL' || role === 'LOGISTICIEN' || role === 'ADMINISTRATEUR' || role == 'CLIENT') {
+      <li><a routerLink="/utilisateur" routerLinkActive="actif" (click)="fermer()">Acceuil Principale</a></li>
+    }
+  </ul>
+  @if (user) {
+    <div class="sidebar-footer">
       <div class="user-info">
         <div class="user-avatar">
           <i class="fas fa-user-circle"></i>
-        </div>     
+        </div>
         <div class="user-details">
           <p class="user-name"><strong>{{ user.nom }} {{ user.prenom }}</strong></p>
           <p class="user-role">{{ role | titlecase }}</p>
@@ -24,7 +53,8 @@
             <span>{{ user.actif ? 'Actif' : 'Inactif' }}</span>
           </div>
         </div>
-      </div>     
-      <button class="logout-btn" (click)="logout()">Déconnexion</button>      
-    </div>    
+      </div>
+      <button class="logout-btn" (click)="logout()">Déconnexion</button>
+    </div>
+  }
 </nav>

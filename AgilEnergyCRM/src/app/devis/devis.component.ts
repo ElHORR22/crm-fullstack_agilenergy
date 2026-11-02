@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ import { forkJoin, Subject, takeUntil } from 'rxjs';
   imports: [CommonModule, ReactiveFormsModule, FormsModule, FilterPipe]
 })
 export class DevisComponent implements OnInit, OnDestroy {
+  private readonly dialogue = inject(DialogueService);
 
   progressValue = 0;
   devisForm!: FormGroup;
@@ -540,8 +542,14 @@ export class DevisComponent implements OnInit, OnDestroy {
     this.updateProgress();
   }
 
-  deleteDevis(id: number): void {
-    if (!confirm('Confirmer la suppression du devis ?')) return;
+  async deleteDevis(id: number): Promise<void> {
+    const ok = await this.dialogue.confirmer({
+      titre: 'Supprimer le devis',
+      message: `Le devis #${id} sera définitivement supprimé.`,
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    });
+    if (!ok) return;
 
     this.devisService.deleteDevis(id).subscribe({
       next: () => {
@@ -581,8 +589,14 @@ export class DevisComponent implements OnInit, OnDestroy {
     return statut === 'BROUILLON' || statut === 'REFUSE';
   }
 
-  changerStatut(devis: Devis, cible: StatutDevis): void {
-    if (!confirm(`${this.actionsStatut[cible]} : devis #${devis.id} « ${devis.sujetDevis} » ?`)) return;
+  async changerStatut(devis: Devis, cible: StatutDevis): Promise<void> {
+    const ok = await this.dialogue.confirmer({
+      titre: this.actionsStatut[cible],
+      message: `Devis #${devis.id} « ${devis.sujetDevis} » : passer au statut « ${this.libellesStatut[cible]} » ?`,
+      libelleConfirmer: 'Confirmer',
+      danger: cible === 'REFUSE'
+    });
+    if (!ok) return;
 
     this.devisService.changerStatut(devis.id!, cible).subscribe({
       next: () => {

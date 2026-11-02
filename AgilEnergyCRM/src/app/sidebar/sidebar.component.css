@@ -115,3 +115,50 @@
   background-color: #e53935;
   border-color: #e53935;
 }
+/* ---------- Ouverture au clic (mobile, clavier) ---------- */
+.menu-toggle {
+  position: fixed;
+  top: 12px;
+  left: 72px;
+  z-index: 1100;
+  width: 38px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.menu-toggle:hover,
+.menu-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.sidebar.ouvert {
+  left: 0;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 999;
+}
+
+/* Page courante mise en évidence */
+.sidebar ul li a.actif {
+  background-color: #34344a;
+  border-left: 3px solid #ffd200;
+  border-radius: 4px;
+  padding-left: 6px;
+}
+
+/* Sur écran tactile, pas de survol : la zone de 10px à gauche ne sert à rien. */
+@media (hover: none) {
+  .sidebar-hover-zone {
+    display: none;
+  }
+}

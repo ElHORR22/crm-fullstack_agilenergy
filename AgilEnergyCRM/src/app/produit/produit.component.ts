@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { Produit } from '../modeles/produit.model';
 import { ProduitService } from '../service/produit.service';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { Router } from '@angular/router';
   imports: [FormsModule, CommonModule, FiltrePipe]
 })
 export class ProduitComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
 
   role: string | null = null;
   openedProduit: any;
@@ -236,8 +238,13 @@ export class ProduitComponent implements OnInit {
     }
   }
 
-  deleteProduit(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
+  async deleteProduit(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: 'Supprimer le produit',
+      message: "Êtes-vous sûr de vouloir supprimer ce produit ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.produitService.deleteProduit(id).subscribe({
         next: () => {
           this.loadProduits();

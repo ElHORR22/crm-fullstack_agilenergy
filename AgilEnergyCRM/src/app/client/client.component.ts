@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { ClientService } from '../service/client.service';
 import { ContactService } from '../service/contact.service';
 import { Client, SecteurActivite, Gouvernorat } from '../modeles/client.model';
@@ -17,6 +18,7 @@ import { Router, RouterModule } from '@angular/router';
 })
 
 export class ClientComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
   
   openedClient: any;
   progressValue = 0;
@@ -199,7 +201,7 @@ export class ClientComponent implements OnInit {
   
     const nameRegex = /^[a-zA-ZéèêàâîïôùçÉÈÊÀÂÎÏÔÙÇ\-\'\s]+$/;
     if (!nameRegex.test(this.newClient.nom)) {
-      alert("Le nom ne doit contenir que des lettres.");
+      this.errorMessage = "Le nom ne doit contenir que des lettres.";
       return;
     }
 
@@ -405,10 +407,10 @@ export class ClientComponent implements OnInit {
       this.contactService.deleteContact(contact.id).subscribe({
         next: () => {
           this.contacts = this.contacts.filter(c => c.id !== contact.id);
-          alert('Contact supprimé avec succès');
+          this.dialogue.succes('Contact supprimé.');
         },
         error: (err) => {
-          alert('Erreur lors de la suppression du contact');
+          this.dialogue.erreur(err?.error?.message ?? 'Erreur lors de la suppression du contact.');
         }
       });
     }
@@ -440,8 +442,13 @@ export class ClientComponent implements OnInit {
     this.showEditForm = true; 
   }
   
-  deleteClient(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
+  async deleteClient(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: 'Supprimer le client',
+      message: "Êtes-vous sûr de vouloir supprimer ce client ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.clientService.deleteClient(id).subscribe({
         next: () => {
           this.loadClients();
