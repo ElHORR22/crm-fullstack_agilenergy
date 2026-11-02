@@ -49,7 +49,7 @@ export class ProspectComponent implements OnInit {
         alert("Prospect converti en client avec succès !");
         this.loadProspects();
       },
-      error: err => console.error("Erreur lors de la conversion", err)
+      error: err => alert(err?.error?.message ?? "Erreur lors de la conversion")
     });
   }
 
@@ -111,9 +111,9 @@ export class ProspectComponent implements OnInit {
   searchProspects(): void {
     if (this.searchTerm) {
       this.filteredProspects = this.prospects.filter(prospect =>
-        prospect.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        prospect.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        prospect.telephone.toString().includes(this.searchTerm) ||
+        (prospect.nom ?? '').toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (prospect.email ?? '').toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (prospect.telephone ?? '').toString().includes(this.searchTerm) ||
         prospect.id?.toString().includes(this.searchTerm)
       );
     } else {
@@ -195,13 +195,13 @@ export class ProspectComponent implements OnInit {
     }
 
     const faxStr = this.newProspect.fax?.toString().trim();
-    if (!/^\d{8}$/.test(faxStr)) {
+    if (faxStr && !/^\d{8}$/.test(faxStr)) {
       this.errorMessage = 'Le numéro de Fax doit contenir exactement 8 chiffres !';
       return;
     }
 
     const mobStr = this.newProspect.mobile?.toString().trim();
-    if (!/^\d{8}$/.test(mobStr)) {
+    if (mobStr && !/^\d{8}$/.test(mobStr)) {
       this.errorMessage = 'Le numéro mobile doit contenir exactement 8 chiffres !';
       return;
     }

@@ -41,7 +41,11 @@ public class UtilisateurController {
     public ResponseEntity<Utilisateur> updateUtilisateur(@PathVariable Long id, @RequestBody Utilisateur u) {
         return utilisateurRepository.findById(id).map(existing -> {
             u.setId(id);
+            u.setDateCreation(existing.getDateCreation());
+            u.setResetToken(existing.getResetToken());
+            u.setTokenExpiration(existing.getTokenExpiration());
 
+            // Le hash n'est plus exposé : un mdp vide signifie « inchangé ».
             if (u.getMdp() == null || u.getMdp().isBlank()) {
                 u.setMdp(existing.getMdp());
             } else {

@@ -1,5 +1,8 @@
 package com.example.bstagepfe.services;
+import jakarta.persistence.EntityNotFoundException;
+import com.example.bstagepfe.entities.Client;
 import com.example.bstagepfe.entities.Contact;
+import com.example.bstagepfe.repos.ClientRepository;
 import com.example.bstagepfe.repos.ContactRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +15,24 @@ public class ServiceContact {
     @Autowired
     private ContactRepository contactRepository;
 
-    public List<Contact> getContactsByClientId( Long clientId) {
-        return contactRepository.findByClientIdAndIsDeletedFalse(clientId);
+    @Autowired
+    private ClientRepository clientRepository;
+
+    public List<Contact> getContactsByClientId(Long clientId) {
+        return contactRepository.findActifsByClientId(clientId);
     }
 
     public List<Contact> getAllContacts() {
-        return contactRepository.findAll();
+        return contactRepository.findByIsDeletedFalse();
     }
 
     public Contact addContact(Contact contact) {
+        if (contact.getClientId() == null) {
+            throw new IllegalArgumentException("Le client du contact est obligatoire");
+        }
+        Client client = clientRepository.findById(contact.getClientId())
+                .orElseThrow(() -> new EntityNotFoundException("Client non trouvé avec l'ID : " + contact.getClientId()));
+        contact.setClient(client);
         return contactRepository.save(contact);
     }
 
@@ -39,17 +51,16 @@ public class ServiceContact {
             contact.setCodePostal(detailscontact.getCodePostal());
             contact.setVille(detailscontact.getVille());
             contact.setPays(detailscontact.getPays());
-            contact.setDateModification(detailscontact.getDateModification());
-            contact.setIsDeleted(detailscontact.getIsDeleted());
+            // Le client, isDeleted et les dates ne sont pas modifiables par cette route.
 
             return contactRepository.save(contact);
-        }).orElseThrow(() -> new RuntimeException("Contact non trouvé !"));
+        }).orElseThrow(() -> new EntityNotFoundException("Contact non trouvé !"));
     }
 
     @Transactional
     public void deleteContact(Long id) {
         Contact contact = contactRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contact non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Contact non trouvé avec l'ID : " + id));
         contact.setIsDeleted(true);
         contactRepository.save(contact);
     }

@@ -11,4 +11,7 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
     Optional<Produit> findProduitById(Long id);
     List<Produit> findByCodeProduitIgnoringCaseContaining(String codeProduit);
     Optional<Produit> findByCodeProduit(String codeProduit);
+    List<Produit> findByIsDeletedFalse();
+    // findFirst : le code n'est pas unique en base, un doublon ne doit pas faire échouer le devis.
+    Optional<Produit> findFirstByCodeProduitAndIsDeletedFalse(String codeProduit);
 }

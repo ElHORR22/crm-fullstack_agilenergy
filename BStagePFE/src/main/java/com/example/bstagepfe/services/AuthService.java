@@ -44,6 +44,10 @@ public class AuthService {
             return ResponseEntity.status(403).body(Map.of("message", "Compte désactivé"));
         }
 
+        if (user.getRole() == null || user.getRole().getName() == null) {
+            return ResponseEntity.status(403).body(Map.of("message", "Aucun rôle attribué à ce compte"));
+        }
+
         String role = user.getRole().getName().name();
         String token = jwtService.generateToken(user.getEmail(), role);
 
@@ -53,6 +57,7 @@ public class AuthService {
         response.put("nom", user.getNom());
         response.put("prenom", user.getPrenom());
         response.put("email", user.getEmail());
+        response.put("actif", user.isActif());
         return ResponseEntity.ok(response);
     }
 

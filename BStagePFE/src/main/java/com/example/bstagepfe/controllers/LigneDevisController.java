@@ -40,12 +40,12 @@ public class LigneDevisController {
     @PostMapping
     public ResponseEntity<LigneDevis> addLigneDevis(@RequestBody LigneDevis ligneDevis) {
         if (ligneDevis.getTva() == null) {
-            throw new RuntimeException("TVA non fournie");
+            throw new IllegalArgumentException("TVA non fournie");
         }
 
         int valeurTVA = ligneDevis.getTva().getValeur();
         TVA tva = tvaRepository.findByValeur(valeurTVA)
-                .orElseThrow(() -> new RuntimeException("TVA avec valeur " + valeurTVA + " non trouvée"));
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("TVA avec valeur " + valeurTVA + " non trouvée"));
 
         ligneDevis.setTva(tva);
 

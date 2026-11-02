@@ -7,7 +7,7 @@
 
     <section class="card revenue-card" aria-labelledby="ca-title" tabindex="0">
       <header class="card-header">
-        <h3 id="ca-title">Chiffre d'affaires total</h3>
+        <h3 id="ca-title">Montant total des devis (TTC)</h3>
         <span class="period" aria-live="polite">{{ periode }}</span>
       </header>
 
@@ -16,11 +16,15 @@
           {{ chiffreAffaires | number:'1.0-2' }} TND
         </div>
 
-        <div class="evolution" [ngClass]="{'positive': caEvolution >= 0, 'negative': caEvolution < 0}"
+        <div *ngIf="caEvolution !== null; else pasDeComparaison" class="evolution"
+          [ngClass]="{'positive': caEvolution >= 0, 'negative': caEvolution < 0}"
           aria-live="polite" aria-atomic="true" role="status">
           <i class="fa" [ngClass]="caEvolution >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'" aria-hidden="true"></i>
           {{ caEvolution | number:'1.0-2' }}% par rapport au mois précédent
         </div>
+        <ng-template #pasDeComparaison>
+          <div class="evolution" role="status">Aucun devis le mois précédent : pas de comparaison possible</div>
+        </ng-template>
       </div>
 
       <div class="card-footer">
@@ -64,15 +68,15 @@
       </canvas>
     </section>
 
-    <section class="card chart-card" aria-labelledby="sector-chart-title" tabindex="0">
-      <h4 id="sector-chart-title" class="chart-title">Nombre de devis par mois (12 derniers mois)</h4>
+    <section class="card chart-card" aria-labelledby="devis-chart-title" tabindex="0">
+      <h4 id="devis-chart-title" class="chart-title">Nombre de devis par mois (12 derniers mois)</h4>
       <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
         [legend]="barChartLegend" [type]="barChartType">
       </canvas>
     </section>
 
-    <section class="card chart-card" aria-labelledby="sector-chart-title" tabindex="0">
-      <h4 id="sector-chart-title" class="chart-title">Top 5 des produits les plus demandés</h4>
+    <section class="card chart-card" aria-labelledby="top-produits-chart-title" tabindex="0">
+      <h4 id="top-produits-chart-title" class="chart-title">Top 5 des produits les plus demandés</h4>
       <canvas baseChart [datasets]="[{ data: topProduitsData, label: 'Quantité demandée' }]"
         [labels]="topProduitsLabels" [options]="{ responsive: true, indexAxis: 'y' }" [legend]="false" [type]="'bar'">
       </canvas>

@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ParametrageService } from '../service/parametrage.service';
 import { Tva, SourceProspection, SecteurActivite } from '../modeles/parametrage.model';
@@ -12,15 +12,13 @@ import { Router } from '@angular/router';
   styleUrl: './parametrage.component.css',
   imports: [CommonModule, FormsModule]
 })
-export class ParametrageComponent implements OnInit, OnChanges {
+export class ParametrageComponent implements OnInit {
   selectedParam: string = 'TVA';
-  tva?: Tva;
   newTvaValue!: number;
   sources: SourceProspection[] = [];
   newSourceName: string = '';
   secteurs: SecteurActivite[] = [];
   newSecteurName: string = '';
-  tvaList: Tva[] = [];
   tvaValue: number = 0;
   errorMessage: string = '';
   successMessage: string = '';
@@ -29,12 +27,6 @@ export class ParametrageComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.loadCurrentParam();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedParam']) {
-      this.loadCurrentParam();
-    }
   }
 
   scrollTo(section: string): void {
@@ -46,9 +38,9 @@ export class ParametrageComponent implements OnInit, OnChanges {
 
   loadCurrentParam(): void {
     if (this.selectedParam === 'TVA') {
-      this.paramService.getAllTVA().subscribe(tva => {
-        this.tvaList = tva;
-        this.newTvaValue = tva.length > 0 ? tva[0].valeur : 0;
+      this.paramService.getTVA().subscribe(tva => {
+        this.tvaValue = tva.valeur;
+        this.newTvaValue = tva.valeur;
       });
     } else if (this.selectedParam === 'SOURCE') {
       this.paramService.getSources().subscribe(sources => this.sources = sources);
@@ -79,8 +71,6 @@ export class ParametrageComponent implements OnInit, OnChanges {
       }
     });
   }
-  
-  notifyTvaUpdate(updatedTvaValue: number): void {}  
 
   addSource(): void {
     const regex = /^[A-Za-zÀ-ÿ\s]+$/;
@@ -105,10 +95,13 @@ export class ParametrageComponent implements OnInit, OnChanges {
 
   deleteSource(id: number): void {
     if (confirm("Êtes-vous sûr de vouloir supprimer cette Source de Prospection ?")) {
-      this.paramService.deleteSource(id).subscribe(() => {
-        this.loadCurrentParam();
-        this.successMessage = "Source de prospection supprimée avec succès !";
-        this.clearMessagesAfterDelay();
+      this.paramService.deleteSource(id).subscribe({
+        next: () => {
+          this.loadCurrentParam();
+          this.successMessage = "Source de prospection supprimée avec succès !";
+          this.clearMessagesAfterDelay();
+        },
+        error: () => this.showDeleteError("Cette source est utilisée par des prospects et ne peut pas être supprimée.")
       });
     }
   }
@@ -135,11 +128,21 @@ export class ParametrageComponent implements OnInit, OnChanges {
   }
 
   deleteSecteur(id: number): void {
-    this.paramService.deleteSecteur(id).subscribe(() => {
-      this.loadCurrentParam();
-      this.successMessage = "Secteur d'activité supprimé avec succès !";
-      this.clearMessagesAfterDelay();
-    });
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce Secteur d'Activité ?")) {
+      this.paramService.deleteSecteur(id).subscribe({
+        next: () => {
+          this.loadCurrentParam();
+          this.successMessage = "Secteur d'activité supprimé avec succès !";
+          this.clearMessagesAfterDelay();
+        },
+        error: () => this.showDeleteError("Ce secteur est utilisé par des clients ou prospects et ne peut pas être supprimé.")
+      });
+    }
+  }
+
+  private showDeleteError(message: string): void {
+    this.errorMessage = message;
+    this.clearMessagesAfterDelay();
   }
 
   private clearMessagesAfterDelay(): void {

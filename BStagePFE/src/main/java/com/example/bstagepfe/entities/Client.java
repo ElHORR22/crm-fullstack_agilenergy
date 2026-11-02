@@ -1,4 +1,5 @@
 package com.example.bstagepfe.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -70,7 +71,10 @@ public class Client {
     @JoinColumn(name = "prospect_id")
     private Prospect prospect;
 
+    // Collection LAZY non sérialisée (open-in-view=false) : les contacts
+    // se récupèrent via GET /api/contacts/client/{id}.
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Contact> contacts;
 
     public String getNom() {

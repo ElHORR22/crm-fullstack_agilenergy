@@ -20,25 +20,17 @@ export class MesdevisComponent implements OnInit {
 
   ngOnInit(): void {
     const userStr = localStorage.getItem('user');
-    let userEmail = null;
     if (userStr) {
-      const user = JSON.parse(userStr);
-      this.role = user.role;
-      userEmail = user.email;
+      this.role = JSON.parse(userStr).role;
     }
-    if (userEmail) {
-      this.devisService.getDevisByEmail(userEmail).subscribe({
-        next: data => {
-          console.log('Devis reçus:', data);
-          this.devisClient = data;
-        }
-      });                 
-    }
+    this.devisService.getMesDevis().subscribe({
+      next: data => this.devisClient = data
+    });
   }
 
   visualiser(devisId: number): void {
-    this.devisService.exportPDF(devisId);
-  }    
+    this.devisService.downloadPDF(devisId);
+  }
   
 }
 

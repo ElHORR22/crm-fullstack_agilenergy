@@ -126,7 +126,8 @@ export class GestionUtilisateurComponent implements OnInit {
   }   
 
   editUtilisateur(utilisateur: Utilisateur): void {
-    this.selectedUtilisateur = { ...utilisateur };
+    // mdp vide = mot de passe inchangé côté serveur
+    this.selectedUtilisateur = { ...utilisateur, mdp: '' };
     this.toggleEditForm();
   }
 
@@ -144,9 +145,10 @@ export class GestionUtilisateurComponent implements OnInit {
             this.utilisateurs[index] = updatedUtilisateur;
             this.filteredUtilisateurs = [...this.utilisateurs];
           }
-          this.successMessage = 'Produit mis à jour avec succès !';
+          this.successMessage = 'Utilisateur mis à jour avec succès !';
           this.toggleEditForm();
-        }
+        },
+        error: () => this.errorMessage = "Erreur lors de la mise à jour de l'utilisateur."
       });
     }
   }
@@ -160,6 +162,10 @@ export class GestionUtilisateurComponent implements OnInit {
         }
       });
     }
+  }
+
+  compareRoles(a: Role | null, b: Role | null): boolean {
+    return !!a && !!b && a.id === b.id;
   }
 
   toggleActions(utilisateur: any): void {

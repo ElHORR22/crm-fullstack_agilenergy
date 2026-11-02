@@ -64,6 +64,9 @@ public class ServiceDevis {
         return toResponseDTO(saved);
     }
 
+    // open-in-view=false : les lectures qui parcourent ligneDevis (LAZY) doivent rester
+    // dans une transaction, sinon LazyInitializationException.
+    @Transactional
     public List<DevisResponseDTO> getAllDevisDto() {
         return devisRepository.findAllWithLignes()
                 .stream()
@@ -71,6 +74,7 @@ public class ServiceDevis {
                 .toList();
     }
 
+    @Transactional
     public DevisResponseDTO getDevisDtoById(Long id) {
         Devis devis = devisRepository.findDevisById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Devis non trouvé"));
@@ -112,11 +116,24 @@ public class ServiceDevis {
         return devisRepository.getChiffreAffairesByMonth(startDate);
     }
 
+    @Transactional
     public List<DevisResponseDTO> getDevisByEmailDto(String email) {
         return devisRepository.findDevisByClientOrProspectEmail(email)
                 .stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    // Un devis appartient au client (ou prospect) dont l'email est celui du compte connecté.
+    @Transactional
+    public boolean appartientA(Long id, String email) {
+        return devisRepository.findById(id)
+                .map(d -> {
+                    if (d.getClient() != null) return email.equals(d.getClient().getEmail());
+                    if (d.getProspect() != null) return email.equals(d.getProspect().getEmail());
+                    return false;
+                })
+                .orElse(false);
     }
 
     public void generatePDF(Long id, HttpServletResponse response) throws IOException, DocumentException {

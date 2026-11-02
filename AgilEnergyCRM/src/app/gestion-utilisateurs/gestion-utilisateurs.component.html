@@ -40,33 +40,25 @@
 
               <label>Matricule :</label>
               <input [(ngModel)]="newUtilisateur.matricule" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.matricule" class="messagerreur">Le matricule est requis.</div>
 
               <label>Fonction :</label>
               <input [(ngModel)]="newUtilisateur.fonction" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.fonction" class="messagerreur">La fonction est requise.</div>
 
               <h4>Coordonnées</h4>
               <label>Mobile :</label>
               <input [(ngModel)]="newUtilisateur.mobile" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.mobile" class="messagerreur">Le mobile est requis.</div>
 
               <label>Téléphone :</label>
               <input [(ngModel)]="newUtilisateur.telephone" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.telephone" class="messagerreur">Le téléphone est requis.</div>
 
               <label>Adresse :</label>
               <input [(ngModel)]="newUtilisateur.adresse" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.adresse" class="messagerreur">L'adresse est requise.</div>
 
               <label>Ville :</label>
               <input [(ngModel)]="newUtilisateur.ville" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.ville" class="messagerreur">La ville est requise.</div>
 
               <label>Code Postal :</label>
               <input [(ngModel)]="newUtilisateur.codePostal" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && !newUtilisateur.codePostal" class="messagerreur">Le code postal est requis.
-              </div>
 
               <h4>Paramètres du Compte</h4>
               <label>Rôle:</label>
@@ -106,6 +98,10 @@
             <label>Email :</label>
             <input [(ngModel)]="selectedUtilisateur.email" type="email" required />
 
+            <label>Nouveau mot de passe :</label>
+            <input [(ngModel)]="selectedUtilisateur.mdp" type="password"
+              placeholder="Laisser vide pour ne pas le changer" autocomplete="new-password" />
+
             <label>Matricule :</label>
             <input [(ngModel)]="selectedUtilisateur.matricule" type="text" />
 
@@ -130,8 +126,8 @@
 
             <h4>Paramètres du Comptes</h4>
             <label>Rôle:</label>
-            <select [(ngModel)]="selectedUtilisateur.role" required>
-              <option *ngFor="let role of roles" [ngValue]="{ name: role }">{{ role }}</option>
+            <select [(ngModel)]="selectedUtilisateur.role" [compareWith]="compareRoles" required>
+              <option *ngFor="let role of roles" [ngValue]="role">{{ role.name }}</option>
             </select>
 
             <label>Actif ?</label>
@@ -220,7 +216,7 @@
             <tr>
               <th></th>
               <th>ID</th>
-              <th>Prénom</th>
+              <th>Nom</th>
               <th>Email</th>
               <th>Rôle</th>
               <th>Statut</th>
@@ -232,7 +228,7 @@
               <td><input type="checkbox" [checked]="utilisateur.checked"
                   (change)="onUtilisateurSelect(utilisateur, $event)" /></td>
               <td>{{ utilisateur.id }}</td>
-              <td>{{ utilisateur.prenom }}</td>
+              <td>{{ utilisateur.nom }} {{ utilisateur.prenom }}</td>
               <td>{{ utilisateur.email }}</td>
               <td>{{ utilisateur.role?.name }}</td>
               <td>

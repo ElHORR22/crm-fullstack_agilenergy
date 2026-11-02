@@ -1,6 +1,7 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 import { AuthService } from '../service/auth.service';
 import { Utilisateur } from '../modeles/utilisateur.model';
 
@@ -11,32 +12,37 @@ import { Utilisateur } from '../modeles/utilisateur.model';
   imports: [CommonModule, RouterModule]
 })
 
-export class SidebarComponent implements OnInit, DoCheck {
+export class SidebarComponent implements OnInit, OnDestroy {
 
   role: string | null = null;
   user: Utilisateur | null = null;
+
+  private navigationSub?: Subscription;
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
 
+  // Relit la session à chaque navigation (connexion, déconnexion) plutôt qu'à chaque
+  // cycle de détection de changements, comme le faisait ngDoCheck.
   ngOnInit(): void {
     this.updateUserFromStorage();
+    this.navigationSub = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.updateUserFromStorage());
   }
 
-  ngDoCheck(): void {
-    this.updateUserFromStorage();
+  ngOnDestroy(): void {
+    this.navigationSub?.unsubscribe();
   }
 
   updateUserFromStorage(): void {
     const userStr = localStorage.getItem('user');
     if (userStr) {
       const utilisateur = JSON.parse(userStr);
-      if (utilisateur.email !== this.user?.email) {
-        this.user = utilisateur;
-        this.role = utilisateur.role;
-      }
+      this.user = utilisateur;
+      this.role = utilisateur.role;
     } else {
       this.user = null;
       this.role = null;
@@ -48,4 +54,3 @@ export class SidebarComponent implements OnInit, DoCheck {
     this.router.navigate(['/login']);
   }
 }
-

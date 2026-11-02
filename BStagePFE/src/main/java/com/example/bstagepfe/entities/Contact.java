@@ -1,5 +1,5 @@
 package com.example.bstagepfe.entities;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,8 +38,22 @@ public class Contact {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    @JsonBackReference
+    @JsonIgnore
     private Client client;
+
+    // Le client est échangé en JSON sous la forme d'un simple identifiant « clientId ».
+    // (L'ancien @JsonBackReference faisait ignorer le client à la réception : les contacts
+    // étaient enregistrés sans client_id et n'apparaissaient jamais.)
+    @Transient
+    private Long clientId;
+
+    public Long getClientId() {
+        return client != null ? client.getId() : clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
 
     public Long getId() {
         return id;

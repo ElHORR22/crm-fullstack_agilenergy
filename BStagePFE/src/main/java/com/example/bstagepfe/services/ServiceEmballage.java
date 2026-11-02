@@ -1,4 +1,5 @@
 package com.example.bstagepfe.services;
+import jakarta.persistence.EntityNotFoundException;
 import com.example.bstagepfe.entities.Emballage;
 import com.example.bstagepfe.repos.EmballageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ public class ServiceEmballage {
     private EmballageRepository emballageRepository;
 
     public List<Emballage> getAllEmballages() {
-        return emballageRepository.findAll();
+        return emballageRepository.findByIsDeletedFalse();
     }
 
     public Emballage addEmballage(Emballage emballage) {
@@ -28,12 +29,12 @@ public class ServiceEmballage {
             emballage.setDateModification(detailsemballage.getDateModification());
 
             return emballageRepository.save(emballage);
-        }).orElseThrow(() -> new RuntimeException("Emballage non trouvé !"));
+        }).orElseThrow(() -> new EntityNotFoundException("Emballage non trouvé !"));
     }
 
     public void deleteEmballage(Long id) {
         Emballage emballage = emballageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Emballage non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Emballage non trouvé avec l'ID : " + id));
         emballage.setIsDeleted(true);
         emballageRepository.save(emballage);
     }

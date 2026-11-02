@@ -5,13 +5,11 @@
 
 ---
 
-## 🔐 Comptes de démonstration
+## 🔐 Premier compte administrateur
 
-| Email | Mot de passe | Rôle |
-|-------|-------------|------|
-| admin@agil.com.tn | admin123 | Administrateur |
-| commercial@agil.com.tn | com123 | Commercial |
-| logistique@agil.com.tn | log123 | Logistique |
+Au premier démarrage, si la base ne contient aucun utilisateur, le backend crée un administrateur
+à partir des variables d'environnement `ADMIN_EMAIL` et `ADMIN_PASSWORD`.
+Les autres comptes (commercial, logisticien, client) se créent ensuite depuis « Comptes utilisateurs ».
 
 ---
 
@@ -32,13 +30,13 @@
 
 ## ✨ Fonctionnalités
 
-- 🔐 **Auth JWT** — Login sécurisé, rôles multiples (Admin, Commercial, Logistique, Client)
-- 👥 **Prospects → Clients** — Conversion en 1 clic avec transfert automatique des données
-- 📄 **Devis PDF** — Génération automatique avec calcul TTC, poids, éco-zit
-- 📊 **Dashboard** — Statistiques temps réel (CA, prospects, clients, devis par mois)
+- 🔐 **Auth JWT** — Login sécurisé, rôles (Administrateur, Commercial, Logisticien, Client) contrôlés côté serveur
+- 👥 **Prospects → Clients** — Conversion en 1 clic : le client est créé avec les données du prospect, qui passe au statut « Converti »
+- 📄 **Devis PDF** — Calcul TTC, poids et éco-zit recalculés côté serveur, exonération de TVA par client ; un client ne télécharge que ses propres devis
+- 📊 **Dashboard** — Montant total des devis, évolution mensuelle, clients par gouvernorat/secteur, devis par mois, top produits
 - 🏭 **Catalogue** — Produits & emballages avec codes, prix multiples, poids
-- 👤 **Gestion utilisateurs** — CRUD avec rôles, activation/désactivation
-- 📧 **Reset password** — Par email avec token temporaire (Spring Mail)
+- 👤 **Gestion utilisateurs** — CRUD avec rôles, activation/désactivation (effet immédiat)
+- 📧 **Mot de passe oublié** — Lien par email valable 15 minutes (Spring Mail)
 - ⚙️ **Paramétrage** — TVA configurable, secteurs, sources de prospection
 - 🐳 **Docker** — Déploiement complet en 1 commande
 
@@ -47,13 +45,17 @@
 ## 🏃 Lancer en local
 
 ### Prérequis
-Java 17+ · Node.js 20+ · MySQL 8.0 · Maven 3.9+
+Java 17+ · Node.js 20+ · MySQL 8.0 (Maven est fourni par `mvnw`)
+
+### Variables d'environnement
+Copier `.env.example` en `.env` à la racine et remplir les valeurs.
+`JWT_SECRET` doit faire au moins 32 caractères.
 
 ### Backend
+Spring Boot ne lit pas le fichier `.env` : il faut exporter les variables avant le lancement.
 ```bash
+set -a; source .env; set +a
 cd BStagePFE
-# Copier et remplir les variables d'environnement
-cp .env.example .env
 ./mvnw spring-boot:run
 # API disponible sur http://localhost:8080
 ```
@@ -61,50 +63,64 @@ cp .env.example .env
 ### Frontend
 ```bash
 cd AgilEnergyCRM
-npm install
-ng serve
-# App disponible sur http://localhost:4200
+npm ci
+npx ng serve
+# App disponible sur http://localhost:4200 (API attendue sur http://localhost:8080)
 ```
 
 ### Docker (tout en une commande)
 ```bash
 cp .env.example .env   # Remplir les valeurs
-docker-compose up --build
+docker compose up --build
+```
+Application disponible sur http://localhost:4200 (API sur http://localhost:8080).
+Pour un déploiement en ligne, mettre l'URL publique de l'API dans
+`AgilEnergyCRM/src/app/environments/environment.prod.ts` et celle du frontend dans les origines CORS de `SecurityConfig`.
+
+### Tests
+```bash
+cd BStagePFE && ./mvnw test                                  # JUnit, base H2 en mémoire
+cd AgilEnergyCRM && npx ng test --watch=false --browsers=ChromeHeadless
 ```
 
 ---
 
 ## 📁 Structure du projet
+```
 CRM/
 ├── BStagePFE/                    # Backend Spring Boot
 │   ├── src/main/java/com/example/bstagepfe/
-│   │   ├── controllers/          # 13 controllers REST
-│   │   ├── services/             # Logique métier
-│   │   ├── entities/             # Entités JPA (11)
+│   │   ├── controllers/          # 15 contrôleurs REST (+ RoleInitializer : rôles et 1er admin)
+│   │   ├── services/             # Logique métier (calcul des devis, PDF, auth…)
+│   │   ├── entities/             # 13 entités JPA
 │   │   ├── DTO/                  # Data Transfer Objects
 │   │   ├── repos/                # Spring Data repositories
 │   │   ├── JwtAuthFilter.java    # Filtre JWT
-│   │   └── SecurityConfig.java   # Spring Security
-│   └── src/test/                 # Tests JUnit + Mockito
+│   │   └── SecurityConfig.java   # Règles d'accès par rôle, CORS
+│   └── src/test/                 # Tests JUnit + Mockito (profil test sur H2)
 ├── AgilEnergyCRM/                # Frontend Angular 19
 │   ├── src/app/
-│   │   ├── components/           # 12 composants
+│   │   ├── <page>/               # Composants standalone (client, devis, dashboard…)
 │   │   ├── service/              # Services HTTP
-│   │   ├── guards/               # Auth guards
-│   │   ├── interceptors/         # JWT interceptor
+│   │   ├── login/auth.guard.ts   # Guard de navigation par rôle
+│   │   ├── interceptors/         # Intercepteur JWT (401 → connexion, 403 → accès refusé)
 │   │   └── environments/         # Config dev/prod
 │   └── nginx.conf                # Config Nginx production
 ├── docker-compose.yml
 ├── .env.example
-└── README.md---
+└── README.md
+```
+
+---
 
 ## 🔒 Sécurité
 
-- JWT stateless (HS256, expiration 24h)
-- BCrypt pour les mots de passe
+- JWT stateless (HS256, expiration 24h) ; le compte est revérifié à chaque requête
+- Autorisation par rôle côté serveur (`SecurityConfig`), le guard Angular n'est qu'une aide à la navigation
+- BCrypt pour les mots de passe, jamais renvoyés par l'API ; jeton de réinitialisation stocké haché (SHA-256)
 - CORS configuré explicitement
 - Variables d'environnement pour tous les secrets
-- Soft delete sur toutes les entités sensibles
+- Soft delete sur les clients, prospects, contacts, produits et emballages (les devis et utilisateurs sont supprimés définitivement)
 
 ---
 

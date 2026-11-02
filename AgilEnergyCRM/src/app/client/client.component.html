@@ -48,8 +48,8 @@
 
               <label>Exonéré:</label>
               <select [(ngModel)]="newClient.exonere" (input)="updateProgress()" required>
-                <option value="true">Oui</option>
-                <option value="false">Non</option>
+                <option [ngValue]="true">Oui</option>
+                <option [ngValue]="false">Non</option>
               </select>
 
               <label>Date limite Exonération:</label>
@@ -112,7 +112,7 @@
 
               <label>Fax:</label>
               <input [(ngModel)]="newClient.fax" type="text" (input)="updateProgress()" />
-              <div *ngIf="errorMessage && errorMessage.includes('fax')" class="messagerreur"> {{ errorMessage }}
+              <div *ngIf="errorMessage && errorMessage.includes('Fax')" class="messagerreur"> {{ errorMessage }}
               </div>
 
               <label>Adresse:</label>
@@ -172,8 +172,8 @@
 
             <label>Exonéré:</label>
             <select [(ngModel)]="selectedClient.exonere" required>
-              <option value="true">Oui</option>
-              <option value="false">Non</option>
+              <option [ngValue]="true">Oui</option>
+              <option [ngValue]="false">Non</option>
             </select>
 
             <label>Date limite Exonération:</label>
@@ -362,6 +362,7 @@
               <th></th>
               <th>ID</th>
               <th>Nom</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>

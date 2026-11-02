@@ -38,7 +38,7 @@ public class Produit {
     @UpdateTimestamp
     private LocalDate dateModification;
 
-    private boolean IsDeleted;
+    private boolean isDeleted;
 
     public Long getId() {
         return id;
@@ -161,10 +161,10 @@ public class Produit {
     }
 
     public boolean getIsDeleted() {
-        return IsDeleted;
+        return isDeleted;
     }
 
     public void setIsDeleted(boolean deleted) {
-        IsDeleted = deleted;
+        isDeleted = deleted;
     }
 }

@@ -28,7 +28,8 @@ export class DashboardComponent implements OnInit {
   secteurChartData: number[] = [];
 
   periode: string = '';
-  caEvolution = 0;
+  // null : pas de chiffre le mois précédent, l'évolution n'a pas de sens.
+  caEvolution: number | null = null;
 
   showDetails: boolean = false;
   showPopup = false;
@@ -62,7 +63,7 @@ export class DashboardComponent implements OnInit {
     datasets: [
       {
         data: [],
-        label: 'Chiffre d\'affaires (TND)',
+        label: 'Total des devis TTC (TND)',
         backgroundColor: ['#3498db', '#2ecc71']
       }
     ]
@@ -123,7 +124,6 @@ export class DashboardComponent implements OnInit {
     });
 
     this.chargerChiffreAffairesEtEvolution();
-    this.loadChiffreAffaires();
     this.loadDevisParMois();
     this.loadTopProduits();
     this.loadClientsProspectsCount();
@@ -152,7 +152,7 @@ export class DashboardComponent implements OnInit {
   
     this.dashboardService.getCaMensuel(annee, mois).subscribe(caActuel => {
       this.dashboardService.getCaMensuel(anneePrecedente, moisPrecedent).subscribe(caPrecedent => {
-        this.popupChartData.datasets[0].data = [caPrecedent || 0, caActuel || 0];
+        this.setPopupData(caPrecedent || 0, caActuel || 0);
         this.showPopup = true;
       });
     });
@@ -172,24 +172,23 @@ export class DashboardComponent implements OnInit {
       this.dashboardService.getCaMensuel(previousYear, previousMonth).subscribe(caPrevious => {
         this.chiffreAffairesPreviousMonth = caPrevious ?? 0;
   
-        if (this.chiffreAffairesPreviousMonth === 0) {
-          this.caEvolution = 100; 
-        } else {
-          this.caEvolution = ((this.chiffreAffairesCurrentMonth - this.chiffreAffairesPreviousMonth) / this.chiffreAffairesPreviousMonth) * 100;
-        }
-  
-        this.popupChartData.datasets[0].data = [this.chiffreAffairesPreviousMonth, this.chiffreAffairesCurrentMonth];
+        this.caEvolution = this.chiffreAffairesPreviousMonth === 0
+          ? null
+          : ((this.chiffreAffairesCurrentMonth - this.chiffreAffairesPreviousMonth) / this.chiffreAffairesPreviousMonth) * 100;
+
+        this.setPopupData(this.chiffreAffairesPreviousMonth, this.chiffreAffairesCurrentMonth);
   
         this.periode = `Mois ${mois} / ${annee}`;
       });
     });
   }  
 
-  loadChiffreAffaires() {
-    this.chiffreAffairesCurrentMonth = 13450.75;
-    this.chiffreAffairesPreviousMonth = 12000.00;
-
-    this.caEvolution = ((this.chiffreAffairesCurrentMonth - this.chiffreAffairesPreviousMonth) / this.chiffreAffairesPreviousMonth) * 100;
+  // ng2-charts ne détecte que les nouvelles références : on réassigne au lieu de muter.
+  private setPopupData(precedent: number, actuel: number): void {
+    this.popupChartData = {
+      ...this.popupChartData,
+      datasets: [{ ...this.popupChartData.datasets[0], data: [precedent, actuel] }]
+    };
   }
 
   toggleDetails() {
@@ -199,7 +198,7 @@ export class DashboardComponent implements OnInit {
   loadDevisParMois(): void {
     this.dashboardService.getDevisParMois().subscribe(data => {
       this.barChartLabels = data.map(d => d.mois);
-      this.barChartData[0].data = data.map(d => d.nbDevis);
+      this.barChartData = [{ data: data.map(d => d.nbDevis), label: 'Nombre de devis' }];
     });
   }
 
@@ -213,7 +212,7 @@ export class DashboardComponent implements OnInit {
   loadClientsProspectsCount(): void {
     this.dashboardService.getClientsProspectsCount().subscribe({
       next: (data: ClientsProspectsCount) => {
-        this.clientsProspectsChartData[0].data = [data.clients, data.prospects];
+        this.clientsProspectsChartData = [{ ...this.clientsProspectsChartData[0], data: [data.clients, data.prospects] }];
       },
       error: (err: any) => {
         console.error('Erreur chargement clients/prospects:', err);

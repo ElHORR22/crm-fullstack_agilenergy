@@ -1,4 +1,5 @@
 package com.example.bstagepfe.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -55,7 +56,9 @@ public class Prospect {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Gouvernorat gouvernorat;
 
+    // Côté inverse non sérialisé : évite la récursion Client -> Prospect -> Client.
     @OneToOne(mappedBy = "prospect")
+    @JsonIgnore
     private Client client;
 
     public Long getId() {

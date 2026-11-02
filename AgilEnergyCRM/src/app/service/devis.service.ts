@@ -5,7 +5,7 @@ import { Devis } from '../modeles/devis.model';
 import { LigneDevis } from '../modeles/lignedevis.model';
 import { environment } from '../environments/environment';
 
-@Injectable({ providedIn: 'root` })
+@Injectable({ providedIn: 'root' })
 export class DevisService {
 
   // ✅ FIX 1 : URLs centralisées via environment.ts
@@ -26,8 +26,9 @@ export class DevisService {
     return this.http.get<Devis>(`${this.baseUrl}/${id}`);
   }
 
-  getDevisByEmail(email: string): Observable<Devis[]> {
-    return this.http.get<Devis[]>(`${this.baseUrl}/par-email?email=${encodeURIComponent(email)}`);
+  // Devis du client connecté : l'email est lu côté serveur depuis le JWT.
+  getMesDevis(): Observable<Devis[]> {
+    return this.http.get<Devis[]>(`${this.baseUrl}/mes-devis`);
   }
 
   addDevis(devis: Devis): Observable<Devis> {

@@ -1,9 +1,8 @@
 package com.example.bstagepfe.services;
 
+import com.example.bstagepfe.entities.Client;
 import com.example.bstagepfe.entities.Devis;
-import com.example.bstagepfe.entities.Emballage;
 import com.example.bstagepfe.entities.LigneDevis;
-import com.example.bstagepfe.entities.Produit;
 import com.example.bstagepfe.repos.EmballageRepository;
 import com.example.bstagepfe.repos.ProduitRepository;
 import org.springframework.http.HttpStatus;
@@ -12,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 @Service
 public class DevisCalculatorService {
@@ -34,6 +34,7 @@ public class DevisCalculatorService {
 
         BigDecimal totalTtc = BigDecimal.ZERO;
         BigDecimal totalPoids = BigDecimal.ZERO;
+        boolean exonere = estExonere(devis.getClient());
 
         for (LigneDevis l : devis.getLigneDevis()) {
 
@@ -45,7 +46,7 @@ public class DevisCalculatorService {
             BigDecimal puHt = nz(l.getPrixUnitaireHT());
 
             // 3) TVA (chez toi c'est int dans TVA -> pas de null check sur int)
-            int tva = (l.getTva() != null) ? l.getTva().getValeur() : 0;
+            int tva = (!exonere && l.getTva() != null) ? l.getTva().getValeur() : 0;
             BigDecimal tauxTva = BigDecimal.valueOf(tva).divide(BigDecimal.valueOf(100));
 
             // 4) récupérer poids produit depuis codeProduit
@@ -87,15 +88,8 @@ public class DevisCalculatorService {
     private BigDecimal getPoidsProduitByCode(String codeProduit) {
         if (codeProduit == null || codeProduit.isBlank()) return BigDecimal.ZERO;
 
-        return produitRepository.findByCodeProduit(codeProduit)
-                .map(p -> { // poidsProduit peut être Double ou BigDecimal selon ton entity
-                    Object poids = p.getPoidsProduit();
-                    if (poids == null) return BigDecimal.ZERO;
-                    if (poids instanceof BigDecimal bd) return bd;
-                    if (poids instanceof Double d) return BigDecimal.valueOf(d);
-                    if (poids instanceof Integer i) return BigDecimal.valueOf(i);
-                    return BigDecimal.ZERO;
-                })
+        return produitRepository.findFirstByCodeProduitAndIsDeletedFalse(codeProduit)
+                .map(p -> BigDecimal.valueOf(p.getPoidsProduit()))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Produit introuvable: " + codeProduit
                 ));
@@ -106,11 +100,18 @@ public class DevisCalculatorService {
 
         Integer code = toInteger(codeEmballage, "codeEmballage invalide: " + codeEmballage);
 
-        return emballageRepository.findByCodeEmballage(code)
+        return emballageRepository.findFirstByCodeEmballageAndIsDeletedFalse(code)
                 .map(e -> BigDecimal.valueOf(e.getPoidsEmballage() == null ? 0.0 : e.getPoidsEmballage()))
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Emballage introuvable: " + codeEmballage
                 ));
+    }
+
+    // Client exonéré de TVA : flag actif et date limite non dépassée (pas de date = sans limite).
+    static boolean estExonere(Client client) {
+        if (client == null || !Boolean.TRUE.equals(client.getExonere())) return false;
+        LocalDate limite = client.getDateLimiteExo();
+        return limite == null || !limite.isBefore(LocalDate.now());
     }
 
     private Integer toInteger(String v, String msg) {
