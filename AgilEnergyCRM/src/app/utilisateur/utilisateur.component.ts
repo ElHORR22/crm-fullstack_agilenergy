@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
 
@@ -9,7 +9,7 @@ import { OnInit } from '@angular/core';
   standalone: true,
   templateUrl: './utilisateur.component.html',
   styleUrls: ['./utilisateur.component.css'],
-  imports: [CommonModule, RouterModule]
+  imports: [RouterModule]
 })
 export class UtilisateurComponent {
   constructor(private router: Router) {}

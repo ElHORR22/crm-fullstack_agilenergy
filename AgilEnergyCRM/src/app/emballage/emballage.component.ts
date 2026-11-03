@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { EmballageService } from '../service/emballage.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -16,6 +17,7 @@ import { Router } from '@angular/router';
 })
 
 export class EmballageComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
 
   openedEmballage: any;
   progressValue = 0;
@@ -207,8 +209,13 @@ export class EmballageComponent implements OnInit {
     }
   }
 
-  deleteEmballage(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cet emballage ?")) {
+  async deleteEmballage(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: "Supprimer l'emballage",
+      message: "Êtes-vous sûr de vouloir supprimer cet emballage ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.emballageService.deleteEmballage(id).subscribe({
         next: () => {
           this.loadEmballages();

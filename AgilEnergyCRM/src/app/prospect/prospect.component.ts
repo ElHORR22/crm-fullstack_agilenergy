@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { ProspectService } from '../service/prospect.service';
 import { Gouvernorat, Prospect, SourceProspection, SecteurActivite } from '../modeles/prospect.model';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,7 @@ import { FilterPipe } from '../prospect/Filter';
 })
 
 export class ProspectComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
 
   openedProspect: any;
   progressValue = 0;
@@ -46,10 +48,10 @@ export class ProspectComponent implements OnInit {
   convertirProspect(prospect: Prospect): void {
     this.prospectService.convertirEnClient(prospect).subscribe({
       next: client => {
-        alert("Prospect converti en client avec succès !");
+        this.dialogue.succes("Prospect converti en client.");
         this.loadProspects();
       },
-      error: err => alert(err?.error?.message ?? "Erreur lors de la conversion")
+      error: err => this.dialogue.erreur(err?.error?.message ?? "Erreur lors de la conversion")
     });
   }
 
@@ -279,8 +281,13 @@ export class ProspectComponent implements OnInit {
     this.showEditForm = true;
   }
 
-  deleteProspect(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce prospect ?")) {
+  async deleteProspect(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: 'Supprimer le prospect',
+      message: "Êtes-vous sûr de vouloir supprimer ce prospect ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.prospectService.deleteProspect(id).subscribe({
         next: () => {
           this.prospects = this.prospects.filter(prospect => prospect.id !== id);

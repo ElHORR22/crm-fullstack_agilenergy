@@ -17,11 +17,16 @@
   height: 40px;
 }
 
+/* Poussé à droite de l'en-tête (remplace une marge fixe de 1400px qui élargissait la page). */
+.home-link {
+  margin-left: auto;
+  padding-right: 24px;
+}
+
 .home-link a {
   color: #ffffff;
   text-decoration: none;
   font-weight: 500;
-  margin-left: 1400px;
 }
 
 footer {
@@ -121,4 +126,20 @@ footer p {
   padding: 20px;
   font-size: 26px;
   margin-right: auto;
+}
+/* La carte Google a un attribut width="1400" : on la limite à la largeur disponible. */
+footer .map iframe {
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+}
+
+@media (max-width: 600px) {
+  footer {
+    padding: 24px 16px;
+  }
+
+  footer .map iframe {
+    height: 260px;
+  }
 }

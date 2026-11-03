@@ -1,5 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+
+import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../service/auth.service';
@@ -8,12 +9,13 @@ import { Utilisateur } from '../modeles/utilisateur.model';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 
 export class LoginComponent implements AfterViewInit {
+  private readonly dialogue = inject(DialogueService);
   utilisateur: Utilisateur = { email: '', mdp: '' };
   errorMessage = '';
 
@@ -64,19 +66,26 @@ export class LoginComponent implements AfterViewInit {
     });
   }
 
-  onForgotPassword(event: Event): void {
+  async onForgotPassword(event: Event): Promise<void> {
     event.preventDefault();
 
-    const email = prompt("Entrez votre adresse email :");
+    const email = await this.dialogue.demander({
+      titre: 'Mot de passe oublié',
+      message: 'Saisissez l\'adresse email de votre compte : un lien de réinitialisation vous sera envoyé.',
+      libelleConfirmer: 'Envoyer le lien',
+      champ: { libelle: 'Adresse email', type: 'email', placeholder: 'nom@exemple.tn' }
+    });
+    if (!email) return;
 
-    if (email && this.validateEmail(email)) {
-      this.authService.requestPasswordReset(email).subscribe({
-        next: () => alert("Un lien de récupération a été envoyé à " + email),
-        error: (err) => alert("Erreur : " + (err.error?.message || "Email non trouvé."))
-      });
-    } else if (email) {
-      alert("Format d'email invalide.");
+    if (!this.validateEmail(email)) {
+      this.dialogue.erreur("Format d'email invalide.");
+      return;
     }
+    this.authService.requestPasswordReset(email).subscribe({
+      // Le serveur répond de la même façon que l'adresse existe ou non.
+      next: () => this.dialogue.succes("Si un compte existe pour " + email + ", un lien de récupération a été envoyé."),
+      error: () => this.dialogue.erreur("Le serveur ne répond pas. Veuillez réessayer plus tard.")
+    });
   }
 
   private validateEmail(email: string) {

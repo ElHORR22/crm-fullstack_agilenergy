@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { DialogueService } from '../shared/dialogue.service';
 import { Role, Utilisateur } from '../modeles/utilisateur.model';
 import { GestionUtilisateurService } from '../service/gestion_utilisateur.service';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
   imports: [FormsModule, CommonModule]
 })
 export class GestionUtilisateurComponent implements OnInit {
+  private readonly dialogue = inject(DialogueService);
 
   roles: Role[] = [];
   utilisateurs: Utilisateur[] = [];
@@ -153,8 +155,13 @@ export class GestionUtilisateurComponent implements OnInit {
     }
   }
 
-  deleteUtilisateur(id: number): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+  async deleteUtilisateur(id: number): Promise<void> {
+    if (await this.dialogue.confirmer({
+      titre: "Supprimer l'utilisateur",
+      message: "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      libelleConfirmer: 'Supprimer',
+      danger: true
+    })) {
       this.gestionUtilisateurService.deleteUtilisateur(id).subscribe({
         next: () => {
           this.loadUtilisateurs();

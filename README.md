@@ -18,6 +18,7 @@ Les autres comptes (commercial, logisticien, client) se créent ensuite depuis �
 | Couche | Technologie | Version |
 |--------|------------|---------|
 | Frontend | Angular | 19.2.5 |
+| Composants UI | Angular Material (dialogues, notifications) | 19.2 |
 | Backend | Spring Boot | 3.4.4 |
 | Langage | Java | 17 |
 | Sécurité | Spring Security + JWT | jjwt 0.12.6 |
@@ -39,6 +40,7 @@ Les autres comptes (commercial, logisticien, client) se créent ensuite depuis �
 - 👤 **Gestion utilisateurs** — CRUD avec rôles, activation/désactivation (effet immédiat)
 - 📧 **Mot de passe oublié** — Lien par email valable 15 minutes (Spring Mail)
 - ⚙️ **Paramétrage** — TVA configurable, secteurs, sources de prospection
+- 📱 **Interface responsive** — Utilisable sur téléphone (menu latéral au bouton, panneaux et popups pleine largeur), confirmations et notifications Angular Material
 - 🐳 **Docker** — Déploiement complet en 1 commande
 
 ---

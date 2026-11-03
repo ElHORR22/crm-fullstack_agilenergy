@@ -47,3 +47,14 @@
 
 .taux-conversion { margin: 4px 0 12px; color: #4a4a4a; }
 .taux-conversion small { color: #888; }
+
+/* ---------- Notifications (DialogueService) ---------- */
+.notification-succes {
+  --mdc-snackbar-container-color: #2e7d32;
+  --mat-snack-bar-button-color: #fff;
+}
+
+.notification-erreur {
+  --mdc-snackbar-container-color: #c62828;
+  --mat-snack-bar-button-color: #fff;
+}
